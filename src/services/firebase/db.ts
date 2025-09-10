@@ -14,7 +14,7 @@ import {
   DocumentData,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebase.js';
 
 // Add real-time subscription helper
 export function subscribeToUserData(userId: string, callback: (data: any) => void) {

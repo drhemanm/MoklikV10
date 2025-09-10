@@ -4,7 +4,8 @@ import {
   setDoc, 
   updateDoc, 
   increment, 
-  Timestamp 
+  Timestamp,
+  writeBatch
 } from 'firebase/firestore';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, listAll, deleteObject } from 'firebase/storage';
