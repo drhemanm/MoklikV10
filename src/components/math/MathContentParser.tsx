@@ -1,8 +1,8 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
 // @ts-ignore
-const Plot = require('react-plotly.js').default;
-import { cleanMathExpression, generatePoints } from '../../utils/mathUtils.js';
+import Plot from 'react-plotly.js';
+import { cleanMathExpression, generatePoints } from '../../utils/mathUtils';
 
 interface MathContentParserProps {
   content: string;
