@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { DataChart } from '../graphs/DataChart';
+import { useState, useEffect } from 'react';
+import { DataChart } from '../graphs/DataChart.js';
 import { Brain, Target, Clock, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-interface LiveAnalyticsProps {
-  userId: string;
-}
 
-export function LiveAnalytics({ userId }: LiveAnalyticsProps) {
+export function LiveAnalytics() {
   const [studyData, setStudyData] = useState({
     dailyTime: [] as number[],
     weeklyProgress: [] as number[],

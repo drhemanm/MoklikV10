@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { MessageSquare, Search, Filter } from 'lucide-react';
-import { useForum } from '../../hooks/useForum';
-import { TopicList } from './TopicList';
-import { TopicView } from './TopicView';
-import { NewTopicModal } from './NewTopicModal';
-import { useAuth } from '../../hooks/useAuth';
+import { useForum } from '../../hooks/useForum.js';
+import { TopicList } from './TopicList.js';
+import { TopicView } from './TopicView.js';
+import { NewTopicModal } from './NewTopicModal.js';
+import { useAuth } from '../../hooks/useAuth.js';
 
 export function ForumContainer() {
   const { user } = useAuth();
@@ -25,7 +25,7 @@ export function ForumContainer() {
   } = useForum();
 
   const [showNewTopic, setShowNewTopic] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,15 +98,15 @@ export function ForumContainer() {
           topic={currentTopic}
           posts={posts}
           onBack={() => loadTopics(sortBy)}
-          onReply={createPost}
-          onLike={(id, type) => user && toggleLike(type, id, user.uid)}
+         onReply={createPost}
+         onLike={(id: any, type: any) => user && toggleLike(type, id, user.uid)}
           isLoading={isLoading}
         />
       ) : (
         <TopicList
           topics={topics}
           onTopicClick={loadTopic}
-          onLike={(id) => user && toggleLike('topic', id, user.uid)}
+         onLike={(id: any) => user && toggleLike('topic', id, user.uid)}
           isLoading={isLoading}
         />
       )}
@@ -114,7 +114,7 @@ export function ForumContainer() {
       {showNewTopic && user && (
         <NewTopicModal
           onClose={() => setShowNewTopic(false)}
-          onSubmit={async (title, content, tags) => {
+         onSubmit={async (title: any, content: any, tags: any) => {
             await createTopic(title, content, user.uid, user.email!, tags);
             setShowNewTopic(false);
           }}

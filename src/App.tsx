@@ -1,21 +1,19 @@
-import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { LandingPage } from './pages/LandingPage';
-import { DemoMode } from './pages/DemoMode';
-import { OnboardingFlow } from './pages/OnboardingFlow';
-import { StudentDashboard } from './pages/StudentDashboard';
-import { ChatPage } from './pages/ChatPage';
-import { WritingReview } from './pages/WritingReview';
-import { ForumPage } from './pages/ForumPage';
-import { PricingPage } from './pages/PricingPage';
-import { Contact } from './pages/Contact';
-import { AuthGuard } from './components/auth/AuthGuard';
-import { useAuth } from './hooks/useAuth';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
+import { LandingPage } from './pages/LandingPage.js';
+import { DemoMode } from './pages/DemoMode.js';
+import { OnboardingFlow } from './pages/OnboardingFlow.js';
+import { StudentDashboard } from './pages/StudentDashboard.js';
+import { ChatPage } from './pages/ChatPage.js';
+import { WritingReview } from './pages/WritingReview.js';
+import { ForumPage } from './pages/ForumPage.js';
+import { PricingPage } from './pages/PricingPage.js';
+import { Contact } from './pages/Contact.js';
+import { AuthGuard } from './components/auth/AuthGuard.js';
+import { useAuth } from './hooks/useAuth.js';
 import { Toaster } from 'react-hot-toast';
 
 export default function App() {
-  const location = useLocation();
   const { user } = useAuth();
 
   return (

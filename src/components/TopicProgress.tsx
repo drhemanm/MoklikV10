@@ -1,7 +1,6 @@
-import React from 'react';
 import { BookOpen, Award } from 'lucide-react';
-import { useProgress } from '../hooks/useProgress';
-import type { Topic } from '../types/topic';
+import { useProgress } from '../hooks/useProgress.js';
+import type { Topic } from '../types/topic.js';
 
 interface TopicProgressProps {
   topic: Topic;

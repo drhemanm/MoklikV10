@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Eye, Clock, FileText } from 'lucide-react';
-import { db } from '../../config/firebase';
+import { useState, useEffect } from 'react';
+import { Download, Eye, FileText } from 'lucide-react';
+import { db } from '../../config/firebase.js';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { DataChart } from '../graphs/DataChart';
+import { DataChart } from '../graphs/DataChart.js';
 
 interface ResourceMetricsProps {
   userId: string | undefined;

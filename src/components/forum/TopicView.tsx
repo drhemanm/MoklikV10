@@ -1,8 +1,8 @@
 import React from 'react';
 import { ArrowLeft, ThumbsUp, Clock, User } from 'lucide-react';
-import type { ForumTopic, ForumPost } from '../../types/forum';
-import { RichTextEditor } from './RichTextEditor';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import type { ForumTopic, ForumPost } from '../../types/forum.js';
+import { RichTextEditor } from './RichTextEditor.js';
+import { LoadingSpinner } from '../ui/LoadingSpinner.js';
 
 interface TopicViewProps {
   topic: ForumTopic;
@@ -88,7 +88,7 @@ export function TopicView({
 
         {topic.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {topic.tags.map((tag) => (
+            {topic.tags.map((tag: any) => (
               <span
                 key={tag}
                 className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full"

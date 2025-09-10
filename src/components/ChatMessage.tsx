@@ -1,7 +1,6 @@
-import React from 'react';
 import { Bot, User } from 'lucide-react';
-import type { Message } from '../hooks/useChat';
-import { MathContentParser } from './math/MathContentParser';
+import type { Message } from '../hooks/useChat.js';
+import { MathContentParser } from './math/MathContentParser.js';
 
 interface ChatMessageProps {
   message: Message;

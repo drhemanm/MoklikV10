@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef } from 'react';
+// @ts-ignore
 import Plot from 'react-plotly.js';
-import { generatePoints } from '../../utils/mathUtils';
-import { createPlotlyLayout } from '../../utils/plotUtils';
+import { generatePoints } from '../../utils/mathUtils.js';
+import { createPlotlyLayout } from '../../utils/plotUtils.js';
 
 interface GraphDisplayProps {
   data: {

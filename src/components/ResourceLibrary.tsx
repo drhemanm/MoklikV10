@@ -20,7 +20,7 @@ export function ResourceLibrary() {
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Learning Resources</h2>
       <div className="grid gap-4">
-        {resources.map((resource) => (
+        {resources.map((resource: any) => (
           <div
             key={resource.id}
             className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"

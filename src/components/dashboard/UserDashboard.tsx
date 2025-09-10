@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { useProfile } from '../../hooks/useProfile';
-import { ActivityLog } from './ActivityLog';
-import { UsageStats } from './UsageStats';
-import { ResourceMetrics } from './ResourceMetrics';
-import { UserSettings } from './UserSettings';
-import { DashboardHeader } from './DashboardHeader';
-import { ErrorBoundary } from '../ErrorBoundary';
-import { LiveAnalytics } from './LiveAnalytics';
+import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useProfile } from '../../hooks/useProfile.js';
+import { ActivityLog } from './ActivityLog.js';
+import { UsageStats } from './UsageStats.js';
+import { ResourceMetrics } from './ResourceMetrics.js';
+import { UserSettings } from './UserSettings.js';
+import { DashboardHeader } from './DashboardHeader.js';
+import { ErrorBoundary } from '../ErrorBoundary.js';
+import { LiveAnalytics } from './LiveAnalytics.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, AlertCircle } from 'lucide-react';
 

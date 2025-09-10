@@ -1,14 +1,10 @@
-import { Trophy, Clock, Target, Star, Award, Brain, Sparkles } from 'lucide-react';
-import { useGamification } from '../../hooks/useGamification';
-import { ProgressBar } from '../ui/ProgressBar';
+import { Trophy, Clock, Target, Star, Brain } from 'lucide-react';
+import { useGamification } from '../../hooks/useGamification.js';
+import { ProgressBar } from '../ui/ProgressBar.js';
 import { motion } from 'framer-motion';
-import { StudyGoal, Achievement } from '../../types/gamification';
 
-interface GamificationDashboardProps {
-  userId: string;
-}
 
-export function GamificationDashboard({ userId }: GamificationDashboardProps) {
+export function GamificationDashboard() {
   const { stats, isLoading } = useGamification();
 
   if (isLoading || !stats) {

@@ -18,25 +18,19 @@ import {
   Eraser,
   X,
   History,
-  MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+// @ts-ignore
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useOpenAI } from '../../hooks/useOpenAI';
+import { useOpenAI } from '../../hooks/useOpenAI.js';
 import toast from 'react-hot-toast';
-import { ChatHistory } from './ChatHistory';
-
-interface Message {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  timestamp: Date;
-}
+import { ChatHistory } from './ChatHistory.js';
 
 interface EnhancedChatInterfaceProps {
   onBack: () => void;
@@ -118,7 +112,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
   const handleImageUpload = async (file: File) => {
     try {
       // Dynamic import to avoid loading the service until needed
-      const { ImageAnalysisService } = await import('../../services/ai/imageAnalysis');
+      const { ImageAnalysisService } = await import('../../services/ai/imageAnalysis.js');
       
       // Validate file first
       const validation = ImageAnalysisService.validateImageFile(file);
@@ -147,7 +141,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
         // Show suggestions
         if (result.suggestions) {
           setTimeout(() => {
-            result.suggestions?.forEach((suggestion, index) => {
+            result.suggestions?.forEach((suggestion: any, index: number) => {
               setTimeout(() => {
                 toast.info(suggestion, { duration: 4000 });
               }, index * 1000);
@@ -258,7 +252,6 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
         <div className="h-[calc(100vh-4rem)]">
           <ChatHistory 
             onNewChat={() => setShowHistory(false)}
-            onLoadSession={(sessionId) => setShowHistory(false)}
             loadConversationHistory={loadConversationHistory}
             loadConversation={loadConversation}
           />
@@ -427,7 +420,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                           rehypePlugins={[rehypeKatex]}
                           components={{
                             // Enhanced paragraph rendering for math
-                            p: ({children}) => {
+                            p: ({children}: any) => {
                               const content = String(children);
                              if (content.includes('$') || content.includes('\\(') || content.includes('\\[')) {
                                const processedContent = renderMathContent(content);
@@ -435,9 +428,9 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                              }
                              return <p className="mb-4">{children}</p>;
                             },
-                            code({node, inline, className, children, ...props}) {
+                            code({node, inline, className, children, ...props}: any) {
                               const match = /language-(\w+)/.exec(className || '');
-                              return !inline && match ? (
+                              return !(inline as boolean) && match ? (
                                 <SyntaxHighlighter
                                   style={vscDarkPlus}
                                   language={match[1]}
@@ -645,7 +638,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       />
       
       {/* Custom styles for markdown content */}
-      <style jsx global>{`
+      <style>{`
         .markdown-content {
           font-size: 0.95rem;
           line-height: 1.6;

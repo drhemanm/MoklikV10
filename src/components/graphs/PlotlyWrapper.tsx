@@ -1,6 +1,5 @@
-import React from 'react';
+// @ts-ignore
 import Plot from 'react-plotly.js';
-import { generatePoints } from '../../utils/mathUtils';
 
 interface PlotlyWrapperProps {
   data: Plotly.Data[];

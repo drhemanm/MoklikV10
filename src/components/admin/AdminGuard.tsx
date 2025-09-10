@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { AdminLogin } from './AdminLogin';
-import { useAdmin } from '../../hooks/useAdmin';
+import { useAuth } from '../../hooks/useAuth.js';
+import { AdminLogin } from './AdminLogin.js';
+import { useAdmin } from '../../hooks/useAdmin.js';
 import { Loader2 } from 'lucide-react';
 
 interface AdminGuardProps {

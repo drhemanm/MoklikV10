@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { X, Tag, PlusCircle, Send, AlertTriangle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface NewDiscussionFormProps {
   onSubmit: (title: string, content: string, tags: string[]) => void;

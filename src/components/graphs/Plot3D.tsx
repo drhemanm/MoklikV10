@@ -1,4 +1,4 @@
-import React from 'react';
+// @ts-ignore
 import Plot from 'react-plotly.js';
 
 interface Plot3DProps {

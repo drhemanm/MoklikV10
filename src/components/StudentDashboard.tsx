@@ -1,15 +1,13 @@
-import React from 'react';
-import { ProgressDisplay } from './ProgressDisplay';
-import { useProgress } from '../hooks/useProgress';
-import { useTopics } from '../hooks/useTopics';
-import { TopicProgress } from './TopicProgress';
+import { ProgressDisplay } from './ProgressDisplay.js';
+import { useProgress } from '../hooks/useProgress.js';
+import { useTopics } from '../hooks/useTopics.js';
+import { TopicProgress } from './TopicProgress.js';
 
 export function StudentDashboard() {
   const { selectedTopic, topics } = useTopics();
-  const { getOverallProgress } = useProgress();
 
   const currentTopic = selectedTopic 
-    ? topics.find(t => t.id === selectedTopic)
+    ? topics.find((t: any) => t.id === selectedTopic)
     : null;
 
   return (

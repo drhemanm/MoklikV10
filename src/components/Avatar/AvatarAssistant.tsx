@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, Target, Star, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AvatarCharacter } from './AvatarCharacter';
+import { AvatarCharacter } from './AvatarCharacter.js';
 
 interface AvatarAssistantProps {
   topic?: string;

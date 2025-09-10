@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clock, Award, HelpCircle, Send } from 'lucide-react';
-import { useExercises, Exercise } from '../hooks/useExercises';
-import { MathEquation } from './MathEquation';
-import { LoadingSpinner } from './ui/LoadingSpinner';
+import { useExercises, Exercise } from '../hooks/useExercises.js';
+import { MathEquation } from './MathEquation.js';
+import { LoadingSpinner } from './ui/LoadingSpinner.js';
 
 interface ExerciseSectionProps {
   topic: string;
@@ -37,7 +37,7 @@ export function ExerciseSection({ topic }: ExerciseSectionProps) {
     const answer = answers[exercise.id];
     if (!answer) return;
 
-    const feedback = await submitAnswer(exercise.id, answer);
+    await submitAnswer(exercise.id, answer);
     // Clear answer after submission
     setAnswers(prev => ({ ...prev, [exercise.id]: '' }));
   };
@@ -96,7 +96,7 @@ export function ExerciseSection({ topic }: ExerciseSectionProps) {
         </div>
       ) : (
         <div className="space-y-6">
-          {exercises.map((exercise) => (
+          {exercises.map((exercise: any) => (
             <div key={exercise.id} className="bg-white rounded-lg shadow-md p-6">
               <div className="space-y-4">
                 <div className="flex items-start justify-between">

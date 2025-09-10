@@ -1,7 +1,6 @@
-import React from 'react';
-import { FunctionPlot } from './graphs/FunctionPlot';
-import { DataChart } from './graphs/DataChart';
-import { Plot3D } from './graphs/Plot3D';
+import { FunctionPlot } from './graphs/FunctionPlot.js';
+import { DataChart } from './graphs/DataChart.js';
+import { Plot3D } from './graphs/Plot3D.js';
 
 interface MathChartProps {
   data?: {

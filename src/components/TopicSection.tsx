@@ -1,7 +1,6 @@
-import React from 'react';
 import { Rocket, BookOpen } from 'lucide-react';
-import { TopicCard } from './TopicCard';
-import { useTopics } from '../hooks/useTopics';
+import { TopicCard } from './TopicCard.js';
+import { useTopics } from '../hooks/useTopics.js';
 
 export function TopicSection() {
   const { selectedTopic, selectedCategory, topics, selectTopic, setCategory } = useTopics();
@@ -46,7 +45,7 @@ export function TopicSection() {
         </div>
         
         <div className="space-y-4">
-          {topics.map((topic) => (
+          {topics.map((topic: any) => (
             <TopicCard
               key={topic.id}
               topic={topic}

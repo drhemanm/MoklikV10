@@ -1,6 +1,6 @@
 import React from 'react';
 import { Book, Users, GraduationCap, User } from 'lucide-react';
-import { userService } from '../../services/firebase/user';
+import { userService } from '../../services/firebase/user.js';
 
 interface RoleSelectionProps {
   userId: string;

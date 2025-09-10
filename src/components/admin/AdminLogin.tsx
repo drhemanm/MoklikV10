@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, AlertCircle, Loader2 } from 'lucide-react';
-import { adminService } from '../../services/firebase/admin';
+import { adminService } from '../../services/firebase/admin.js';
 
 interface AdminLoginProps {
   onSuccess: () => void;

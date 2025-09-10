@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Save, Bell, Shield, User } from 'lucide-react';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { Modal } from '../ui/Modal';
-import { userService } from '../../services/firebase/user';
-import type { UserProfile } from '../../types/user';
+import { db } from '../../config/firebase.js';
+import { Modal } from '../ui/Modal.js';
+import { userService } from '../../services/firebase/user.js';
+import type { UserProfile } from '../../types/user.js';
 
 interface UserSettingsProps {
   userId: string | undefined;

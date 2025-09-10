@@ -1,4 +1,3 @@
-import React from 'react';
 import { Mail, Phone, Clock } from 'lucide-react';
 
 export function ContactSection() {

@@ -1,4 +1,4 @@
-import { Trophy, Medal, User, Award } from 'lucide-react';
+import { Trophy, Medal, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface LeaderboardEntry {

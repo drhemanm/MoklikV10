@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   ThumbsUp, 
   ThumbsDown, 
@@ -13,9 +13,9 @@ import {
   Eye
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Discussion } from './DiscussionList';
-import { Card, CardBody } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Discussion } from './DiscussionList.js';
+import { Card } from '../ui/Card.js';
+import { Button } from '../ui/Button.js';
 
 export interface Reply {
   id: string;
@@ -134,7 +134,7 @@ export function DiscussionDetail({
         
         {discussion.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
-            {discussion.tags.map((tag) => (
+            {discussion.tags.map((tag: any) => (
               <span
                 key={tag}
                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"

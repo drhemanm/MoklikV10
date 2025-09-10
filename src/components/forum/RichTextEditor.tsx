@@ -1,7 +1,7 @@
 import React from 'react';
-import { Bold, Italic, List, Image, Paperclip } from 'lucide-react';
-import { AttachmentUpload } from './AttachmentUpload';
-import { containsProfanity, moderateContent } from '../../services/moderation/profanityFilter';
+import { Bold, Italic, List } from 'lucide-react';
+import { AttachmentUpload } from './AttachmentUpload.js';
+import { containsProfanity, moderateContent } from '../../services/moderation/profanityFilter.js';
 
 interface RichTextEditorProps {
   value: string;
@@ -79,11 +79,11 @@ export function RichTextEditor({ value, onChange, placeholder, userId }: RichTex
         ref={editorRef}
         contentEditable
         className="p-4 min-h-[200px] focus:outline-none"
-        placeholder={placeholder}
         onInput={(e) => {
           const content = e.currentTarget.innerText;
           onChange(content);
         }}
+        data-placeholder={placeholder}
       >
         {value}
       </div>

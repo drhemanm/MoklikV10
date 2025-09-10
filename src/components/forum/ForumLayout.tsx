@@ -10,9 +10,9 @@ import {
   Clock,
   Tag
 } from 'lucide-react';
-import { SearchInput } from '../ui/SearchInput';
-import { Card, CardBody } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { SearchInput } from '../ui/SearchInput.js';
+import { Card } from '../ui/Card.js';
+import { Button } from '../ui/Button.js';
 
 interface ForumLayoutProps {
   children: React.ReactNode;
@@ -32,7 +32,6 @@ export function ForumLayout({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'unanswered'>('latest');
-  const [showNewDiscussionForm, setShowNewDiscussionForm] = useState(false);
 
   const categories = [
     { id: 'algebra', name: 'Algebra' },

@@ -1,8 +1,6 @@
-import React from 'react';
 import { MessageSquare, ThumbsUp, Eye, Clock, User, Tag, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Card, CardBody } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Card } from '../ui/Card.js';
 
 export interface Discussion {
   id: string;

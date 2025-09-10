@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, Save, X, Loader2 } from 'lucide-react';
-import { resourceService } from '../../services/firebase/resources';
-import type { Resource } from '../../types/resource';
+import { useState } from 'react';
+import { Plus, Save, X, Loader2 } from 'lucide-react';
+import { resourceService } from '../../services/firebase/resources.js';
+import type { Resource } from '../../types/resource.js';
 
 export function AdminResourcePanel() {
   const [isAddingResource, setIsAddingResource] = useState(false);
@@ -73,7 +73,7 @@ export function AdminResourcePanel() {
                 <input
                   type="text"
                   value={newResource.title}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, title: e.target.value }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, title: e.target.value }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                   required
                 />
@@ -83,7 +83,7 @@ export function AdminResourcePanel() {
                 <label className="block text-sm font-medium text-gray-700">Description</label>
                 <textarea
                   value={newResource.description}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, description: e.target.value }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, description: e.target.value }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                   rows={3}
                 />
@@ -94,7 +94,7 @@ export function AdminResourcePanel() {
                 <input
                   type="url"
                   value={newResource.url}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, url: e.target.value }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, url: e.target.value }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                   required
                 />
@@ -104,7 +104,7 @@ export function AdminResourcePanel() {
                 <label className="block text-sm font-medium text-gray-700">Type</label>
                 <select
                   value={newResource.type}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, type: e.target.value as Resource['type'] }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, type: e.target.value as Resource['type'] }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="pdf">PDF</option>
@@ -117,7 +117,7 @@ export function AdminResourcePanel() {
                 <label className="block text-sm font-medium text-gray-700">Level</label>
                 <select
                   value={newResource.level}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, level: e.target.value as Resource['level'] }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, level: e.target.value as Resource['level'] }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="o-level">O-Level</option>
@@ -131,7 +131,7 @@ export function AdminResourcePanel() {
                 <input
                   type="text"
                   value={newResource.category}
-                  onChange={(e) => setNewResource(prev => ({ ...prev, category: e.target.value }))}
+                 onChange={(e) => setNewResource((prev: any) => ({ ...prev, category: e.target.value }))}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>

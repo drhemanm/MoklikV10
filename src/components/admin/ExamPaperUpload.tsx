@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, AlertCircle, Loader2 } from 'lucide-react';
-import { ExamPaperService } from '../../services/firebase/examPapers';
-import type { ExamPaper } from '../../types/examPaper';
+import { ExamPaperService } from '../../services/firebase/examPapers.js';
+import type { ExamPaper } from '../../types/examPaper.js';
 
 export function ExamPaperUpload() {
   const [isUploading, setIsUploading] = useState(false);
@@ -54,7 +54,7 @@ export function ExamPaperUpload() {
               pattern="\d{4}"
               placeholder="e.g., 4037"
               value={metadata.syllabusCode}
-              onChange={(e) => setMetadata(prev => ({ 
+             onChange={(e) => setMetadata((prev: any) => ({ 
                 ...prev, 
                 syllabusCode: e.target.value 
               }))}
@@ -69,7 +69,7 @@ export function ExamPaperUpload() {
             </label>
             <select
               value={metadata.session}
-              onChange={(e) => setMetadata(prev => ({ 
+             onChange={(e) => setMetadata((prev: any) => ({ 
                 ...prev, 
                 session: e.target.value as 'S' | 'W' 
               }))}
@@ -90,7 +90,7 @@ export function ExamPaperUpload() {
               pattern="\d{2}"
               placeholder="e.g., 23"
               value={metadata.year}
-              onChange={(e) => setMetadata(prev => ({ 
+             onChange={(e) => setMetadata((prev: any) => ({ 
                 ...prev, 
                 year: e.target.value 
               }))}
@@ -105,7 +105,7 @@ export function ExamPaperUpload() {
             </label>
             <select
               value={metadata.documentType}
-              onChange={(e) => setMetadata(prev => ({ 
+             onChange={(e) => setMetadata((prev: any) => ({ 
                 ...prev, 
                 documentType: e.target.value as 'MS' | 'QP' 
               }))}

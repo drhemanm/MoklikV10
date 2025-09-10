@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Send, Upload, Camera, Mic, Image as ImageIcon, Loader2 } from 'lucide-react';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
 import toast from 'react-hot-toast';
 
 interface ChatInputProps {
@@ -46,7 +45,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
     if (!file) return;
     
     // Import the image analysis service
-    import('../../services/ai/imageAnalysis').then(({ ImageAnalysisService }) => {
+    import('../../services/ai/imageAnalysis.js').then(({ ImageAnalysisService }) => {
       // Validate file first
       const validation = ImageAnalysisService.validateImageFile(file);
       if (!validation.valid) {
@@ -74,7 +73,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             // Show suggestions
             if (result.suggestions) {
               setTimeout(() => {
-                result.suggestions?.forEach((suggestion, index) => {
+                result.suggestions?.forEach((suggestion: any, index: number) => {
                   setTimeout(() => {
                     toast.info(suggestion, { duration: 4000 });
                   }, index * 1000);
@@ -90,7 +89,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             toast.success('Image analyzed successfully!');
           }
         })
-        .catch(error => {
+        .catch((error: any) => {
           toast.dismiss('image-analysis');
           console.error('Error analyzing image:', error);
           toast.error('Failed to analyze image. Please try again.');

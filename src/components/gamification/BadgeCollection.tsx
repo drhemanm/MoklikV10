@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Filter } from 'lucide-react';
-import { DigitalBadge, Badge } from './DigitalBadge';
+import { DigitalBadge, Badge } from './DigitalBadge.js';
 import Confetti from 'react-confetti';
 
 interface BadgeCollectionProps {

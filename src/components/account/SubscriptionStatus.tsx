@@ -1,6 +1,5 @@
-import React from 'react';
-import { CreditCard, Clock, Calendar, Shield, AlertTriangle } from 'lucide-react';
-import { useSubscription } from '../../hooks/useSubscription';
+import { CreditCard, Clock, AlertTriangle } from 'lucide-react';
+import { useSubscription } from '../../hooks/useSubscription.js';
 import { Link } from 'react-router-dom';
 
 export function SubscriptionStatus() {

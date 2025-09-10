@@ -1,9 +1,8 @@
-import React from 'react';
 import { ChevronRight, BookOpen, Star, Award } from 'lucide-react';
-import { useProgress } from '../hooks/useProgress';
-import { useChat } from '../hooks/useChat';
-import { useGamification } from '../hooks/useGamification';
-import type { Topic } from '../types/topic';
+import { useProgress } from '../hooks/useProgress.js';
+import { useChat } from '../hooks/useChat.js';
+import { useGamification } from '../hooks/useGamification.js';
+import type { Topic } from '../types/topic.js';
 
 interface TopicCardProps {
   topic: Topic;
@@ -37,9 +36,9 @@ export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
   };
   const getMasteryBadge = () => {
     if (!progress) return null;
-    if (progress.completionPercentage >= 100) return <Award className="w-5 h-5 text-yellow-500" title="Mastered!" />;
-    if (progress.completionPercentage >= 75) return <Award className="w-5 h-5 text-silver-400" title="Advanced" />;
-    if (progress.completionPercentage >= 50) return <Award className="w-5 h-5 text-bronze-300" title="Intermediate" />;
+    if (progress.completionPercentage >= 100) return <Award className="w-5 h-5 text-yellow-500" />;
+    if (progress.completionPercentage >= 75) return <Award className="w-5 h-5 text-gray-400" />;
+    if (progress.completionPercentage >= 50) return <Award className="w-5 h-5 text-orange-300" />;
     return null;
   };
 

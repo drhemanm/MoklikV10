@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, Target, Award, Calendar } from 'lucide-react';
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebase.js';
 import { doc, getDoc } from 'firebase/firestore';
-import { DataChart } from '../graphs/DataChart';
+import { DataChart } from '../graphs/DataChart.js';
 
 interface UsageStatsProps {
   userId: string | undefined;

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, Filter } from 'lucide-react';
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebase.js';
 import { collection, query, where, orderBy, limit, getDocs, Timestamp } from 'firebase/firestore';
 
 interface Activity {

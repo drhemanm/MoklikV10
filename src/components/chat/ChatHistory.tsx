@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, MessageSquare, Search, Filter, Download, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../hooks/useAuth';
-import { ChatMessage } from './ChatMessage';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { useAuth } from '../../hooks/useAuth.js';
+import { ChatMessage } from './ChatMessage.js';
+import { LoadingSpinner } from '../ui/LoadingSpinner.js';
+import toast from 'react-hot-toast';
 
 interface Message {
   id: string;
@@ -23,14 +24,12 @@ interface ChatSession {
 }
 
 interface ChatHistoryProps {
-  onLoadSession?: (sessionId: string) => void;
   onNewChat?: () => void;
  loadConversationHistory?: () => any[];
  loadConversation?: (conversationId: string) => void;
 }
 
 export function ChatHistory({ 
-  onLoadSession, 
   onNewChat, 
   loadConversationHistory, 
   loadConversation 

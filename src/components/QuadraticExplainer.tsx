@@ -21,23 +21,22 @@ export function QuadraticExplainer({ a, b, c }: QuadraticExplainerProps) {
       </h2>
       
       <div className="space-y-6">
-        {text.map((segment, index) => (
+        {text.map((segment: any, index: number) => (
           <p key={index} className="text-gray-700 leading-relaxed">
             {segment}
           </p>
         ))}
         
-        {equations.map((eq, index) => (
+        {equations.map((eq: any, index: number) => (
           <div key={`eq-${index}`} className="my-4 px-4 py-2 bg-gray-50 rounded-lg">
             <MathEquation 
               equation={eq} 
               block={true}
-              renderEngine="katex"
             />
           </div>
         ))}
         
-        {charts.map((chart, index) => (
+        {charts.map((chart: any, index: number) => (
           <div key={`chart-${index}`} className="my-4">
             <MathChart {...chart} />
           </div>

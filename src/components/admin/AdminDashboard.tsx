@@ -1,5 +1,4 @@
-import React from 'react';
-import { ExamPaperUpload } from './ExamPaperUpload';
+import { ExamPaperUpload } from './ExamPaperUpload.js';
 
 export function AdminDashboard() {
   return (

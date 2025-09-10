@@ -1,7 +1,6 @@
-import React from 'react';
 import { MessageSquare, ThumbsUp, Eye, Clock, Tag } from 'lucide-react';
-import type { ForumTopic } from '../../types/forum';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import type { ForumTopic } from '../../types/forum.js';
+import { LoadingSpinner } from '../ui/LoadingSpinner.js';
 
 interface TopicListProps {
   topics: ForumTopic[];
@@ -47,7 +46,7 @@ export function TopicList({ topics, onTopicClick, onLike, isLoading }: TopicList
                 <div className="flex items-center space-x-2 mt-2">
                   <Tag className="w-4 h-4 text-gray-400" />
                   <div className="flex flex-wrap gap-2">
-                    {topic.tags.map((tag) => (
+                    {topic.tags.map((tag: any) => (
                       <span
                         key={tag}
                         className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full"

@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { PlotlyWrapper } from './PlotlyWrapper';
-import { generatePoints } from '../../utils/mathUtils';
+import { useMemo } from 'react';
+import { PlotlyWrapper } from './PlotlyWrapper.js';
+import { generatePoints } from '../../utils/mathUtils.js';
 
 interface FunctionPlotProps {
   function: string;
@@ -20,8 +20,8 @@ export function FunctionPlot({
   const data = useMemo(() => {
     const points = generatePoints(expr, xRange[0], xRange[1]);
     return [{
-      x: points.map(p => p.x),
-      y: points.map(p => p.y),
+      x: points.map((p: any) => p.x),
+      y: points.map((p: any) => p.y),
       type: 'scatter',
       mode: 'lines',
       name: expr,

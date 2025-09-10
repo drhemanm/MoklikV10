@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { ChatMessage } from './ChatMessage';
-import { ErrorMessage } from '../ui/ErrorMessage';
-import type { Message } from '../../hooks/useChat';
+import { ChatMessage } from './ChatMessage.js';
+import { ErrorMessage } from '../ui/ErrorMessage.js';
+import type { Message } from '../../hooks/useChat.js';
 
 interface ChatMessagesProps {
   messages: Message[];

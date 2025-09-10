@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Brain, 
   Menu, 
   X, 
   Home, 
-  BookOpen, 
   MessageSquare, 
   PenTool,
-  Award,
   LogOut,
   Mail
 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.js';
 
 export function Header() {
   const { user, logout } = useAuth();

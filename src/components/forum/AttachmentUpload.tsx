@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Paperclip, X, Loader2 } from 'lucide-react';
-import { attachmentService } from '../../services/firebase/attachments';
+import { attachmentService } from '../../services/firebase/attachments.js';
 
 interface AttachmentUploadProps {
   onUpload: (url: string) => void;

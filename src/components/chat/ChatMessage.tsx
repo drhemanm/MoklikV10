@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Brain, User, Copy, ThumbsUp, ThumbsDown, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+// @ts-ignore
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// @ts-ignore
 import { InlineMath, BlockMath } from 'react-katex';
 import toast from 'react-hot-toast';
 
@@ -117,7 +120,7 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
                   },
                   code({node, inline, className, children, ...props}) {
                     const match = /language-(\w+)/.exec(className || '');
-                    return !inline && match ? (
+                    return !(inline as boolean) && match ? (
                       <SyntaxHighlighter
                         style={vscDarkPlus}
                         language={match[1]}

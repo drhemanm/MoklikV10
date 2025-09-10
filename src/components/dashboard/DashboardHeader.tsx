@@ -1,7 +1,6 @@
-import React from 'react';
 import { User } from 'firebase/auth';
 import { Activity, BarChart2, BookOpen, Settings } from 'lucide-react';
-import type { UserProfile } from '../../types/user';
+import type { UserProfile } from '../../types/user.js';
 
 interface DashboardHeaderProps {
   user: User | null;

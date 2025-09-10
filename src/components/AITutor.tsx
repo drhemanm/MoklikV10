@@ -86,7 +86,7 @@ export function AITutor({ selectedTopic }: AITutorProps) {
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-          {messages.map((msg) => (
+          {messages.map((msg: any) => (
             <ChatMessage key={msg.id} message={msg} />
           ))}
           {error && <ErrorMessage message={error} />}

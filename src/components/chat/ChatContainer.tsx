@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useOpenAI } from '../../hooks/useOpenAI';
-import { ChatInput } from './ChatInput';
-import { ChatMessage } from './ChatMessage';
-import { ChatHeader } from './ChatHeader';
-import { easterEggManager } from '../../utils/easterEggs';
+import { useState, useRef, useEffect } from 'react';
+import { useOpenAI } from '../../hooks/useOpenAI.js';
+import { ChatInput } from './ChatInput.js';
+import { ChatMessage } from './ChatMessage.js';
+import { ChatHeader } from './ChatHeader.js';
+import { easterEggManager } from '../../utils/easterEggs.js';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface ChatContainerProps {
   topic?: string;
@@ -14,7 +14,6 @@ interface ChatContainerProps {
 export function ChatContainer({ topic }: ChatContainerProps) {
   const { messages, isLoading, error, sendMessage, clearMessages } = useOpenAI();
   const [solvedProblems, setSolvedProblems] = useState(0);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     // Check for math enthusiast achievement
@@ -23,12 +22,6 @@ export function ChatContainer({ topic }: ChatContainerProps) {
     }
   }, [solvedProblems]);
   const parentRef = useRef<HTMLDivElement>(null);
-  const rowVirtualizer = useVirtualizer({
-    count: messages.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 120,
-    overscan: 5
-  });
 
   const handleSendMessage = async (content: string, fileBase64?: string) => {
     if (!content.trim()) {
@@ -73,7 +66,7 @@ export function ChatContainer({ topic }: ChatContainerProps) {
             </p>
           </div>
         ) : (
-          messages.map((msg) => (
+          messages.map((msg: any) => (
             <ChatMessage 
               key={msg.id} 
               message={msg} 

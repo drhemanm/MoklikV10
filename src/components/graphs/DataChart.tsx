@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -42,10 +41,7 @@ export function DataChart({ data, type = 'line', title, showGrid = true }: DataC
   const options = {
   responsive: true,
   maintainAspectRatio: false,
-  animation: {
-    duration: 1000,
-    easing: 'easeInOutQuart'
-  },
+  animation: false,
   plugins: {
     legend: {
       position: 'top' as const,

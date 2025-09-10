@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
-import { storage } from '../../config/firebase';
+import { storage } from '../../config/firebase.js';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { resourceService } from '../../services/firebase/resources';
+import { resourceService } from '../../services/firebase/resources.js';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_TYPES = [

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Plus, Tag } from 'lucide-react';
-import { RichTextEditor } from './RichTextEditor';
+import { RichTextEditor } from './RichTextEditor.js';
 
 interface NewTopicModalProps {
   onClose: () => void;

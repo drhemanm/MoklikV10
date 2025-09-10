@@ -1,4 +1,3 @@
-import React from 'react';
 import { Brain, Trash2, Settings, Download } from 'lucide-react';
 
 interface ChatHeaderProps {

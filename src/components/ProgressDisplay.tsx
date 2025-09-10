@@ -1,6 +1,5 @@
-import React from 'react';
 import { Trophy, Star } from 'lucide-react';
-import { useProgress } from '../hooks/useProgress';
+import { useProgress } from '../hooks/useProgress.js';
 
 export function ProgressDisplay() {
   const { level, xp, streak } = useProgress();

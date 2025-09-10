@@ -31,7 +31,7 @@ export function FileUpload() {
       try {
         // Handle image files with AI analysis
         if (file.type.startsWith('image/')) {
-          const { ImageAnalysisService } = await import('../services/ai/imageAnalysis');
+          const { ImageAnalysisService } = await import('../services/ai/imageAnalysis.js');
           
           // Validate file first
           const validation = ImageAnalysisService.validateImageFile(file);
