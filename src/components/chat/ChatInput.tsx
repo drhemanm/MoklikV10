@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Send, Upload, Camera, Mic, Image as ImageIcon, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface ChatInputProps {
   onSend: (message: string, fileBase64?: string) => Promise<void>;
@@ -45,55 +45,55 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
     if (!file) return;
     
     // Import the image analysis service
-    import('../../services/ai/imageAnalysis.js').then(({ ImageAnalysisService }) => {
-      // Validate file first
-      const validation = ImageAnalysisService.validateImageFile(file);
-      if (!validation.valid) {
-        toast.error(validation.error || 'Invalid file');
-        return;
+    import('../../services/ai/imageAnalysis.js').then(async ({ ImageAnalysisService }) => {
+      try {
+        // Validate file first
+        const validation = ImageAnalysisService.validateImageFile(file);
+        if (!validation.valid) {
+          toastLib.error(validation.error || 'Invalid file');
+          return;
+        }
+        
+        // Show processing message
+        toastLib.loading('Analyzing your image...', { id: 'image-analysis' });
+        
+        // Process the image
+        const base64 = await ImageAnalysisService.fileToBase64(file);
+        const result = await ImageAnalysisService.analyzeImage(base64, file.name);
+        
+        toastLib.dismiss('image-analysis');
+        
+        if (!result.success) {
+          toastLib.error(result.error || 'Failed to analyze image');
+          return;
+        }
+        
+        if (!result.isMathRelated) {
+          toastLib.error(result.error || 'This image doesn\'t contain mathematical content');
+          
+          // Show suggestions
+          if (result.suggestions) {
+            setTimeout(() => {
+              result.suggestions?.forEach((suggestion: any, index: number) => {
+                setTimeout(() => {
+                  toastLib.info(suggestion, { duration: 4000 });
+                }, index * 1000);
+              });
+            }, 1000);
+          }
+          return;
+        }
+        
+        // If math-related, send the analysis to chat
+        if (result.content) {
+          await onSend(`I've uploaded an image containing mathematical content: ${file.name}\n\n${result.content}`);
+          toastLib.success('Image analyzed successfully!');
+        }
+      } catch (error) {
+        toastLib.dismiss('image-analysis');
+        console.error('Error analyzing image:', error);
+        toastLib.error('Failed to analyze image. Please try again.');
       }
-      
-      // Show processing message
-      toast.loading('Analyzing your image...', { id: 'image-analysis' });
-      
-      // Process the image
-      ImageAnalysisService.fileToBase64(file)
-        .then(base64 => ImageAnalysisService.analyzeImage(base64, file.name))
-        .then(result => {
-          toast.dismiss('image-analysis');
-          
-          if (!result.success) {
-            toast.error(result.error || 'Failed to analyze image');
-            return;
-          }
-          
-          if (!result.isMathRelated) {
-            toast.error(result.error || 'This image doesn\'t contain mathematical content');
-            
-            // Show suggestions
-            if (result.suggestions) {
-              setTimeout(() => {
-                result.suggestions?.forEach((suggestion: any, index: number) => {
-                  setTimeout(() => {
-                    toast.info(suggestion, { duration: 4000 });
-                  }, index * 1000);
-                });
-              }, 1000);
-            }
-            return;
-          }
-          
-          // If math-related, send the analysis to chat
-          if (result.content) {
-            onSend(`I've uploaded an image containing mathematical content. Here's what I can see: ${file.name}`, result.content);
-            toast.success('Image analyzed successfully!');
-          }
-        })
-        .catch((error: any) => {
-          toast.dismiss('image-analysis');
-          console.error('Error analyzing image:', error);
-          toast.error('Failed to analyze image. Please try again.');
-        });
     });
   };
 

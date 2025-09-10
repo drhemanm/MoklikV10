@@ -10,7 +10,7 @@ interface AdminGuardProps {
 
 export function AdminGuard({ children }: AdminGuardProps) {
   const { user, isLoading: authLoading } = useAuth();
-  const { isAdmin, isLoading: adminLoading } = useAdmin(user);
+  const { isAdmin, isLoading: adminLoading } = useAdmin(user as any);
 
   if (authLoading || adminLoading) {
     return (

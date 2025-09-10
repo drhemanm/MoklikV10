@@ -29,7 +29,7 @@ const createInitialProgress = (): UserProgress => ({
   topics: topics.reduce((acc, topic) => ({
     ...acc,
     [topic.id]: createInitialTopicProgress(topic.id)
-  }), {})
+  }), {} as Record<string, TopicProgress>)
 });
 
 export function useProgress() {
@@ -40,10 +40,10 @@ export function useProgress() {
       
       const parsed = JSON.parse(stored);
       // Ensure all topics exist in the progress
-      const updatedTopics = topics.reduce((acc, topic) => ({
+      const updatedTopics = topics.reduce((acc: Record<string, TopicProgress>, topic: any) => ({
         ...acc,
         [topic.id]: parsed.topics[topic.id] || createInitialTopicProgress(topic.id)
-      }), {});
+      }), {} as Record<string, TopicProgress>);
 
       return {
         ...parsed,
@@ -66,13 +66,13 @@ export function useProgress() {
 
   // Update streak daily
   useEffect(() => {
-    const lastActive = new Date(progress.streak.lastActive).setHours(0, 0, 0, 0);
+    const lastActive = new Date(progress.streak.lastActive || Date.now()).setHours(0, 0, 0, 0);
     const today = new Date().setHours(0, 0, 0, 0);
     
     if (today > lastActive) {
-      const isConsecutive = today - lastActive === 86400000; // 24 hours in ms
+      const isConsecutive = (today - lastActive) === 86400000; // 24 hours in ms
       
-      setProgress(prev => ({
+      setProgress((prev: UserProgress) => ({
         ...prev,
         streak: {
           current: isConsecutive ? prev.streak.current + 1 : 1,
@@ -145,7 +145,7 @@ export function useProgress() {
     
     const totalTopics = Object.keys(progress.topics).length;
     const totalCompletion = Object.values(progress.topics)
-      .reduce((sum, topic) => sum + (topic?.completionPercentage || 0), 0);
+      .reduce((sum: number, topic: TopicProgress) => sum + (topic.completionPercentage || 0), 0);
     
     return Math.round(totalCompletion / totalTopics);
   }, [progress.topics]);
@@ -153,7 +153,7 @@ export function useProgress() {
   const getTotalStudyTime = useCallback(() => {
     if (!progress.topics) return 0;
     return Object.values(progress.topics)
-      .reduce((total, topic) => total + (topic?.timeSpent || 0), 0);
+      .reduce((total: number, topic: TopicProgress) => total + (topic.timeSpent || 0), 0);
   }, [progress.topics]);
 
   return {

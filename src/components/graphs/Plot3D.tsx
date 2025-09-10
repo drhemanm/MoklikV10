@@ -1,5 +1,5 @@
 // @ts-ignore
-import Plot from 'react-plotly.js';
+const Plot = require('react-plotly.js').default;
 
 interface Plot3DProps {
   data: Plotly.Data[];

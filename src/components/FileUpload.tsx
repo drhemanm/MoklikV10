@@ -1,15 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Upload, FileText, Video, Book, X, Loader2 } from 'lucide-react';
-import { DocumentProcessor } from '../services/document/documentProcessor';
-import { useChat } from '../hooks/useChat';
-import { useAuth } from '../hooks/useAuth';
-import { LoadingSpinner } from './ui/LoadingSpinner';
-import { ChatContainer } from './chat/ChatContainer';
+import React, { useRef, useState } from 'react';
+import { Upload, FileText, X } from 'lucide-react';
+import { DocumentProcessor } from '../services/document/documentProcessor.js';
+import { useChat } from '../hooks/useChat.js';
+import { useAuth } from '../hooks/useAuth.js';
+import { LoadingSpinner } from './ui/LoadingSpinner.js';
+import { ChatContainer } from './chat/ChatContainer.js';
 
 const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID;
 
 export function FileUpload() {
-  const { user } = useAuth();
   const { sendMessage } = useChat();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);

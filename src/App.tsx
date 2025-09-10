@@ -8,11 +8,8 @@ import { ChatPage } from './pages/ChatPage.js';
 import { WritingReview } from './pages/WritingReview.js';
 import { ForumPage } from './pages/ForumPage.js';
 import { PricingPage } from './pages/PricingPage.js';
-import { Contact } from './pages/Contact.js';
 import { AuthGuard } from './components/auth/AuthGuard.js';
 import { Toaster } from 'react-hot-toast';
-
-export default function App() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">

@@ -22,7 +22,7 @@ export function FunctionPlot({
     return [{
       x: points.map((p: any) => p.x),
       y: points.map((p: any) => p.y),
-      type: 'scatter',
+      type: 'scatter' as const,
       mode: 'lines',
       name: expr,
       line: { color: '#3b82f6', width: 2 }

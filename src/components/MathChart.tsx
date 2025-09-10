@@ -27,7 +27,7 @@ export function MathChart({
   xRange = [-10, 10],
   yRange = [-10, 10],
   title,
-  type = 'line',
+  type = 'line' as 'line' | 'bar' | 'scatter',
   plotlyData,
   className = ''
 }: MathChartProps) {

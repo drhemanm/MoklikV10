@@ -41,11 +41,7 @@ export function LiveAnalytics() {
     datasets: [{
       label: 'Mastery Level',
       data: Object.values(studyData.topicMastery),
-      backgroundColor: [
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(16, 185, 129, 0.8)',
-        'rgba(139, 92, 246, 0.8)'
-      ]
+      backgroundColor: 'rgba(59, 130, 246, 0.8)'
     }]
   };
 

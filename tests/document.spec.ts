@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-
 test.describe('Document Upload and Processing', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test

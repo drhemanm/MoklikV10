@@ -10,9 +10,7 @@ import {
   getDoc,
   addDoc,
   updateDoc,
-  deleteDoc,
   increment,
-  Timestamp,
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase.js';

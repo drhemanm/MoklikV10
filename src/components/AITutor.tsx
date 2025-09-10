@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquare, Send, Trash2 } from 'lucide-react';
 import { useChat } from '../hooks/useChat.js';
 import { useAssistantTips } from '../hooks/useAssistantTips.js';
-import { ChatMessage } from './ChatMessage';
-import { ErrorMessage } from './ui/ErrorMessage';
-import { LoadingSpinner } from './ui/LoadingSpinner';
-import { SystemPrompts } from '../services/ai/prompts';
-import { AvatarAssistant } from './Avatar/AvatarAssistant';
+import { ChatMessage } from './ChatMessage.js';
+import { ErrorMessage } from './ui/ErrorMessage.js';
+import { LoadingSpinner } from './ui/LoadingSpinner.js';
+import { SystemPrompts } from '../services/ai/prompts.js';
+import { AvatarAssistant } from './Avatar/AvatarAssistant.js';
 
 interface AITutorProps {
   selectedTopic?: string;

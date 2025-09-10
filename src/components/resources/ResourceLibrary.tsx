@@ -1,5 +1,4 @@
-import React from 'react';
-import { Book, FileText, BookOpen, FileType } from 'lucide-react';
+import { Book, BookOpen, FileType } from 'lucide-react';
 
 export function ResourceLibrary() {
   const resources = [

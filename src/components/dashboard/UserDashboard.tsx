@@ -36,7 +36,7 @@ export function UserDashboard() {
   return (
     <div className="space-y-6 p-6 glass rounded-xl shadow-purple animate-fade-in">
       <DashboardHeader
-        user={user}
+        user={user as any}
         profile={profile}
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -64,7 +64,7 @@ export function UserDashboard() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <LiveAnalytics userId={user?.uid} />
+                <LiveAnalytics />
                 <UsageStats userId={user?.uid} />
               </motion.div>
             )}

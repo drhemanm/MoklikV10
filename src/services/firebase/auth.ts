@@ -1,5 +1,7 @@
 import { 
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   UserCredential
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -10,7 +12,6 @@ import { SessionManager } from '../security/sessionManager.js';
 import { auth, googleProvider } from '../../config/firebase.js';
 import { db } from '../../config/firebase.js';
 import { userService } from './user.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const bruteForceProtection = new BruteForceProtection();
 const sessionManager = new SessionManager();

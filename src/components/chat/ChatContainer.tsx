@@ -4,15 +4,14 @@ import { ChatInput } from './ChatInput.js';
 import { ChatMessage } from './ChatMessage.js';
 import { ChatHeader } from './ChatHeader.js';
 import { easterEggManager } from '../../utils/easterEggs.js';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface ChatContainerProps {
   topic?: string;
 }
 
 export function ChatContainer({ topic }: ChatContainerProps) {
-  const { messages, isLoading, error, sendMessage, clearMessages } = useOpenAI();
+  const { messages, isLoading, sendMessage, clearMessages } = useOpenAI();
   const [solvedProblems, setSolvedProblems] = useState(0);
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export function ChatContainer({ topic }: ChatContainerProps) {
 
   const handleSendMessage = async (content: string, fileBase64?: string) => {
     if (!content.trim()) {
-      toast.error('Please enter a message');
+      toastLib.error('Please enter a message');
       return;
     }
 
@@ -46,7 +45,7 @@ export function ChatContainer({ topic }: ChatContainerProps) {
       await sendMessage(lastUserMessage.content, undefined, true);
     } catch (error) {
       console.error('Error regenerating response:', error);
-      toast.error('Failed to regenerate response. Please try again.');
+      toastLib.error('Failed to regenerate response. Please try again.');
     }
   };
 

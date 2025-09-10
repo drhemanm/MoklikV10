@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth.js';
 import { stripeService, SUBSCRIPTION_PLANS } from '../services/subscription/stripeService.js';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 export function useSubscription() {
   const { user } = useAuth();
@@ -31,7 +31,7 @@ export function useSubscription() {
       setSubscriptionStatus(status);
     } catch (error) {
       console.error('Error loading subscription status:', error);
-      toast.error('Failed to load subscription information');
+      toastLib.error('Failed to load subscription information');
     } finally {
       setIsLoading(false);
     }
@@ -39,7 +39,7 @@ export function useSubscription() {
 
   const startTrial = async () => {
     if (!user) {
-      toast.error('Please sign in to start a trial');
+      toastLib.error('Please sign in to start a trial');
       return;
     }
     
@@ -51,20 +51,20 @@ export function useSubscription() {
         plan: 'trial',
         trialEnd: result.trialEndDate
       });
-      toast.success('Your 7-day free trial has started!');
+      toastLib.success('Your 7-day free trial has started!');
       return true;
     } catch (error) {
       console.error('Error starting trial:', error);
-      toast.error('Failed to start trial. Please try again.');
+      toastLib.error('Failed to start trial. Please try again.');
       return false;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const createSubscription = async (paymentMethodId: string, planId: string) => {
+  const createSubscription = async (_paymentMethodId: string, planId: string) => {
     if (!user) {
-      toast.error('Please sign in to subscribe');
+      toastLib.error('Please sign in to subscribe');
       return false;
     }
     
@@ -83,11 +83,11 @@ export function useSubscription() {
         renewalDate
       });
       
-      toast.success('Subscription successful!');
+      toastLib.success('Subscription successful!');
       return true;
     } catch (error) {
       console.error('Error creating subscription:', error);
-      toast.error('Failed to process subscription. Please try again.');
+      toastLib.error('Failed to process subscription. Please try again.');
       return false;
     } finally {
       setIsLoading(false);
@@ -104,11 +104,11 @@ export function useSubscription() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setSubscriptionStatus({ active: false });
-      toast.success('Subscription canceled successfully');
+      toastLib.success('Subscription canceled successfully');
       return true;
     } catch (error) {
       console.error('Error canceling subscription:', error);
-      toast.error('Failed to cancel subscription. Please try again.');
+      toastLib.error('Failed to cancel subscription. Please try again.');
       return false;
     } finally {
       setIsLoading(false);

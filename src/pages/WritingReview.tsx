@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, PenTool } from 'lucide-react';
+import { ArrowLeft, Brain } from 'lucide-react';
 import { WritingSubmission } from '../components/writing/WritingSubmission';
 
 export function WritingReview() {

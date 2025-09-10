@@ -59,7 +59,7 @@ export function UsageStats({ userId }: UsageStatsProps) {
     labels: Object.keys(stats.studyTime.daily).slice(-7),
     datasets: [{
       label: 'Study Time (minutes)',
-      data: Object.values(stats.studyTime.daily).slice(-7),
+      data: Object.values(stats.studyTime.daily).slice(-7) as number[],
       borderColor: '#3b82f6',
       backgroundColor: 'rgba(59, 130, 246, 0.1)'
     }]

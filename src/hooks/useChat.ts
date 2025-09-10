@@ -1,7 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { getAIResponse } from '../services/ai/chat.js';
-import { chatService } from '../services/firebase/chat.js';
-import { useAuth } from './useAuth.js';
 import { generateId } from '../utils/id.js';
 import { ERROR_MESSAGES } from '../config/constants.js';
 
@@ -70,20 +68,18 @@ export function useChat() {
         role: 'user',
         content,
         timestamp: Date.now(),
-        contextType,
         referencedMessageId
       };
       
       addMessage(userMessage);
       
-      const response = await getAIResponse(content, topic, state.messages);
+      const response = await getAIResponse(content, topic || undefined, state.messages);
       
       const aiMessage: Message = {
         id: generateId('resp'),
         role: 'ai',
         content: response,
         timestamp: Date.now(),
-        contextType,
         referencedMessageId: messageId
       };
       

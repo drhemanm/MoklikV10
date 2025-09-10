@@ -63,7 +63,6 @@ export function ChatInterface({ onBack, selectedTopic }: ChatInterfaceProps) {
     }, 1500);
   };
 
-  const generateAIResponse = (userInput: string): string => {
     const responses = [
       "Great question! Let me break this down step by step for you.",
       "I can help you with that. Here's how we approach this type of problem:",

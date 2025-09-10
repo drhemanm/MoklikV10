@@ -12,7 +12,7 @@ export function Image({ alt, className = '', ...props }: ImageProps) {
       <motion.img
         alt={alt}
         {...props}
-        whileHover={{ scale: 1.05, rotateX: 2, rotateY: 2 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.2 }}
       />
     </motion.div>

@@ -1,6 +1,12 @@
 import { ChatMessage } from './ChatMessage.js';
 import { ErrorMessage } from '../ui/ErrorMessage.js';
-import type { Message } from '../../hooks/useChat.js';
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+}
 
 interface ChatMessagesProps {
   messages: Message[];

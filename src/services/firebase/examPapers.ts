@@ -1,10 +1,7 @@
 import { 
   ref, 
-  listAll, 
   getDownloadURL, 
   uploadBytes,
-  getMetadata,
-  updateMetadata 
 } from 'firebase/storage';
 import { 
   collection, 
@@ -16,7 +13,7 @@ import {
   orderBy 
 } from 'firebase/firestore';
 import { storage, db } from '../../config/firebase.js';
-import { examPaperSchema, type ExamPaper, type ExamPaperFilter } from '../../types/examPaper.js';
+import { type ExamPaper, type ExamPaperFilter } from '../../types/examPaper.js';
 
 export class ExamPaperService {
   private static STORAGE_PATH = 'exam-papers';
@@ -134,7 +131,7 @@ export class ExamPaperService {
 
   static async updateLastAccessed(paperId: string): Promise<void> {
     try {
-      const docRef = collection(db, this.COLLECTION).doc(paperId);
+      const docRef = doc(db, this.COLLECTION, paperId);
       await updateDoc(docRef, {
         lastAccessed: Date.now()
       });

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { topics } from '../data/topics.js';
-import type { Topic, TopicState } from '../types/topic.js';
+import type { TopicState } from '../types/topic.js';
 
 export function useTopics() {
   const [state, setState] = useState<TopicState>({
@@ -9,18 +9,18 @@ export function useTopics() {
   });
 
   const getTopicsByCategory = useCallback((category: 'o-level' | 'a-level') => {
-    return topics.filter(topic => topic.category === category);
+    return topics.filter((topic: any) => topic.category === category);
   }, []);
 
   const selectTopic = useCallback((topicId: string) => {
-    setState(prev => ({
+    setState((prev: TopicState) => ({
       ...prev,
       selectedTopic: topicId
     }));
   }, []);
 
   const setCategory = useCallback((category: 'o-level' | 'a-level') => {
-    setState(prev => ({
+    setState((prev: TopicState) => ({
       ...prev,
       selectedCategory: category,
       selectedTopic: null // Reset selected topic when changing category

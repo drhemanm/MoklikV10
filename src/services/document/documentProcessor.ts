@@ -1,7 +1,5 @@
 import { openai } from '../../config/openai.js';
-import { ERROR_MESSAGES } from '../../config/errors.js';
 
-const CHATPDF_API_KEY = 'sec_XXXXXXXXXXXX'; // Replace with actual key
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
   'application/pdf',
@@ -56,7 +54,7 @@ export class DocumentProcessor {
 
   static async processDocument(
     file: File,
-    assistantId: string
+    _assistantId: string
   ): Promise<ProcessingResult> {
     try {
       const validationError = this.validateFile(file);

@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 
 // Konami code sequence
 const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];

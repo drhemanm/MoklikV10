@@ -1,8 +1,7 @@
-import Database from 'better-sqlite3';
 import { ConnectionManager } from './connectionManager.js';
 import { schema } from './schema.js';
 import { ExamPaper, Question } from '../../types/knowledge.js';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 const connectionManager = ConnectionManager.getInstance({
   min: 2,
@@ -69,15 +68,15 @@ export class KnowledgeBase {
         );
 
         // Insert topics and paper-topic relationships
-        paper.topics.forEach(topic => {
-          const topicId = uuidv4();
+        paper.topics.forEach((topic: string) => {
+          const topicId = nanoid();
           topicStmt.run(topicId, topic);
           paperTopicStmt.run(paper.id, topicId);
         });
 
         // Insert questions and their topics
-        paper.questions.forEach(question => {
-          const questionId = uuidv4();
+        paper.questions.forEach((question: any) => {
+          const questionId = nanoid();
           questionStmt.run(
             questionId,
             paper.id,
@@ -89,7 +88,7 @@ export class KnowledgeBase {
             question.examinerComments
           );
 
-          question.topics.forEach(topic => {
+          question.topics.forEach((topic: string) => {
             const topicId = this.getTopicId(topic);
             if (topicId) {
               questionTopicStmt.run(questionId, topicId);
@@ -169,7 +168,7 @@ export class KnowledgeBase {
         AND q.examiner_comments IS NOT NULL
       `;
 
-      return (await connection.prepare(query).all(`%${topic}%`)).map(row => row.examiner_comments);
+      return (await connection.prepare(query).all(`%${topic}%`)).map((row: any) => row.examiner_comments);
     } finally {
       await connectionManager.releaseConnection(connection);
     }

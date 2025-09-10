@@ -35,7 +35,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 ];
 
 export const stripeService = {
-  async createSubscription(planId: string, customerId: string): Promise<{ subscriptionId: string }> {
+  async createSubscription(_planId: string, _customerId: string): Promise<{ subscriptionId: string }> {
     try {
       // In a real implementation, this would be a server call
       // For demo purposes, we're simulating the response
@@ -50,7 +50,7 @@ export const stripeService = {
     }
   },
 
-  async createPaymentMethod(cardElement: any, billingDetails: any): Promise<{ paymentMethodId: string }> {
+  async createPaymentMethod(_cardElement: any, _billingDetails: any): Promise<{ paymentMethodId: string }> {
     try {
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Stripe failed to load');
@@ -68,7 +68,7 @@ export const stripeService = {
     }
   },
 
-  async startTrial(userId: string): Promise<{ trialEndDate: Date }> {
+  async startTrial(_userId: string): Promise<{ trialEndDate: Date }> {
     try {
       // In a real implementation, this would be a server call
       // For demo purposes, we're simulating the response
@@ -84,7 +84,7 @@ export const stripeService = {
     }
   },
 
-  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean }> {
+  async cancelSubscription(_subscriptionId: string): Promise<{ success: boolean }> {
     try {
       // In a real implementation, this would be a server call
       // For demo purposes, we're simulating the response
@@ -97,7 +97,7 @@ export const stripeService = {
     }
   },
 
-  async getSubscriptionStatus(userId: string): Promise<{
+  async getSubscriptionStatus(_userId: string): Promise<{
     active: boolean;
     plan?: string;
     trialEnd?: Date;

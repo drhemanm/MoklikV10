@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Brain, 
@@ -7,7 +7,6 @@ import {
   Star, 
   CheckCircle, 
   Play,
-  Users,
   Award,
   Smartphone,
   Facebook,
@@ -87,7 +86,7 @@ export function LandingPage() {
               </Link>
               
               <button
-                onClick={() => openAuth('register')}
+                onClick={() => openAuth('register' as any)}
                 className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transition-all"
               >
                 Start Free Trial

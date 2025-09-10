@@ -16,7 +16,6 @@ export const voteService = {
   ): Promise<void> {
     const voteRef = doc(db, `${type}_votes`, `${id}_${userId}`);
     const itemRef = doc(db, type === 'topic' ? 'forum_topics' : 'forum_posts', id);
-    const userRef = doc(db, 'users', userId);
 
     await runTransaction(db, async (transaction) => {
       const voteDoc = await transaction.get(voteRef);

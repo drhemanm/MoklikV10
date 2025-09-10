@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FileText, Download, Search, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, Download, Search } from 'lucide-react';
 import { ExamPaperService } from '../../services/firebase/examPapers.js';
 import type { ExamPaper, ExamPaperFilter } from '../../types/examPaper.js';
 import { LoadingSpinner } from '../ui/LoadingSpinner.js';
@@ -46,7 +46,7 @@ export function ExamPaperList() {
             pattern="\d{4}"
             placeholder="e.g., 4037"
             value={filter.syllabusCode || ''}
-            onChange={(e) => setFilter(prev => ({ ...prev, syllabusCode: e.target.value }))}
+            onChange={(e) => setFilter((prev: ExamPaperFilter) => ({ ...prev, syllabusCode: e.target.value }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -57,7 +57,7 @@ export function ExamPaperList() {
           </label>
           <select
             value={filter.session || ''}
-            onChange={(e) => setFilter(prev => ({ 
+            onChange={(e) => setFilter((prev: ExamPaperFilter) => ({ 
               ...prev, 
               session: e.target.value as 'S' | 'W' | undefined 
             }))}
@@ -78,7 +78,7 @@ export function ExamPaperList() {
             pattern="\d{2}"
             placeholder="e.g., 23"
             value={filter.year || ''}
-            onChange={(e) => setFilter(prev => ({ ...prev, year: e.target.value }))}
+            onChange={(e) => setFilter((prev: ExamPaperFilter) => ({ ...prev, year: e.target.value }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -89,7 +89,7 @@ export function ExamPaperList() {
           </label>
           <select
             value={filter.documentType || ''}
-            onChange={(e) => setFilter(prev => ({ 
+            onChange={(e) => setFilter((prev: ExamPaperFilter) => ({ 
               ...prev, 
               documentType: e.target.value as 'MS' | 'QP' | undefined 
             }))}

@@ -13,7 +13,7 @@ interface TopicCardProps {
 export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
   const { getTopicProgress } = useProgress();
   const { sendMessage } = useChat();
-  const { startStudySession, stopStudySession, isStudying } = useGamification();
+  const { stats } = useGamification();
   const progress = getTopicProgress(topic.id);
 
   const difficultyColor = {
@@ -24,11 +24,6 @@ export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
 
   const handleTopicSelect = async () => {
     onSelect(topic.id);
-    if (!isSelected) {
-      startStudySession(topic.id);
-    } else {
-      stopStudySession();
-    }
     await sendMessage(
       `I want to learn about ${topic.title}. Can you list the key topics and concepts I should focus on?`,
       topic.id
@@ -73,7 +68,7 @@ export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
           <div className="text-sm text-gray-600 font-medium">
             {progress?.completionPercentage || 0}% Complete
           </div>
-          {isSelected && isStudying && (
+          {isSelected && (
             <span className="text-sm text-green-600 font-medium animate-pulse">
               Studying...
             </span>

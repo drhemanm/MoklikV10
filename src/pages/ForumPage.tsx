@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ForumLayout } from '../components/forum/ForumLayout';
 import { DiscussionList, Discussion } from '../components/forum/DiscussionList';
 import { DiscussionDetail, Reply } from '../components/forum/DiscussionDetail';
@@ -6,10 +6,10 @@ import { NewDiscussionForm } from '../components/forum/NewDiscussionForm';
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardBody } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { PlusCircle, MessageSquare, User } from 'lucide-react';
+import { PlusCircle, MessageSquare } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, increment, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 export function ForumPage() {
   const { user } = useAuth();
@@ -63,7 +63,7 @@ export function ForumPage() {
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date()
         }))
-        .filter(reply => reply.discussionId === selectedDiscussion.id) as Reply[];
+        .filter((reply: any) => reply.discussionId === selectedDiscussion.id) as Reply[];
       
       setReplies(replyData);
     });
@@ -181,10 +181,10 @@ export function ForumPage() {
         updatedAt: serverTimestamp()
       });
       
-      toast.success('Reply posted successfully!');
+      toastLib.success('Reply posted successfully!');
     } catch (error) {
       console.error('Error posting reply:', error);
-      toast.error('Failed to post reply. Please try again.');
+      toastLib.error('Failed to post reply. Please try again.');
     }
   };
 
@@ -198,7 +198,7 @@ export function ForumPage() {
       });
     } catch (error) {
       console.error('Error voting on discussion:', error);
-      toast.error('Failed to vote. Please try again.');
+      toastLib.error('Failed to vote. Please try again.');
     }
   };
 
@@ -212,7 +212,7 @@ export function ForumPage() {
       });
     } catch (error) {
       console.error('Error voting on reply:', error);
-      toast.error('Failed to vote. Please try again.');
+      toastLib.error('Failed to vote. Please try again.');
     }
   };
 
@@ -231,10 +231,10 @@ export function ForumPage() {
         solved: true
       });
       
-      toast.success('Answer marked as accepted!');
+      toastLib.success('Answer marked as accepted!');
     } catch (error) {
       console.error('Error marking answer:', error);
-      toast.error('Failed to mark answer. Please try again.');
+      toastLib.error('Failed to mark answer. Please try again.');
     }
   };
 
@@ -243,7 +243,7 @@ export function ForumPage() {
     
     try {
       const discussionsRef = collection(db, 'forum_discussions');
-      const docRef = await addDoc(discussionsRef, {
+      await addDoc(discussionsRef, {
         title,
         content,
         author: {
@@ -260,10 +260,10 @@ export function ForumPage() {
       });
       
       setShowNewDiscussionForm(false);
-      toast.success('Discussion created successfully!');
+      toastLib.success('Discussion created successfully!');
     } catch (error) {
       console.error('Error creating discussion:', error);
-      toast.error('Failed to create discussion. Please try again.');
+      toastLib.error('Failed to create discussion. Please try again.');
     }
   };
 

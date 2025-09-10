@@ -11,7 +11,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface WritingSubmissionProps {
   onSubmissionComplete?: (feedback: WritingFeedback) => void;
@@ -101,7 +101,7 @@ export function WritingSubmission({ onSubmissionComplete }: WritingSubmissionPro
         };
         reader.readAsText(file);
       } else {
-        toast.success('File uploaded successfully! Content will be extracted for analysis.');
+        toastLib.success('File uploaded successfully! Content will be extracted for analysis.');
       }
     }
   };
@@ -116,7 +116,7 @@ export function WritingSubmission({ onSubmissionComplete }: WritingSubmissionPro
 
   const analyzeWriting = async () => {
     if (!submissionText.trim() && !uploadedFile) {
-      toast.error('Please provide text to analyze or upload a document');
+      toastLib.error('Please upload a text file, PDF, or Word document');
       return;
     }
 
@@ -218,9 +218,9 @@ export function WritingSubmission({ onSubmissionComplete }: WritingSubmissionPro
 
       setFeedback(mockFeedback);
       onSubmissionComplete?.(mockFeedback);
-      toast.success('Analysis complete! Review your detailed feedback below.');
+      toastLib.success('Analysis complete! Review your detailed feedback below.');
     } catch (error) {
-      toast.error('Analysis failed. Please try again.');
+      toastLib.error('Analysis failed. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import OpenAI from 'openai';
 import { nanoid } from 'nanoid';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 import { env } from '../config/env.js';
 
 // Initialize OpenAI client
@@ -50,7 +50,7 @@ export function useOpenAI() {
       
       localStorage.setItem('moklik_conversations', JSON.stringify(conversations));
     } catch (error) {
-      console.error('Error saving conversation:', error);
+      toastLib.error('Failed to regenerate response. Please try again.');
     }
   };
 
@@ -95,7 +95,7 @@ export function useOpenAI() {
         throw new Error('Failed to create conversation thread');
       }
     }
-    return threadId;
+      toastLib.error('Failed to create conversation thread');
   }, [threadId]);
 
   // Send a message and get a response

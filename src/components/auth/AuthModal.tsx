@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useSubscription } from '../../hooks/useSubscription';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface AuthModalProps {
   mode: 'login' | 'register';
@@ -37,20 +37,20 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
           return;
         }
         
-        await signUp(formData.email, formData.password, formData.fullName);
+        const result = await signUp(formData.email, formData.password, formData.fullName);
         
         // Start free trial
-        const trialStarted = await startTrial();
-        if (trialStarted) {
-          toast.success('Account created and 7-day trial activated!');
+        const trialResult = await startTrial();
+        if (trialResult) {
+          toastLib.success('Account created and 7-day trial activated!');
           navigate('/onboarding');
         } else {
-          toast.success('Account created successfully!');
+          toastLib.success('Account created successfully!');
           navigate('/onboarding');
         }
       } else {
-        await signIn(formData.email, formData.password);
-        toast.success('Welcome back!');
+        const result = await signIn(formData.email, formData.password);
+        toastLib.success('Welcome back!');
         navigate('/dashboard');
       }
       
@@ -71,7 +71,7 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
       // Only navigate if we got a user (popup succeeded)
       // If redirect was used, the page will reload and handle navigation
       if (user) {
-        toast.success('Signed in with Google!');
+        toastLib.success('Signed in with Google!');
         navigate(mode === 'register' ? '/onboarding' : '/dashboard');
         onClose();
       }

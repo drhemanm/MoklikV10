@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { ref, getDownloadURL, listAll, getMetadata, StorageReference } from 'firebase/storage';
-import { collection, query, where, getDocs, updateDoc, increment } from 'firebase/firestore';
-import { storage, db } from '../config/firebase.js';
+import { storage } from '../config/firebase.js';
 import type { Resource } from '../types/resource.js';
 
 export function useResources() {
@@ -35,7 +34,7 @@ export function useResources() {
       const resourcePromises = result.items.map(async (item: StorageReference) => {
         try {
           const metadata = await getMetadata(item);
-          const type = folderPath.includes('Ebook') ? 'ebook' :
+          const type: Resource['type'] = folderPath.includes('Ebook') ? 'ebook' :
                       folderPath.includes('Syllabus') ? 'syllabus' : 'exam';
 
           return {
@@ -49,7 +48,7 @@ export function useResources() {
             downloads: parseInt(metadata.customMetadata?.downloads || '0'),
             updatedAt: metadata.updated,
             category: metadata.customMetadata?.category || '',
-            level: metadata.customMetadata?.level || 'both'
+            level: (metadata.customMetadata?.level as Resource['level']) || 'both'
           } as Resource;
         } catch (error) {
           console.error('Error processing resource:', item.name, error);
@@ -57,7 +56,7 @@ export function useResources() {
         }
       });
 
-      const resourcesData = (await Promise.all(resourcePromises)).filter((r): r is Resource => r !== null);
+      const resourcesData = (await Promise.all(resourcePromises)).filter((r: Resource | null): r is Resource => r !== null);
       console.log('Loaded resources:', resourcesData.length);
       setResources(resourcesData);
     } catch (error) {

@@ -10,7 +10,7 @@ export function AdminResourcePanel() {
     title: '',
     description: '',
     url: '',
-    type: 'pdf',
+    type: 'ebook',
     category: '',
     level: 'both'
   });
@@ -29,7 +29,7 @@ export function AdminResourcePanel() {
         title: '',
         description: '',
         url: '',
-        type: 'pdf',
+        type: 'ebook',
         category: '',
         level: 'both'
       });

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import { getAIResponse } from '../services/ai/index.js';
 
 export interface Exercise {
@@ -47,7 +47,7 @@ export function useExercises() {
       const exerciseData = JSON.parse(response);
 
       const formattedExercises = exerciseData.map((ex: any) => ({
-        id: uuidv4(),
+        id: nanoid(),
         question: ex.question,
         solution: ex.solution,
         hints: ex.hints,
@@ -77,7 +77,7 @@ export function useExercises() {
       const examQuestions = JSON.parse(response);
 
       const formattedQuestions = examQuestions.map((q: any) => ({
-        id: uuidv4(),
+        id: nanoid(),
         question: q.question,
         solution: q.solution,
         hints: q.hints,

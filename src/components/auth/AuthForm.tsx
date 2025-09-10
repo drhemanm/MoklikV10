@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { LogIn, UserPlus, AlertCircle, Loader2, Mail } from 'lucide-react';
-import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { LogIn, UserPlus, AlertCircle, Loader2 } from 'lucide-react';
+import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../../config/firebase';
 import toast from 'react-hot-toast';
@@ -17,8 +17,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
-  const [blockTimeRemaining, setBlockTimeRemaining] = useState<number | null>(null);
 
   const validateForm = () => {
     if (!email || !password) {

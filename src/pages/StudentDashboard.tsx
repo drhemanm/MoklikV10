@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Brain, 
   BookOpen, 
-  TrendingUp, 
   Upload,
   MessageSquare,
-  Camera,
-  Star,
-  Award,
   Target,
   Clock,
-  Settings,
-  LogOut,
-  Plus,
   RotateCcw,
   Zap,
   Trophy,
-  Calendar,
-  ChevronRight,
   PenTool
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
@@ -34,27 +24,9 @@ import { AchievementNotification } from '../components/gamification/AchievementN
 import { useGamification } from '../hooks/useGamification';
 import { SubscriptionStatus } from '../components/account/SubscriptionStatus';
 
-interface UserStats {
-  level: number;
-  xp: number;
-  streak: number;
-  problemsSolved: number;
-  accuracy: number;
-  studyTime: number;
-}
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  unlocked: boolean;
-  progress?: number;
-  target?: number;
-}
 
 export function StudentDashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [showChat, setShowChat] = useState(false);
   const [showBadges, setShowBadges] = useState(false);
@@ -445,7 +417,7 @@ export function StudentDashboard() {
               </div>
               
               <div className="flex flex-wrap justify-center gap-4">
-                {badges.slice(0, 4).map((badge) => (
+                {badges.slice(0, 4).map((badge: any) => (
                   <DigitalBadge 
                     key={badge.id} 
                     badge={badge} 
@@ -456,7 +428,7 @@ export function StudentDashboard() {
               
               <div className="text-center mt-4">
                 <p className="text-sm text-gray-600">
-                  {badges.filter(b => b.unlocked).length} of {badges.length} badges earned
+                  {badges.filter((b: any) => b.unlocked).length} of {badges.length} badges earned
                 </p>
               </div>
               

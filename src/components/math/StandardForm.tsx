@@ -1,6 +1,6 @@
 import React from 'react';
-import { MathExplanation, Term, Example } from './MathExplanation.js';
 import { BlockMath } from 'react-katex';
+import { MathExplanation, Term, Example } from './MathExplanation.js';
 
 export function StandardForm() {
   return (

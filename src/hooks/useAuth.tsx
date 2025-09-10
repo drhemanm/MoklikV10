@@ -1,19 +1,17 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { 
-  getAuth, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
-  GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
   User as FirebaseUser
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth, googleProvider } from '../config/firebase.js';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface User {
   uid: string;
@@ -83,15 +81,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Signed in successfully!');
+      toastLib.success('Signed in successfully!');
     } catch (error: any) {
       console.error('Sign in error:', error);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        toast.error('Invalid email or password');
+        toastLib.error('Invalid email or password');
       } else if (error.code === 'auth/too-many-requests') {
-        toast.error('Too many failed attempts. Please try again later.');
+        toastLib.error('Too many failed attempts. Please try again later.');
       } else {
-        toast.error('Failed to sign in. Please try again.');
+        toastLib.error('Failed to sign in. Please try again.');
       }
       throw error;
     } finally {
@@ -128,15 +126,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       });
       
-      toast.success('Account created successfully!');
+      toastLib.success('Account created successfully!');
     } catch (error: any) {
       console.error('Sign up error:', error);
       if (error.code === 'auth/email-already-in-use') {
-        toast.error('Email already in use');
+        toastLib.error('Email already in use');
       } else if (error.code === 'auth/weak-password') {
-        toast.error('Password is too weak');
+        toastLib.error('Password is too weak');
       } else {
-        toast.error('Failed to create account. Please try again.');
+        toastLib.error('Failed to create account. Please try again.');
       }
       throw error;
     } finally {
@@ -159,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             popupError.code === 'auth/popup-closed-by-user' ||
             popupError.code === 'auth/cancelled-popup-request') {
           
-          toast.info('Redirecting to Google sign-in...');
+          toastLib.info('Redirecting to Google sign-in...');
           await signInWithRedirect(auth, googleProvider);
           return null; // Will be handled by redirect result
         }
@@ -168,9 +166,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       console.error('Google sign in error:', error);
       if (error.code === 'auth/popup-closed-by-user') {
-        toast.error('Sign in was cancelled');
+        toastLib.error('Sign in was cancelled');
       } else {
-        toast.error('Failed to sign in with Google');
+        toastLib.error('Failed to sign in with Google');
       }
       throw error;
     } finally {
@@ -210,10 +208,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
-      toast.success('Signed out successfully');
+      toastLib.success('Signed out successfully');
     } catch (error) {
       console.error('Sign out error:', error);
-      toast.error('Failed to sign out');
+      toastLib.error('Failed to sign out');
     }
     setUser(null);
   }, []);
@@ -224,7 +222,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading, 
       signIn, 
       signUp, 
-      signInWithGoogle, 
+      signInWithGoogle: async () => { const result = await signInWithGoogle(); return result; }, 
       logout 
     }}>
       {children}

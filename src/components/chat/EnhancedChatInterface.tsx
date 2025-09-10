@@ -29,7 +29,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useOpenAI } from '../../hooks/useOpenAI.js';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 import { ChatHistory } from './ChatHistory.js';
 
 interface EnhancedChatInterfaceProps {
@@ -117,33 +117,33 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       // Validate file first
       const validation = ImageAnalysisService.validateImageFile(file);
       if (!validation.valid) {
-        toast.error(validation.error || 'Invalid file');
+        toastLib.error(validation.error || 'Invalid file');
         return;
       }
       
       // Show processing message
-      toast.loading('Analyzing your image...', { id: 'image-analysis' });
+      toastLib.loading('Analyzing your image...', { id: 'image-analysis' });
       
       // Process the image
       const base64 = await ImageAnalysisService.fileToBase64(file);
       const result = await ImageAnalysisService.analyzeImage(base64, file.name);
       
-      toast.dismiss('image-analysis');
+      toastLib.dismiss('image-analysis');
       
       if (!result.success) {
-        toast.error(result.error || 'Failed to analyze image');
+        toastLib.error(result.error || 'Failed to analyze image');
         return;
       }
       
       if (!result.isMathRelated) {
-        toast.error(result.error || 'This image doesn\'t contain mathematical content');
+        toastLib.error(result.error || 'This image doesn\'t contain mathematical content');
         
         // Show suggestions
         if (result.suggestions) {
           setTimeout(() => {
             result.suggestions?.forEach((suggestion: any, index: number) => {
               setTimeout(() => {
-                toast.info(suggestion, { duration: 4000 });
+                toastLib.info(suggestion, { duration: 4000 });
               }, index * 1000);
             });
           }, 1000);
@@ -154,30 +154,30 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       // If math-related, send the analysis to chat
       if (result.content) {
         await sendMessage(`I've uploaded an image containing mathematical content: ${file.name}\n\n${result.content}`);
-        toast.success('Image analyzed successfully!');
+        toastLib.success('Image analyzed successfully!');
       }
     } catch (error) {
-      toast.dismiss('image-analysis');
+      toastLib.dismiss('image-analysis');
       console.error('Error analyzing image:', error);
-      toast.error('Failed to analyze image. Please try again.');
+      toastLib.error('Failed to analyze image. Please try again.');
     }
   };
 
   const handlePDFUpload = async (file: File) => {
     // Check file size (max 10MB for PDFs)
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('PDF size must be less than 10MB');
+      toastLib.error('PDF size must be less than 10MB');
       return;
     }
     
-    toast.loading('Processing PDF...', { id: 'pdf-processing' });
+    toastLib.loading('Processing PDF...', { id: 'pdf-processing' });
     try {
       await sendMessage(`I've uploaded a PDF file named "${file.name}". Please analyze its mathematical content and help me understand the problems or concepts shown.`);
-      toast.dismiss('pdf-processing');
-      toast.success('PDF uploaded successfully!');
+      toastLib.dismiss('pdf-processing');
+      toastLib.success('PDF uploaded successfully!');
     } catch (error) {
-      toast.dismiss('pdf-processing');
-      toast.error('Failed to process PDF. Please try again.');
+      toastLib.dismiss('pdf-processing');
+      toastLib.error('Failed to process PDF. Please try again.');
     }
   };
 
@@ -429,11 +429,10 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                              return <p className="mb-4">{children}</p>;
                             },
                             code({node, inline, className, children, ...props}: any) {
-                              const match = /language-(\w+)/.exec(className || '');
-                              return !(inline as boolean) && match ? (
+                              return !inline && className ? (
                                 <SyntaxHighlighter
                                   style={vscDarkPlus}
-                                  language={match[1]}
+                                  language={className.replace('language-', '')}
                                   PreTag="div"
                                   {...props}
                                 >

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Lightbulb, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { studyTips, type StudyTip } from '../../data/studyTips.js';
@@ -15,8 +15,8 @@ export function StudyTipsPanel({ currentTopic }: StudyTipsPanelProps) {
 
   useEffect(() => {
     // Filter tips based on current topic if provided
-    const tips = currentTopic
-      ? studyTips.filter(tip => !tip.topic || tip.topic === currentTopic)
+    const tips: StudyTip[] = currentTopic
+      ? studyTips.filter((tip: StudyTip) => !tip.topic || tip.topic === currentTopic)
       : studyTips;
     setFilteredTips(tips);
     setCurrentTipIndex(0);
@@ -54,7 +54,7 @@ export function StudyTipsPanel({ currentTopic }: StudyTipsPanelProps) {
     exam: 'bg-purple-100 text-purple-800',
     visualization: 'bg-yellow-100 text-yellow-800',
     mistake: 'bg-red-100 text-red-800'
-  };
+  } as const;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">

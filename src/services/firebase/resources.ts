@@ -6,7 +6,6 @@ import {
   orderBy,
   Timestamp,
   addDoc,
-  DocumentData
 } from 'firebase/firestore';
 import { db } from '../../config/firebase.js';
 import type { Resource } from '../../types/resource.js';

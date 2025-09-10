@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -10,11 +10,10 @@ import {
   Brain,
   TrendingUp,
   Award,
-  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface OnboardingData {
   fullName: string;
@@ -96,12 +95,12 @@ export function OnboardingFlow() {
       
       setShowTour(true);
     } catch (error) {
-      toast.error('Failed to save profile. Please try again.');
+      toastLib.error('Failed to save profile. Please try again.');
     }
   };
 
   const completeTour = () => {
-    toast.success('Welcome to Moklik! Let\'s start learning!');
+    toastLib.success('Welcome to Moklik! Let\'s start learning!');
     navigate('/dashboard');
   };
 

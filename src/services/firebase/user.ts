@@ -6,8 +6,7 @@ import {
   increment, 
   Timestamp 
 } from 'firebase/firestore';
-import { deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { db, auth, storage } from '../../config/firebase';
+import { deleteDoc, collection, query, where, getDocs, ref, listAll, deleteObject } from 'firebase/firestore';
 import { db, auth, storage } from '../../config/firebase.js';
 import type { UserProfile } from '../../types/user.js';
 
@@ -160,7 +159,7 @@ export const userService = {
   }): Promise<void> {
     const userRef = doc(db, 'users', userId);
     await updateDoc(userRef, {
-      notifications: increment([notification])
+      notifications: [notification]
     });
   },
 

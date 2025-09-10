@@ -174,7 +174,7 @@ export function ForumLayout({
                 variant="primary" 
                 fullWidth 
                 leftIcon={<PlusCircle className="w-5 h-5" />}
-                onClick={() => setShowNewDiscussionForm(true)}
+                onClick={() => {}}
               >
                 New Discussion
               </Button>

@@ -27,7 +27,7 @@ export class KnowledgeService {
     difficultyLevels.forEach(level => {
       const levelQuestions = questionsByDifficulty[level] || [];
       guide += `${level} Questions (${levelQuestions.length}):\n`;
-      levelQuestions.forEach(q => {
+      levelQuestions.forEach((q: Question) => {
         guide += `- Question ${q.number} (${q.marks} marks)\n`;
         if (q.examinerComments) {
           guide += `  Examiner's Tip: ${q.examinerComments}\n`;

@@ -1,6 +1,7 @@
 import React from 'react';
+import React from 'react';
 // @ts-ignore
-import Plot from 'react-plotly.js';
+const Plot = require('react-plotly.js').default;
 import { generatePoints } from '../../utils/mathUtils.js';
 import { createPlotlyLayout } from '../../utils/plotUtils.js';
 

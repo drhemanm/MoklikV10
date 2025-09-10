@@ -32,7 +32,7 @@ export async function fetchResources() {
   });
 }
 
-export async function downloadResourceFile(url: string): Promise<Blob> {
+export async function downloadResourceFile(_url: string): Promise<Blob> {
   // In a real application, this would make an actual API call
   // For now, we'll simulate a PDF download
   const dummyPdfContent = new Uint8Array([37, 80, 68, 70]); // PDF magic numbers

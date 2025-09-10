@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Book, FileText, Video, ExternalLink, Download, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Book, FileText, Video, ExternalLink, Loader2 } from 'lucide-react';
 import { ExamPaperList } from './ExamPaperList.js';
 import { resourceService } from '../../services/firebase/resources.js';
 import type { Resource } from '../../types/resource.js';

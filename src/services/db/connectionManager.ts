@@ -1,7 +1,13 @@
 // @ts-ignore
-import { Pool } from 'better-sqlite3';
+import Database from 'better-sqlite3';
 import { z } from 'zod';
-import { APP_CONFIG } from '../../config/constants.js';
+
+const APP_CONFIG = {
+  CONNECTION_POOL: {
+    MIN_CONNECTIONS: 2,
+    MAX_CONNECTIONS: 10
+  }
+};
 
 const poolConfigSchema = z.object({
   min: z.number().min(1).max(10).default(2),
@@ -15,7 +21,7 @@ export type PoolConfig = z.infer<typeof poolConfigSchema>;
 
 export class ConnectionManager {
   private static instance: ConnectionManager;
-  private pool: Pool;
+  private pool: any;
   private activeConnections: number = 0;
   private waitingRequests: number = 0;
   private readonly metrics = {
@@ -39,10 +45,10 @@ export class ConnectionManager {
       evictionRunIntervalMillis: validatedConfig.evictionRunIntervalMillis,
       
       // Connection validation
-      validate: async (connection) => {
+      validate: async (connection: any) => {
         try {
           const startTime = Date.now();
-          const result = await connection.query('SELECT 1');
+          await connection.prepare('SELECT 1').get();
           const duration = Date.now() - startTime;
           
           // Invalidate slow connections
@@ -63,7 +69,7 @@ export class ConnectionManager {
       },
 
       // Connection destroyer
-      destroy: async (connection) => {
+      destroy: async (connection: any) => {
         await connection.close();
         this.metrics.totalConnections--;
       }

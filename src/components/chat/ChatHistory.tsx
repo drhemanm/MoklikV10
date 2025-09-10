@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { ChatMessage } from './ChatMessage.js';
 import { LoadingSpinner } from '../ui/LoadingSpinner.js';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface Message {
   id: string;
@@ -106,7 +106,7 @@ export function ChatHistory({
       setSessions(mockSessions);
     } catch (error) {
       console.error('Error loading chat sessions:', error);
-      toast.error('Failed to load chat history');
+      toastLib.error('Failed to load chat history');
     } finally {
       setIsLoading(false);
     }
@@ -134,7 +134,7 @@ export function ChatHistory({
       setSelectedSession(sessionId);
     } catch (error) {
       console.error('Error loading session messages:', error);
-      toast.error('Failed to load conversation');
+      toastLib.error('Failed to load conversation');
     } finally {
       setIsLoading(false);
     }
@@ -150,10 +150,10 @@ export function ChatHistory({
         setSelectedSession(null);
         setMessages([]);
       }
-      toast.success('Conversation deleted');
+      toastLib.success('Conversation deleted');
     } catch (error) {
       console.error('Error deleting session:', error);
-      toast.error('Failed to delete conversation');
+      toastLib.error('Failed to delete conversation');
     }
   };
 
@@ -168,7 +168,7 @@ export function ChatHistory({
     a.click();
     URL.revokeObjectURL(url);
     
-    toast.success('Conversation exported');
+    toastLib.success('Conversation exported');
   };
 
   const filteredSessions = sessions.filter(session => {

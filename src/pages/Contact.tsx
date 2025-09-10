@@ -1,4 +1,3 @@
-import React from 'react';
 import { Mail, Phone, Clock, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
 import { Header } from '../components/Header';
 

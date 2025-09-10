@@ -1,4 +1,3 @@
-import React from 'react';
 import { Download, FileText, Video, Book } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 

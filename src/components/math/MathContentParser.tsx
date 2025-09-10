@@ -1,7 +1,7 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
 // @ts-ignore
-import Plot from 'react-plotly.js';
+const Plot = require('react-plotly.js').default;
 import { cleanMathExpression, generatePoints } from '../../utils/mathUtils.js';
 
 interface MathContentParserProps {

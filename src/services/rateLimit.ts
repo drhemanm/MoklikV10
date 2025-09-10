@@ -1,4 +1,3 @@
-import { z } from 'zod';
 
 interface RateLimitConfig {
   windowMs: number;  // Time window in milliseconds

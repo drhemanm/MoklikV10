@@ -1,4 +1,3 @@
-import React from 'react';
 import { MathEquation } from './MathEquation';
 import { MathChart } from './MathChart';
 import { generateQuadraticExplanation } from '../utils/mathUtils';

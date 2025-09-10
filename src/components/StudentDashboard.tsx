@@ -1,5 +1,4 @@
 import { ProgressDisplay } from './ProgressDisplay.js';
-import { useProgress } from '../hooks/useProgress.js';
 import { useTopics } from '../hooks/useTopics.js';
 import { TopicProgress } from './TopicProgress.js';
 

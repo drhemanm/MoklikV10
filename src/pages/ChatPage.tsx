@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, Upload, Camera, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Brain, Upload, MessageSquare } from 'lucide-react';
 import { EnhancedChatInterface } from '../components/chat/EnhancedChatInterface';
 import { FileUpload } from '../components/FileUpload';
 import { ErrorBoundary } from '../components/ErrorBoundary';

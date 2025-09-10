@@ -10,7 +10,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 // @ts-ignore
 import { InlineMath, BlockMath } from 'react-katex';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 interface Message {
   id: string;
@@ -29,13 +29,13 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
   
   const copyToClipboard = () => {
     navigator.clipboard.writeText(message.content)
-      .then(() => toast.success('Copied to clipboard!'))
-      .catch(() => toast.error('Failed to copy'));
+      .then(() => toastLib.success('Copied to clipboard!'))
+      .catch(() => toastLib.error('Failed to copy'));
   };
   
   const handleFeedback = (value: 'up' | 'down') => {
     setFeedback(value);
-    toast.success(value === 'up' ? 'Thanks for your feedback!' : 'Thanks for your feedback. We\'ll try to improve.');
+    toastLib.success(value === 'up' ? 'Thanks for your feedback!' : 'Thanks for your feedback. We\'ll try to improve.');
   };
 
   // Enhanced math rendering function
@@ -119,11 +119,10 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
                     return <p className="mb-4">{children}</p>;
                   },
                   code({node, inline, className, children, ...props}) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    return !(inline as boolean) && match ? (
+                    return !inline && className ? (
                       <SyntaxHighlighter
                         style={vscDarkPlus}
-                        language={match[1]}
+                        language={className.replace('language-', '')}
                         PreTag="div"
                         {...props}
                       >

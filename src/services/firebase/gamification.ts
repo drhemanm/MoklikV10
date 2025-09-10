@@ -3,9 +3,9 @@ import {
   updateDoc, 
   increment, 
   arrayUnion, 
-  Timestamp,
   getDoc,
-  setDoc
+  setDoc,
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../../config/firebase.js';
 import type { GamificationState, Achievement, StudyGoal } from '../../types/gamification.js';

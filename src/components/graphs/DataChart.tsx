@@ -41,7 +41,7 @@ export function DataChart({ data, type = 'line', title, showGrid = true }: DataC
   const options = {
   responsive: true,
   maintainAspectRatio: false,
-  animation: false,
+  animation: false as const,
   plugins: {
     legend: {
       position: 'top' as const,

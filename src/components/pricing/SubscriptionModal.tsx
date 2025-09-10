@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, CreditCard, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 // @ts-ignore
 import { loadStripe } from '@stripe/stripe-js';
 // @ts-ignore
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
-import toast from 'react-hot-toast';
+import toast, { toast as toastLib } from 'react-hot-toast';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
@@ -41,7 +41,7 @@ function CheckoutForm({ plan, price, onClose }: SubscriptionModalProps) {
         // Simulate API call to start trial
         await new Promise(resolve => setTimeout(resolve, 1500));
         setIsComplete(true);
-        toast.success('Your 7-day free trial has started!');
+        toastLib.success('Your 7-day free trial has started!');
         setTimeout(() => {
           onClose();
           navigate('/dashboard');
@@ -64,7 +64,7 @@ function CheckoutForm({ plan, price, onClose }: SubscriptionModalProps) {
       
       if (success) {
         setIsComplete(true);
-        toast.success('Payment successful! Your subscription is now active.');
+        toastLib.success('Payment successful! Your subscription is now active.');
         setTimeout(() => {
           onClose();
           navigate('/dashboard');
@@ -74,7 +74,7 @@ function CheckoutForm({ plan, price, onClose }: SubscriptionModalProps) {
       }
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
-      toast.error('Payment failed. Please try again.');
+      toastLib.error('Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
