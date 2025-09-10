@@ -10,7 +10,7 @@ import {
   LogOut,
   Mail
 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../hooks/useAuth';
 
 export function Header() {
   const { user, logout } = useAuth();
