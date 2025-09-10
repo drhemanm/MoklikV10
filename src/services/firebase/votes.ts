@@ -52,7 +52,7 @@ export const voteService = {
             score: increment(-value),
             [`votes.${value === 1 ? 'up' : 'down'}`]: increment(-1)
           });
-          await userService.updateReputation(authorId, -xpChange);
+          userService.updateReputation(authorId, -xpChange);
         } else {
           // Change vote
           transaction.update(voteRef, {
@@ -64,7 +64,7 @@ export const voteService = {
             [`votes.${value === 1 ? 'up' : 'down'}`]: increment(1),
             [`votes.${value === 1 ? 'down' : 'up'}`]: increment(-1)
           });
-          await userService.updateReputation(authorId, xpChange * 2);
+          userService.updateReputation(authorId, xpChange * 2);
         }
       }
     });
