@@ -7,11 +7,10 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 export function Image({ alt, className = '', ...props }: ImageProps) {
   return (
-    <div className={`img-3d ${className}`}>
-      <img
-        alt={alt}
-        {...props}
-      />
-    </div>
+    <img
+      alt={alt}
+      className={className}
+      {...props}
+    />
   );
 }
