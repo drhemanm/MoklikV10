@@ -1,0 +1,124 @@
+/* Rainbow mode animation */
+@keyframes rainbow-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rainbow-mode {
+  background: linear-gradient(
+    124deg,
+    #ff2400,#e81d1d,#e8b71d,#e3e81d,#1de840,#1ddde8,#2b1de8,#dd00f3,#dd00f3
+  );
+  background-size: 1800% 1800%;
+  animation: rainbow-bg 5s ease infinite;
+}
+
+/* Hidden math symbols */
+.hidden-math-symbol {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  user-select: none;
+}
+
+.hidden-math-symbol:hover {
+  opacity: 1 !important;
+}
+
+/* Math joke popup */
+.math-joke-popup {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slide-up 0.3s ease;
+  z-index: 1000;
+}
+
+/* Achievement notification */
+.achievement-notification {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: linear-gradient(135deg, #4338ca, #3b82f6);
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slide-in 0.3s ease;
+  z-index: 1000;
+}
+
+.achievement-icon {
+  font-size: 2rem;
+}
+
+.achievement-text h4 {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.achievement-text p {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.25;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.logo-spin {
+  animation: spin 0.5s ease-in-out;
+}
+
+/* Logo container styles */
+.logo-container {
+  position: relative;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* Logo image styles */
+.logo-image {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

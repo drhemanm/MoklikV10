@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1A73E8;
+  --color-secondary: #34A853;
+  --color-accent: #FBBC04;
+  --color-danger: #EA4335;
+}
+
+:root {
+  --color-primary: #F3F0FF;
+  --color-secondary: #98FF98;
+  --color-tertiary: #E0FFFF;
+  --color-text: #2D3748;
+  --color-background: var(--color-primary);
+}
+
+.Logo {
+  background-image: url(/public/logo.jpg);
+}
+
+body {
+  background-color: #f8fafc;
+  color: #1f2937;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-card;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-medium transition-shadow duration-200;
+  }
+  
+  .input-base {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary;
+  }
+  
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply bg-primary-100 text-primary-700;
+  }
+  
+  .badge-secondary {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .badge-accent {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+}
+
+/* Custom scrollbar - simplified */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a5a5a5;
+}

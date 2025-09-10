@@ -1,0 +1,258 @@
+/* Math Display Styles */
+.math-display {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+/* Equation Block */
+.equation-block {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+/* Inline Math */
+.inline-math {
+  padding: 0 0.25rem;
+  background-color: rgba(248, 250, 252, 0.5);
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* KaTeX Overrides */
+.katex {
+  font-size: 1.2em !important;
+  font-family: KaTeX_Main, 'Times New Roman', serif;
+}
+
+.katex-display {
+  margin: 1rem 0 !important;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex-display > .katex {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.katex-html {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Enhanced math rendering */
+.katex .base {
+  display: inline-block;
+}
+
+.katex .strut {
+  display: inline-block;
+}
+
+/* Better fraction rendering */
+.katex .frac-line {
+  border-bottom-width: 0.04em;
+}
+
+/* Improved spacing for operators */
+.katex .mbin, .katex .mrel {
+  margin: 0 0.2777777778em;
+}
+
+/* Better rendering for square roots */
+.katex .sqrt > .root {
+  margin-left: 0.27777778em;
+  margin-right: -0.55555556em;
+}
+/* Markdown content styles */
+.markdown-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-content h1 { font-size: 1.5em; }
+.markdown-content h2 { font-size: 1.3em; }
+.markdown-content h3 { font-size: 1.1em; }
+
+.markdown-content p {
+  margin-bottom: 1em;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.markdown-content ul { list-style-type: disc; }
+.markdown-content ol { list-style-type: decimal; }
+
+.markdown-content li {
+  margin-bottom: 0.5em;
+}
+
+.markdown-content pre {
+  margin-bottom: 1em;
+  border-radius: 0.375rem;
+  overflow: auto;
+}
+
+.markdown-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.markdown-content pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1em;
+  color: #6b7280;
+  margin-bottom: 1em;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: 0.5em;
+  border: 1px solid #e5e7eb;
+}
+
+.markdown-content th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+.markdown-content a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  text-decoration: none;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  border-radius: 0.375rem;
+}
+
+/* Chat-specific math styling */
+.chat-message .katex-display {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  margin: 1rem 0;
+}
+
+.chat-message .katex {
+  color: #1e40af;
+}
+
+/* Smooth animations for math rendering */
+.katex-display, .katex {
+  animation: fadeInMath 0.3s ease-in-out;
+}
+
+@keyframes fadeInMath {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Math Terms */
+.math-term {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 0.375rem;
+  margin: 0.5rem 0;
+}
+
+/* Example Blocks */
+.math-example {
+  background-color: #eff6ff;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .math-display {
+    font-size: 1rem;
+  }
+  
+  .katex {
+    font-size: 1.1em !important;
+  }
+  
+  .equation-block {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .katex-display {
+    padding: 0.75rem;
+  }
+}
+
+/* Scrollbar styling */
+.math-content ::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.math-content ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.math-content ::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}
+
+.math-content ::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
