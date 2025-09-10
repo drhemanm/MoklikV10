@@ -123,7 +123,20 @@ export class KnowledgeBase {
         ORDER BY ep.year DESC, ep.session DESC
       `;
 
-      return await connection.prepare(query).all(`%${topic}%`);
+      const results = await connection.prepare(query).all(`%${topic}%`) as any[];
+      return results.map(row => ({
+        id: row.id,
+        year: row.year,
+        session: row.session,
+        paperNumber: row.paper_number,
+        type: row.type,
+        subject: row.subject,
+        level: row.level,
+        syllabus: row.syllabus,
+        content: row.content,
+        topics: [],
+        questions: []
+      }));
     } finally {
       await connectionManager.releaseConnection(connection);
     }
@@ -132,7 +145,20 @@ export class KnowledgeBase {
   async searchByYear(year: number): Promise<ExamPaper[]> {
     const connection = await this.getConnection();
     try {
-      return await connection.prepare('SELECT * FROM exam_papers WHERE year = ?').all(year);
+      const results = await connection.prepare('SELECT * FROM exam_papers WHERE year = ?').all(year) as any[];
+      return results.map(row => ({
+        id: row.id,
+        year: row.year,
+        session: row.session,
+        paperNumber: row.paper_number,
+        type: row.type,
+        subject: row.subject,
+        level: row.level,
+        syllabus: row.syllabus,
+        content: row.content,
+        topics: [],
+        questions: []
+      }));
     } finally {
       await connectionManager.releaseConnection(connection);
     }
@@ -150,7 +176,16 @@ export class KnowledgeBase {
         ORDER BY q.difficulty
       `;
 
-      return await connection.prepare(query).all(`%${topic}%`);
+      const results = await connection.prepare(query).all(`%${topic}%`) as any[];
+      return results.map(row => ({
+        number: row.number,
+        topics: [],
+        difficulty: row.difficulty,
+        marks: row.marks,
+        content: row.content,
+        solution: row.solution,
+        examinerComments: row.examiner_comments
+      }));
     } finally {
       await connectionManager.releaseConnection(connection);
     }
