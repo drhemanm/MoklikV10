@@ -60,6 +60,7 @@ export function ChatInterface({ onBack, selectedTopic }: ChatInterfaceProps) {
       };
       setMessages(prev => [...prev, aiResponse]);
       setIsTyping(false);
+    }
     }, 1500);
   };
 
