@@ -207,9 +207,9 @@ export const userService = {
       console.error('Error deregistering user:', error);
       throw error;
     }
-  }
+  },
 
-  async updateReputation(_userId: string, _amount: number): Promise<void> {
+  updateReputation: async (_userId: string, _amount: number): Promise<void> => {
     // Placeholder implementation
     console.log('Update reputation not implemented');
   }
