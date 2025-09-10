@@ -30,15 +30,13 @@ export class ConnectionManager {
   private connections: PoolConnection[] = [];
   private activeConnections: number = 0;
   private waitingRequests: number = 0;
-  private readonly metrics = {
+  private metrics = {
     totalConnections: 0,
     acquireTime: [] as number[],
     waitTime: [] as number[]
   };
-  private config: PoolConfig;
 
-  private constructor(config: Partial<PoolConfig> = {}) {
-    this.config = poolConfigSchema.parse(config);
+  private constructor(_config: Partial<PoolConfig> = {}) {
     
     // Initialize minimum connections
     for (let i = 0; i < CONNECTION_CONFIG.CONNECTION_POOL.MIN_CONNECTIONS; i++) {

@@ -104,7 +104,7 @@ export class KnowledgeBase {
   private async getTopicId(topicName: string): Promise<string | null> {
     const connection = await this.getConnection();
     try {
-      const result = await connection.prepare('SELECT id FROM topics WHERE name = ?').get(topicName);
+      const result = await connection.prepare('SELECT id FROM topics WHERE name = ?').get(topicName) as any;
       return result ? result.id : null;
     } finally {
       await connectionManager.releaseConnection(connection);
