@@ -6,9 +6,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 // @ts-ignore
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-// @ts-ignore
 import { InlineMath, BlockMath } from 'react-katex';
 import { toast as toastLib } from 'react-hot-toast';
 
