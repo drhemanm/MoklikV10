@@ -32,6 +32,8 @@ export function useChat() {
     }));
   }, []);
 
+  const sendMessage = useCallback(async (
+    content: string,
     topic?: string, 
     referencedMessageId?: string,
     isSystemMessage = false
