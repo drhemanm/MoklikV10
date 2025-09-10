@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Send, Trash2 } from 'lucide-react';
-import { useChat } from '../hooks/useChat';
-import { useAssistantTips } from '../hooks/useAssistantTips';
+import { useChat } from '../hooks/useChat.js';
+import { useAssistantTips } from '../hooks/useAssistantTips.js';
 import { ChatMessage } from './ChatMessage';
 import { ErrorMessage } from './ui/ErrorMessage';
 import { LoadingSpinner } from './ui/LoadingSpinner';
