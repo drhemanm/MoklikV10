@@ -1,6 +1,6 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
-import { GraphDisplay } from './GraphDisplay';
+import { GraphDisplay } from './GraphDisplay.js';
 import { processMathContent } from '../../utils/mathProcessor.js';
 
 interface MathContentProps {

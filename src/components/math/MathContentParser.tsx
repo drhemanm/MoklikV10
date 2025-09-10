@@ -1,8 +1,8 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
+// @ts-ignore
 import Plot from 'react-plotly.js';
-import { cleanMathExpression } from '../../utils/mathUtils.js';
-import { generatePoints } from '../../utils/mathUtils';
+import { cleanMathExpression, generatePoints } from '../../utils/mathUtils.js';
 
 interface MathContentParserProps {
   content: string;
@@ -31,8 +31,8 @@ export function MathContentParser({ content, className = '' }: MathContentParser
           );
 
           const data = [{
-            x: points.map(p => p.x),
-            y: points.map(p => p.y),
+            x: points.map((p: any) => p.x),
+            y: points.map((p: any) => p.y),
             type: 'scatter',
             mode: 'lines',
             name: plotData.function,

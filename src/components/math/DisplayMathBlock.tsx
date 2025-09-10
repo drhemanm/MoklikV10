@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import { BlockMath } from 'react-katex';
 import { cleanMathExpression } from '../../utils/mathUtils.js';
 

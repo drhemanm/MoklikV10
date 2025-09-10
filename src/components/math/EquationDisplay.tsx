@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import { InlineMath, BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
+// @ts-ignore
 import Plot from 'react-plotly.js';
 import { generatePoints } from '../../utils/mathUtils.js';
 
@@ -31,8 +32,8 @@ export function MathRenderer({ content, className = '' }: MathRendererProps) {
           );
 
           const data = [{
-            x: points.map(p => p.x),
-            y: points.map(p => p.y),
+            x: points.map((p: any) => p.x),
+            y: points.map((p: any) => p.y),
             type: 'scatter',
             mode: 'lines',
             name: plotData.function,

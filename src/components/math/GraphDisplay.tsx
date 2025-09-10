@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React from 'react';
 // @ts-ignore
 import Plot from 'react-plotly.js';
 import { generatePoints } from '../../utils/mathUtils.js';
@@ -15,13 +15,13 @@ interface GraphDisplayProps {
 }
 
 export function GraphDisplay({ data, className = '' }: GraphDisplayProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const plotData = React.useMemo(() => {
     const points = generatePoints(data.function, data.xRange[0], data.xRange[1]);
     return [{
-      x: points.map(p => p.x),
-      y: points.map(p => p.y),
+      x: points.map((p: any) => p.x),
+      y: points.map((p: any) => p.y),
       type: 'scatter',
       mode: 'lines',
       name: data.function,
