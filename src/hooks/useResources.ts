@@ -19,7 +19,6 @@ export function useResources() {
       setIsLoading(true);
       setError(null);
 
-      // Use just the folder path without gs:// prefix
       const fullPath = folderPath;
       console.log('Loading resources from path:', fullPath);
       const folderRef = ref(storage, fullPath);

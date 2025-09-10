@@ -26,7 +26,6 @@ export function MathChart({
   yRange = [-10, 10],
   title,
   type = 'line',
-  plotlyData,
   className = ''
 }: MathChartProps) {
   if (expr) {
@@ -41,14 +40,13 @@ export function MathChart({
     );
   }
 
-
   if (data) {
     return (
       <DataChart
         data={data}
         type={type}
         title={title}
-        className={className}
+        showGrid={true}
       />
     );
   }

@@ -1,6 +1,6 @@
 export interface Message {
   id: string;
-  role: 'user' | 'ai';
+  role: 'user' | 'ai' | 'assistant' | 'system';
   content: string;
   timestamp: number;
   contextType: 'chat' | 'document';

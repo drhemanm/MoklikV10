@@ -5,7 +5,7 @@ import { ERROR_MESSAGES } from '../config/constants.js';
 
 export interface Message {
   id: string;
-  role: 'user' | 'ai';
+  role: 'user' | 'ai' | 'assistant' | 'system';
   content: string;
   timestamp: number;
   referencedMessageId?: string;

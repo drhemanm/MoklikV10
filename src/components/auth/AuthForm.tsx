@@ -51,10 +51,8 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     setIsLoading(true);
     try {
       if (isSignUp) {
-        // Import auth functions from Firebase
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Create user profile
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           email,
           createdAt: serverTimestamp(),
@@ -126,7 +124,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       
-      // Create user profile if it doesn't exist
       const userDoc = await getDoc(doc(db, 'users', result.user.uid));
       if (!userDoc.exists()) {
         await setDoc(doc(db, 'users', result.user.uid), {
