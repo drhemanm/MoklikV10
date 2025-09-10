@@ -28,9 +28,9 @@ import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useOpenAI } from '../../hooks/useOpenAI.js';
+import { useOpenAI } from '../../hooks/useOpenAI';
 import toast, { toast as toastLib } from 'react-hot-toast';
-import { ChatHistory } from './ChatHistory.js';
+import { ChatHistory } from './ChatHistory';
 
 interface EnhancedChatInterfaceProps {
   onBack: () => void;
