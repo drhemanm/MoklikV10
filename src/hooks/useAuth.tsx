@@ -11,7 +11,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth, googleProvider } from '../config/firebase.js';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface User {
   uid: string;
@@ -24,7 +24,7 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name?: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<FirebaseUser | null>;
   logout: () => Promise<void>;
 }
 
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error('Redirect result error:', error);
-        toast.error('Authentication failed. Please try again.');
+        toastLib.error('Authentication failed. Please try again.');
       }
     };
 
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             popupError.code === 'auth/popup-closed-by-user' ||
             popupError.code === 'auth/cancelled-popup-request') {
           
-          toastLib.info('Redirecting to Google sign-in...');
+          toastLib('Redirecting to Google sign-in...');
           await signInWithRedirect(auth, googleProvider);
           return null; // Will be handled by redirect result
         }
@@ -222,7 +222,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading, 
       signIn, 
       signUp, 
-      signInWithGoogle: async () => { const result = await signInWithGoogle(); return result; }, 
+      signInWithGoogle, 
       logout 
     }}>
       {children}

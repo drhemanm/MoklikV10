@@ -25,11 +25,10 @@ export function ForumContainer() {
   } = useForum();
 
   const [showNewTopic, setShowNewTopic] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const query = searchInput;
+    const query = searchQuery;
     if (query) {
       searchTopics(query);
     }

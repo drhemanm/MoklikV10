@@ -5,7 +5,6 @@ import { ERROR_MESSAGES } from '../config/constants.js';
 
 export interface Message {
   id: string;
-  role: 'user' | 'ai';
   content: string;
   timestamp: number;
   referencedMessageId?: string;
@@ -32,8 +31,8 @@ export function useChat() {
     }));
   }, []);
 
-  const sendMessage = useCallback(async (
-    content: string, 
+    topic?: string | undefined, 
+    referencedMessageId?: string,
     topic?: string, 
     referencedMessageId?: string | null,
     isSystemMessage = false
@@ -43,16 +42,12 @@ export function useChat() {
       
       const messageId = generateId('msg');
 
-      // Special handling for document review
-      const contextType = topic === 'document-review' ? 'document' : 'chat';
-      
       if (isSystemMessage) {
         const aiMessage: Message = {
           id: messageId,
           role: 'ai',
           content,
           timestamp: Date.now(),
-          contextType,
           isSystemMessage: true
         };
         setState(prev => ({
@@ -73,7 +68,7 @@ export function useChat() {
       
       addMessage(userMessage);
       
-      const response = await getAIResponse(content, topic || undefined, state.messages);
+      const response = await getAIResponse(content, topic, state.messages);
       
       const aiMessage: Message = {
         id: generateId('resp'),
@@ -108,5 +103,3 @@ export function useChat() {
     error: state.error,
     sendMessage,
     clearChat
-  };
-}

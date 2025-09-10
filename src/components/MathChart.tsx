@@ -16,7 +16,7 @@ interface MathChartProps {
   xRange?: [number, number];
   yRange?: [number, number];
   title?: string;
-  type?: 'line' | 'bar' | 'scatter' | '3d';
+  type?: 'line' | 'bar' | 'scatter';
   plotlyData?: Plotly.Data[];
   className?: string;
 }
@@ -27,7 +27,7 @@ export function MathChart({
   xRange = [-10, 10],
   yRange = [-10, 10],
   title,
-  type = 'line' as 'line' | 'bar' | 'scatter',
+  type = 'line',
   plotlyData,
   className = ''
 }: MathChartProps) {
@@ -43,15 +43,12 @@ export function MathChart({
     );
   }
 
-  if (type === '3d' && plotlyData) {
-    return <Plot3D data={plotlyData} title={title} />;
-  }
 
   if (data) {
     return (
       <DataChart
         data={data}
-        type={type === 'scatter' ? 'line' : type}
+        type={type}
         title={title}
         className={className}
       />

@@ -9,7 +9,7 @@ import { Button } from '../components/ui/Button';
 import { PlusCircle, MessageSquare } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, increment, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 export function ForumPage() {
   const { user } = useAuth();
@@ -63,7 +63,7 @@ export function ForumPage() {
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date()
         }))
-        .filter((reply: any) => reply.discussionId === selectedDiscussion.id) as Reply[];
+        .filter((reply: any) => reply.topicId === selectedDiscussion.id) as Reply[];
       
       setReplies(replyData);
     });
@@ -162,7 +162,7 @@ export function ForumPage() {
     try {
       const repliesRef = collection(db, 'forum_replies');
       await addDoc(repliesRef, {
-        discussionId: selectedDiscussion.id,
+        topicId: selectedDiscussion.id,
         content,
         author: {
           id: user.uid,

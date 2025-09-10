@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Send, Upload, Camera, Mic, Image as ImageIcon, Loader2 } from 'lucide-react';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface ChatInputProps {
   onSend: (message: string, fileBase64?: string) => Promise<void>;
@@ -29,7 +29,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
       setMessage('');
     } catch (error) {
       console.error('Failed to send message:', error);
-      toast.error('Failed to send message. Please try again.');
+      toastLib.error('Failed to send message. Please try again.');
     }
   };
 
@@ -55,13 +55,13 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
         }
         
         // Show processing message
-        toastLib.loading('Analyzing your image...', { id: 'image-analysis' });
+        toastLib.loading('Analyzing your image...');
         
         // Process the image
         const base64 = await ImageAnalysisService.fileToBase64(file);
         const result = await ImageAnalysisService.analyzeImage(base64, file.name);
         
-        toastLib.dismiss('image-analysis');
+        toastLib.dismiss();
         
         if (!result.success) {
           toastLib.error(result.error || 'Failed to analyze image');
@@ -76,7 +76,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             setTimeout(() => {
               result.suggestions?.forEach((suggestion: any, index: number) => {
                 setTimeout(() => {
-                  toastLib.info(suggestion, { duration: 4000 });
+                  toastLib(suggestion);
                 }, index * 1000);
               });
             }, 1000);
@@ -90,7 +90,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           toastLib.success('Image analyzed successfully!');
         }
       } catch (error) {
-        toastLib.dismiss('image-analysis');
+        toastLib.dismiss();
         console.error('Error analyzing image:', error);
         toastLib.error('Failed to analyze image. Please try again.');
       }

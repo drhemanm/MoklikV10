@@ -1,20 +1,17 @@
 import React, { useRef, useState } from 'react';
-import { Upload, FileText, X } from 'lucide-react';
+import { Upload, FileText, X, Video, Book, Loader2 } from 'lucide-react';
 import { DocumentProcessor } from '../services/document/documentProcessor.js';
-import { useChat } from '../hooks/useChat.js';
-import { useAuth } from '../hooks/useAuth.js';
 import { LoadingSpinner } from './ui/LoadingSpinner.js';
 import { ChatContainer } from './chat/ChatContainer.js';
 
 const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID;
 
 export function FileUpload() {
-  const { sendMessage } = useChat();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
   const [currentDocument, setCurrentDocument] = useState<{
     name: string;
     content: string;
@@ -22,7 +19,7 @@ export function FileUpload() {
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files) return;
-    setError(null);
+    setError('');
     setUploadProgress(0);
     setIsProcessing(true);
     
@@ -59,17 +56,6 @@ export function FileUpload() {
             content: result.content || ''
           });
 
-          // Send initial message to chat
-          await sendMessage(
-            `I've uploaded an image named "${file.name}" containing mathematical content. Please analyze it and help me understand the problems or concepts shown.`,
-            'document-review'
-          );
-          
-          // Send the analysis content
-          if (result.content) {
-            await sendMessage(result.content, 'document-review');
-          }
-          
           continue;
         }
         
@@ -77,7 +63,7 @@ export function FileUpload() {
         const result = await DocumentProcessor.processDocument(file, ASSISTANT_ID);
         
         if (!result.success) {
-          setError(result.error);
+          setError(result.error || 'Processing failed');
           continue;
         }
 
@@ -86,21 +72,6 @@ export function FileUpload() {
           content: result.content || ''
         });
 
-        // Send initial message to chat
-        await sendMessage(
-          `I've uploaded a document named "${file.name}". Please analyze it and help me understand its content, referencing relevant past papers and marking schemes where applicable.`,
-          'document-review'
-        );
-        
-        // Send the document content for analysis
-        if (result.content) {
-          // Add context about past papers availability
-          await sendMessage(
-            "You have access to past examination papers and marking schemes in your knowledge base. Please use them to provide comprehensive analysis and feedback.",
-            'document-review'
-          );
-          await sendMessage(result.content, 'document-review');
-        }
       } catch (error) {
         console.error('Error processing file:', error);
         setError('Error processing file. Please try again.');
@@ -168,7 +139,7 @@ export function FileUpload() {
         {error && (
           <div className="absolute top-2 right-2 bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm flex items-center">
             <span>{error}</span>
-            <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setError(null)} />
+            <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setError('')} />
           </div>
         )}
         <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />

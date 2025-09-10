@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface OnboardingData {
   fullName: string;

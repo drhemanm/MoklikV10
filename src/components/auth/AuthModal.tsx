@@ -32,24 +32,19 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
     try {
       if (mode === 'register') {
         if (formData.password !== formData.confirmPassword) {
-          toast.error('Passwords do not match');
+          toast('Passwords do not match');
           setIsLoading(false);
           return;
         }
         
-        const result = await signUp(formData.email, formData.password, formData.fullName);
+        await signUp(formData.email, formData.password, formData.fullName);
         
         // Start free trial
-        const trialResult = await startTrial();
-        if (trialResult) {
-          toastLib.success('Account created and 7-day trial activated!');
-          navigate('/onboarding');
-        } else {
-          toastLib.success('Account created successfully!');
-          navigate('/onboarding');
-        }
+        await startTrial();
+        toastLib.success('Account created successfully!');
+        navigate('/onboarding');
       } else {
-        const result = await signIn(formData.email, formData.password);
+        await signIn(formData.email, formData.password);
         toastLib.success('Welcome back!');
         navigate('/dashboard');
       }
@@ -66,15 +61,13 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      const user = await signInWithGoogle();
+      await signInWithGoogle();
       
       // Only navigate if we got a user (popup succeeded)
       // If redirect was used, the page will reload and handle navigation
-      if (user) {
-        toastLib.success('Signed in with Google!');
-        navigate(mode === 'register' ? '/onboarding' : '/dashboard');
-        onClose();
-      }
+      toastLib.success('Signed in with Google!');
+      navigate(mode === 'register' ? '/onboarding' : '/dashboard');
+      onClose();
       // If user is null, it means redirect was used - don't close modal or navigate
     } catch (error) {
       console.error('Google auth error:', error);

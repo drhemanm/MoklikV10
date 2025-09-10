@@ -13,7 +13,7 @@ interface TopicCardProps {
 export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
   const { getTopicProgress } = useProgress();
   const { sendMessage } = useChat();
-  const { stats } = useGamification();
+  const { } = useGamification();
   const progress = getTopicProgress(topic.id);
 
   const difficultyColor = {

@@ -1,5 +1,4 @@
 import React from 'react';
-import React from 'react';
 // @ts-ignore
 const Plot = require('react-plotly.js').default;
 import { generatePoints } from '../../utils/mathUtils.js';

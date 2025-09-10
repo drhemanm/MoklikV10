@@ -37,10 +37,11 @@ export function useResources() {
           const type: Resource['type'] = folderPath.includes('Ebook') ? 'ebook' :
                       folderPath.includes('Syllabus') ? 'syllabus' : 'exam';
 
-          return {
+          const resource: Resource = {
             id: item.name,
             title: metadata.customMetadata?.title || item.name,
             description: metadata.customMetadata?.description || '',
+            url: await getDownloadURL(item),
             path: item.fullPath,
             type,
             format: metadata.contentType || 'application/pdf',
@@ -49,14 +50,15 @@ export function useResources() {
             updatedAt: metadata.updated,
             category: metadata.customMetadata?.category || '',
             level: (metadata.customMetadata?.level as Resource['level']) || 'both'
-          } as Resource;
+          };
+          return resource;
         } catch (error) {
           console.error('Error processing resource:', item.name, error);
           return null;
         }
       });
 
-      const resourcesData = (await Promise.all(resourcePromises)).filter((r: Resource | null): r is Resource => r !== null);
+      const resourcesData = (await Promise.all(resourcePromises)).filter((r): r is Resource => r !== null);
       console.log('Loaded resources:', resourcesData.length);
       setResources(resourcesData);
     } catch (error) {

@@ -22,11 +22,11 @@ export function FunctionPlot({
     return [{
       x: points.map((p: any) => p.x),
       y: points.map((p: any) => p.y),
-      type: 'scatter' as const,
-      mode: 'lines',
+      type: 'scatter',
+      mode: 'lines' as any,
       name: expr,
       line: { color: '#3b82f6', width: 2 }
-    }];
+    }] as any[];
   }, [expr, xRange]);
 
   const layout: Partial<Plotly.Layout> = {

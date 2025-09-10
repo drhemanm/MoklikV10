@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogIn, UserPlus, AlertCircle, Loader2 } from 'lucide-react';
+import { LogIn, UserPlus, AlertCircle, Loader2, Mail } from 'lucide-react';
 import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../../config/firebase';
@@ -15,8 +15,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const validateForm = () => {
     if (!email || !password) {
@@ -184,11 +182,6 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
             <AlertCircle className="w-4 h-4" />
             <span className="text-sm">{error}</span>
-            {remainingAttempts !== null && (
-              <span className="text-sm ml-2">
-                ({remainingAttempts} attempts remaining)
-              </span>
-            )}
           </div>
         )}
 

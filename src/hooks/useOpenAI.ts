@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import OpenAI from 'openai';
 import { nanoid } from 'nanoid';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 import { env } from '../config/env.js';
 
 // Initialize OpenAI client
@@ -10,7 +10,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true
 });
 
-const ASSISTANT_ID = 'asst_KpFlU9Rxd4LGJMbYY9KCXrmm';
+const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID || 'asst_KpFlU9Rxd4LGJMbYY9KCXrmm';
 
 interface Message {
   id: string;
@@ -50,7 +50,7 @@ export function useOpenAI() {
       
       localStorage.setItem('moklik_conversations', JSON.stringify(conversations));
     } catch (error) {
-      toastLib.error('Failed to regenerate response. Please try again.');
+      toastLib.error('Failed to save conversation.');
     }
   };
 
@@ -79,7 +79,7 @@ export function useOpenAI() {
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
-      toast.error('Failed to load conversation');
+      toastLib.error('Failed to load conversation');
     }
   }, []);
 
@@ -95,7 +95,7 @@ export function useOpenAI() {
         throw new Error('Failed to create conversation thread');
       }
     }
-      toastLib.error('Failed to create conversation thread');
+    return threadId;
   }, [threadId]);
 
   // Send a message and get a response
@@ -105,7 +105,7 @@ export function useOpenAI() {
     regenerate: boolean = false
   ) => {
     if (!content.trim()) {
-      toast.error('Please enter a message');
+      toastLib.error('Please enter a message');
       return;
     }
 
@@ -259,7 +259,7 @@ export function useOpenAI() {
       console.error('Error sending message:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       setError(errorMessage);
-      toast.error(errorMessage);
+      toastLib.error(errorMessage);
     } finally {
       setIsLoading(false);
       console.log('useOpenAI: sendMessage completed');

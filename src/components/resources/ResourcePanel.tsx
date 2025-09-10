@@ -107,7 +107,7 @@ export function ResourcePanel() {
                   .filter(resource => {
                     switch (activeTab) {
                       case 'guides':
-                        return resource.type === 'pdf' && resource.category === 'study-guides'; 
+                        return resource.type === 'ebook' && resource.category === 'study-guides'; 
                       case 'practice':
                         return resource.category === 'practice';
                       default:
@@ -137,7 +137,7 @@ export function ResourcePanel() {
                         </p>
                         <div className="flex items-center mt-2 space-x-2">
                           <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize">
-                            {resource.type === 'pdf' ? 'PDF Document' : 'Document'}
+                            {resource.type === 'ebook' ? 'PDF Document' : 'Document'}
                           </span>
                           <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full capitalize">
                             {resource.level}

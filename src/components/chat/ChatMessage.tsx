@@ -10,7 +10,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 // @ts-ignore
 import { InlineMath, BlockMath } from 'react-katex';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface Message {
   id: string;
@@ -118,10 +118,11 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
                     }
                     return <p className="mb-4">{children}</p>;
                   },
-                  code({node, inline, className, children, ...props}) {
-                    return !inline && className ? (
+                  code({className, children, ...props}) {
+                    const isInline = !className;
+                    return !isInline && className ? (
                       <SyntaxHighlighter
-                        style={vscDarkPlus}
+                        style={vscDarkPlus as any}
                         language={className.replace('language-', '')}
                         PreTag="div"
                         {...props}

@@ -12,6 +12,7 @@ import {
   updateDoc,
   increment,
   serverTimestamp,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from '../../config/firebase.js';
 import type { ForumTopic, ForumPost, SortOption } from '../../types/forum.js';
@@ -48,14 +49,16 @@ export const forumService = {
   },
 
   async getTopics(sortBy: SortOption = 'newest', lastTopic?: ForumTopic) {
+    const sortField = getSortField(sortBy);
     let q = query(
       collection(db, 'forum_topics'),
-      orderBy(getSortField(sortBy), 'desc'),
+      orderBy(sortField, 'desc'),
       limit(TOPICS_PER_PAGE)
     );
 
     if (lastTopic) {
-      q = query(q, startAfter(lastTopic[getSortField(sortBy)]));
+      const sortValue = (lastTopic as any)[sortField];
+      q = query(q, startAfter(sortValue));
     }
 
     const snapshot = await getDocs(q);
@@ -102,7 +105,7 @@ export const forumService = {
 
   // Posts
   async createPost(post: Omit<ForumPost, 'id' | 'createdAt' | 'updatedAt' | 'likes'>): Promise<string> {
-    const batch = db.batch();
+    const batch = writeBatch(db);
 
     // Create post
     const postRef = doc(collection(db, 'forum_posts'));
@@ -152,7 +155,7 @@ export const forumService = {
   },
 
   async deletePost(postId: string, topicId: string) {
-    const batch = db.batch();
+    const batch = writeBatch(db);
 
     // Delete post
     const postRef = doc(db, 'forum_posts', postId);
@@ -172,7 +175,7 @@ export const forumService = {
     const likeRef = doc(db, `${type}_likes`, `${id}_${userId}`);
     const likeDoc = await getDoc(likeRef);
 
-    const batch = db.batch();
+    const batch = writeBatch(db);
     const targetRef = doc(db, type === 'topic' ? 'forum_topics' : 'forum_posts', id);
 
     if (likeDoc.exists()) {

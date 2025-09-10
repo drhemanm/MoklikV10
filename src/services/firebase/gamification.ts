@@ -5,7 +5,8 @@ import {
   arrayUnion, 
   getDoc,
   setDoc,
-  serverTimestamp
+  serverTimestamp,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from '../../config/firebase.js';
 import type { GamificationState, Achievement, StudyGoal } from '../../types/gamification.js';
@@ -81,7 +82,7 @@ export const gamificationService = {
   async logStudyTime(userId: string, topicId: string, minutes: number) {
     const userRef = doc(db, 'gamification', userId);
     const today = new Date().toISOString().split('T')[0];
-    const batch = db.batch();
+    const batch = writeBatch(db);
     
     // Update gamification data
     batch.update(userRef, {
@@ -101,7 +102,7 @@ export const gamificationService = {
 
   async unlockAchievement(userId: string, achievement: Achievement) {
     const userRef = doc(db, 'gamification', userId);
-    const batch = db.batch();
+    const batch = writeBatch(db);
 
     const notification = {
       id: crypto.randomUUID(),
@@ -139,7 +140,7 @@ export const gamificationService = {
     const state = await this.getState(userId);
     if (!state) return;
 
-    const updatedGoals = state.goals.map(goal => 
+    const updatedGoals = state.goals.map((goal: StudyGoal) => 
       goal.id === goalId 
         ? { ...goal, progress, completed: progress >= goal.target }
         : goal
@@ -149,7 +150,7 @@ export const gamificationService = {
     await updateDoc(userRef, { goals: updatedGoals });
 
     // Check if goal was just completed
-    const goal = updatedGoals.find(g => g.id === goalId);
+    const goal = updatedGoals.find((g: StudyGoal) => g.id === goalId);
     if (goal?.completed && progress >= goal.target) {
       const notification = {
         id: crypto.randomUUID(),

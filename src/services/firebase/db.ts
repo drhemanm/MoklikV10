@@ -100,12 +100,12 @@ export const firestoreService = {
     return messageRef.id;
   },
 
-  async getChatHistory(userId: string, limit = 50) {
+  async getChatHistory(userId: string, limitCount = 50) {
     const q = query(
       collection(db, 'messages'),
       where('userId', '==', userId),
       orderBy('timestamp', 'desc'),
-      limit(limit)
+      limit(limitCount)
     );
     
     const snapshot = await getDocs(q);
@@ -115,14 +115,14 @@ export const firestoreService = {
     }));
   },
 
-  async getUserActivities(userId: string, startDate: Date, limit = 50) {
+  async getUserActivities(userId: string, startDate: Date, limitCount = 50) {
     const activitiesRef = collection(db, 'user_activities');
     const q = query(
       activitiesRef,
       where('userId', '==', userId),
       where('timestamp', '>=', startDate),
       orderBy('timestamp', 'desc'),
-      limit(limit)
+      limit(limitCount)
     );
 
     const snapshot = await getDocs(q);

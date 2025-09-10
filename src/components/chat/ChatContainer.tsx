@@ -4,7 +4,7 @@ import { ChatInput } from './ChatInput.js';
 import { ChatMessage } from './ChatMessage.js';
 import { ChatHeader } from './ChatHeader.js';
 import { easterEggManager } from '../../utils/easterEggs.js';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface ChatContainerProps {
   topic?: string;

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { ChatMessage } from './ChatMessage.js';
 import { LoadingSpinner } from '../ui/LoadingSpinner.js';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 interface Message {
   id: string;

@@ -54,6 +54,7 @@ export const chatService = {
         role: doc.data().role,
         content: doc.data().content,
         timestamp: doc.data().timestamp.toMillis(),
+        contextType: 'chat' as const,
         referencedMessageId: doc.data().referencedMessageId,
         isSystemMessage: doc.data().isSystemMessage
       }));

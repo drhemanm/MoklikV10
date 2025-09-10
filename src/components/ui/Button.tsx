@@ -43,25 +43,28 @@ export function Button({
   const widthClass = fullWidth ? 'w-full' : '';
 
   return (
-    <motion.button
+    <motion.div
       whileHover={!disabled ? { scale: 1.02 } : undefined}
       whileTap={!disabled ? { scale: 0.98 } : undefined}
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${widthClass} ${className}`}
-      disabled={isLoading || disabled}
-      {...props}
     >
-      {isLoading ? (
-        <>
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          <span>{children}</span>
-        </>
-      ) : (
-        <>
-          {leftIcon && <span className="mr-2">{leftIcon}</span>}
-          <span>{children}</span>
-          {rightIcon && <span className="ml-2">{rightIcon}</span>}
-        </>
-      )}
-    </motion.button>
+      <button
+        disabled={isLoading || disabled}
+        {...props}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <span>{children}</span>
+          </>
+        ) : (
+          <>
+            {leftIcon && <span className="mr-2">{leftIcon}</span>}
+            <span>{children}</span>
+            {rightIcon && <span className="ml-2">{rightIcon}</span>}
+          </>
+        )}
+      </button>
+    </motion.div>
   );
 }

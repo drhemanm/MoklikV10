@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 // @ts-ignore
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
-import toast, { toast as toastLib } from 'react-hot-toast';
+import { toast as toastLib } from 'react-hot-toast';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');

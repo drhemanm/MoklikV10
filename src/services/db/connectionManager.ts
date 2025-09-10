@@ -1,8 +1,8 @@
 // @ts-ignore
-import Database from 'better-sqlite3';
+import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { z } from 'zod';
 
-const APP_CONFIG = {
+const CONNECTION_CONFIG = {
   CONNECTION_POOL: {
     MIN_CONNECTIONS: 2,
     MAX_CONNECTIONS: 10
@@ -19,9 +19,15 @@ const poolConfigSchema = z.object({
 
 export type PoolConfig = z.infer<typeof poolConfigSchema>;
 
+interface PoolConnection {
+  connection: DatabaseType;
+  inUse: boolean;
+  created: number;
+}
+
 export class ConnectionManager {
   private static instance: ConnectionManager;
-  private pool: any;
+  private connections: PoolConnection[] = [];
   private activeConnections: number = 0;
   private waitingRequests: number = 0;
   private readonly metrics = {
@@ -29,51 +35,19 @@ export class ConnectionManager {
     acquireTime: [] as number[],
     waitTime: [] as number[]
   };
+  private config: PoolConfig;
 
   private constructor(config: Partial<PoolConfig> = {}) {
-    const validatedConfig = poolConfigSchema.parse(config);
+    this.config = poolConfigSchema.parse(config);
     
-    // Optimize pool settings for production
-    this.pool = new Pool({
-      min: APP_CONFIG.CONNECTION_POOL.MIN_CONNECTIONS,
-      max: APP_CONFIG.CONNECTION_POOL.MAX_CONNECTIONS,
-      acquireRetryAttempts: 3,
-      acquireRetryDelay: 1000,
-      priorityRange: 5,
-      idleTimeoutMillis: validatedConfig.idleTimeoutMillis,
-      acquireTimeoutMillis: validatedConfig.acquireTimeoutMillis,
-      evictionRunIntervalMillis: validatedConfig.evictionRunIntervalMillis,
-      
-      // Connection validation
-      validate: async (connection: any) => {
-        try {
-          const startTime = Date.now();
-          await connection.prepare('SELECT 1').get();
-          const duration = Date.now() - startTime;
-          
-          // Invalidate slow connections
-          if (duration > 1000) {
-            return false;
-          }
-          return true;
-        } catch {
-          return false;
-        }
-      },
-
-      // Connection factory
-      create: async () => {
-        const connection = await this.createConnection();
-        this.metrics.totalConnections++;
-        return connection;
-      },
-
-      // Connection destroyer
-      destroy: async (connection: any) => {
-        await connection.close();
-        this.metrics.totalConnections--;
-      }
-    });
+    // Initialize minimum connections
+    for (let i = 0; i < CONNECTION_CONFIG.CONNECTION_POOL.MIN_CONNECTIONS; i++) {
+      this.connections.push({
+        connection: this.createConnection(),
+        inUse: false,
+        created: Date.now()
+      });
+    }
 
     // Monitor pool health
     setInterval(() => this.monitorPoolHealth(), 60000);
@@ -86,12 +60,29 @@ export class ConnectionManager {
     return ConnectionManager.instance;
   }
 
-  async getConnection() {
+  async getConnection(): Promise<DatabaseType> {
     const startTime = Date.now();
     this.waitingRequests++;
 
     try {
-      const connection = await this.pool.acquire();
+      // Find available connection
+      let poolConnection = this.connections.find(conn => !conn.inUse);
+      
+      if (!poolConnection && this.connections.length < CONNECTION_CONFIG.CONNECTION_POOL.MAX_CONNECTIONS) {
+        // Create new connection if under limit
+        poolConnection = {
+          connection: this.createConnection(),
+          inUse: false,
+          created: Date.now()
+        };
+        this.connections.push(poolConnection);
+      }
+      
+      if (!poolConnection) {
+        throw new Error('No available connections');
+      }
+      
+      poolConnection.inUse = true;
       this.activeConnections++;
       this.waitingRequests--;
 
@@ -100,21 +91,22 @@ export class ConnectionManager {
       this.metrics.acquireTime.push(acquireTime);
       this.metrics.waitTime.push(this.waitingRequests > 0 ? acquireTime : 0);
 
-      return connection;
+      return poolConnection.connection;
     } catch (error) {
       this.waitingRequests--;
       throw error;
     }
   }
 
-  async releaseConnection(connection: any) {
+  async releaseConnection(connection: DatabaseType) {
     try {
-      await this.pool.release(connection);
+      const poolConnection = this.connections.find(conn => conn.connection === connection);
+      if (poolConnection) {
+        poolConnection.inUse = false;
+      }
       this.activeConnections--;
     } catch (error) {
       console.error('Error releasing connection:', error);
-      // Force destroy if release fails
-      await this.pool.destroy(connection).catch(console.error);
       this.activeConnections--;
     }
   }
@@ -124,7 +116,7 @@ export class ConnectionManager {
     const avgWaitTime = this.calculateAverage(this.metrics.waitTime);
 
     return {
-      poolSize: this.pool.size,
+      poolSize: this.connections.length,
       activeConnections: this.activeConnections,
       waitingRequests: this.waitingRequests,
       totalConnections: this.metrics.totalConnections,
@@ -163,9 +155,9 @@ export class ConnectionManager {
     return numbers.reduce((a, b) => a + b, 0) / numbers.length;
   }
 
-  private async createConnection() {
+  private createConnection(): DatabaseType {
     // Implement actual database connection creation here
     // This is a placeholder for the actual implementation
-    return {};
+    return new Database(':memory:');
   }
 }

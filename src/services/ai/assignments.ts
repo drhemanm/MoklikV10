@@ -4,7 +4,7 @@ import { SystemPrompts } from './prompts.js';
 export async function submitAssignment(file: File): Promise<string> {
   try {
     const fileContent = await fileToBase64(file);
-    const systemPrompt = SystemPrompts.getAssignmentPrompt();
+    const systemPrompt = SystemPrompts.getAssignmentReviewPrompt();
 
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',

@@ -157,7 +157,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
         toastLib.success('Image analyzed successfully!');
       }
     } catch (error) {
-      toastLib.dismiss('image-analysis');
+      toastLib.dismiss();
       console.error('Error analyzing image:', error);
       toastLib.error('Failed to analyze image. Please try again.');
     }
@@ -170,13 +170,13 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       return;
     }
     
-    toastLib.loading('Processing PDF...', { id: 'pdf-processing' });
+    toastLib.loading('Processing PDF...');
     try {
       await sendMessage(`I've uploaded a PDF file named "${file.name}". Please analyze its mathematical content and help me understand the problems or concepts shown.`);
-      toastLib.dismiss('pdf-processing');
+      toastLib.dismiss();
       toastLib.success('PDF uploaded successfully!');
     } catch (error) {
-      toastLib.dismiss('pdf-processing');
+      toastLib.dismiss();
       toastLib.error('Failed to process PDF. Please try again.');
     }
   };
@@ -196,12 +196,12 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
   ];
 
   // Enhanced math rendering for better equation display
-  const renderMathContent = (content: string) => {
+  const renderMathContent = (content: string): string => {
     // Handle LaTeX delimiters properly
     return content
       .replace(/\\\[([\s\S]*?)\\\]/g, '$$$$1$$') // Convert \[...\] to $$...$$
       .replace(/\\\((.*?)\\\)/g, '$$$1$$') // Convert \(...\) to $...$
-      .replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      .replace(/\$\$([\s\S]*?)\$\$/g, (_match, math) => {
         // Ensure display math is on its own line
         return `\n\n$$${math.trim()}$$\n\n`;
       });
@@ -209,8 +209,8 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-      .then(() => toast.success('Copied to clipboard!'))
-      .catch(() => toast.error('Failed to copy'));
+      .then(() => toastLib.success('Copied to clipboard!'))
+      .catch(() => toastLib.error('Failed to copy'));
   };
 
   const regenerateResponse = async () => {
@@ -223,7 +223,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       await sendMessage(lastUserMessage.content, undefined, true);
     } catch (error) {
       console.error('Error regenerating response:', error);
-      toast.error('Failed to regenerate response. Please try again.');
+      toastLib.error('Failed to regenerate response. Please try again.');
     }
   };
 
