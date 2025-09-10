@@ -31,6 +31,8 @@ export function useChat() {
     }));
   }, []);
 
+  const sendMessage = useCallback(async (
+    content: string,
     topic?: string | undefined, 
     referencedMessageId?: string,
     topic?: string, 
@@ -103,3 +105,5 @@ export function useChat() {
     error: state.error,
     sendMessage,
     clearChat
+  };
+}
