@@ -33,11 +33,11 @@ export function MathParser({ content }: MathParserProps) {
           const data = [{
             x: points.map((p: any) => p.x),
             y: points.map((p: any) => p.y),
-            type: 'scatter',
-            mode: 'lines',
+            type: 'scatter' as const,
+            mode: 'lines' as const,
             name: plotData.function,
             line: { color: '#3b82f6', width: 2 }
-          }];
+          }] as Plotly.Data[];
 
           const layout: Partial<Plotly.Layout> = {
             title: plotData.title ? { text: plotData.title, font: { size: 16 } } : undefined,

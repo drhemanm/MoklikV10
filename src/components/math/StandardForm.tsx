@@ -1,4 +1,4 @@
-import { InlineMath, BlockMath } from 'react-katex';
+import { BlockMath } from 'react-katex';
 import { MathExplanation, Term, Example } from './MathExplanation.js';
 
 export function StandardForm() {

@@ -47,7 +47,12 @@ export function ResourceUpload() {
       await resourceService.addResource({
         ...resourceData,
         url,
-        type: file.type.includes('pdf') ? 'ebook' : 'ebook'
+        type: file.type.includes('pdf') ? 'ebook' : 'ebook',
+        format: file.type,
+        size: file.size,
+        downloads: 0,
+        path: `resources/${Date.now()}_${file.name}`,
+        updatedAt: Date.now()
       });
 
       // Reset form

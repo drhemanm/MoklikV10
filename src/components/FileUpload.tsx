@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, FileText, X, Video, Book, Loader2 } from 'lucide-react';
+import { Upload, FileText, X } from 'lucide-react';
 import { DocumentProcessor } from '../services/document/documentProcessor.js';
 import { LoadingSpinner } from './ui/LoadingSpinner.js';
 import { ChatContainer } from './chat/ChatContainer.js';

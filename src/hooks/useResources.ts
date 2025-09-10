@@ -47,7 +47,7 @@ export function useResources() {
             format: metadata.contentType || 'application/pdf',
             size: metadata.size,
             downloads: parseInt(metadata.customMetadata?.downloads || '0'),
-            updatedAt: metadata.updated,
+            updatedAt: new Date(metadata.updated).getTime(),
             category: metadata.customMetadata?.category || '',
             level: (metadata.customMetadata?.level as Resource['level']) || 'both'
           };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogIn, UserPlus, AlertCircle, Loader2, Mail } from 'lucide-react';
+import { LogIn, UserPlus, AlertCircle, Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../../config/firebase';
@@ -15,6 +15,8 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const validateForm = () => {
     if (!email || !password) {

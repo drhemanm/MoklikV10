@@ -1,6 +1,5 @@
 import { FunctionPlot } from './graphs/FunctionPlot.js';
 import { DataChart } from './graphs/DataChart.js';
-import { Plot3D } from './graphs/Plot3D.js';
 
 interface MathChartProps {
   data?: {
@@ -16,8 +15,7 @@ interface MathChartProps {
   xRange?: [number, number];
   yRange?: [number, number];
   title?: string;
-  type?: 'line' | 'bar' | 'scatter';
-  plotlyData?: Plotly.Data[];
+  type?: 'line' | 'bar';
   className?: string;
 }
 

@@ -9,11 +9,9 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 export function Image({ alt, className = '', ...props }: ImageProps) {
   return (
     <div className={`img-3d ${className}`}>
-      <motion.img
+      <img
         alt={alt}
         {...props}
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.2 }}
       />
     </div>
   );

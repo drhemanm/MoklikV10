@@ -5,6 +5,7 @@ import { ERROR_MESSAGES } from '../config/constants.js';
 
 export interface Message {
   id: string;
+  role: 'user' | 'ai';
   content: string;
   timestamp: number;
   referencedMessageId?: string;
@@ -31,10 +32,8 @@ export function useChat() {
     }));
   }, []);
 
-  const sendMessage = useCallback(async (
-    content: string,
     topic?: string, 
-    referencedMessageId?: string | null,
+    referencedMessageId?: string,
     isSystemMessage = false
   ) => {
     try {

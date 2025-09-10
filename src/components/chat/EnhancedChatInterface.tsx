@@ -143,7 +143,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
           setTimeout(() => {
             result.suggestions?.forEach((suggestion: any, index: number) => {
               setTimeout(() => {
-                toastLib.info(suggestion, { duration: 4000 });
+                toastLib(suggestion, { duration: 4000 });
               }, index * 1000);
             });
           }, 1000);

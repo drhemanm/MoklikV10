@@ -124,7 +124,6 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
                       <SyntaxHighlighter
                         style={vscDarkPlus as any}
                         language={className.replace('language-', '')}
-                        PreTag="div"
                         {...props}
                       >
                         {String(children).replace(/\n$/, '')}
