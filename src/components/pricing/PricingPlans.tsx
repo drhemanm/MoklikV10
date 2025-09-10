@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Check, Zap, Shield, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { SubscriptionModal } from './SubscriptionModal';
+import { useAuth } from '../../hooks/useAuth.js';
+import { SubscriptionModal } from './SubscriptionModal.js';
 import toast from 'react-hot-toast';
 
 export function PricingPlans() {

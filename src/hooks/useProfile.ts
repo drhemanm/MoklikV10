@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../config/firebase';
-import { useAuth } from './useAuth';
-import type { UserProfile } from '../types/user';
+import { db } from '../config/firebase.js';
+import { useAuth } from './useAuth.js';
+import type { UserProfile } from '../types/user.js';
 
 export function useProfile() {
   const { user } = useAuth();

@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
-import { AIMessage, AIResponse } from './types';
-import { handleAIError } from './error-handler';
-import { createAIConfig } from './config';
-import { ERROR_MESSAGES } from '../../config/errors';
-import { env } from '../../config/env';
+import { AIMessage, AIResponse } from './types.js';
+import { handleAIError } from './error-handler.js';
+import { createAIConfig } from './config.js';
+import { ERROR_MESSAGES } from '../../config/errors.js';
+import { env } from '../../config/env.js';
 
 export class OpenAIService {
   private client: OpenAI;

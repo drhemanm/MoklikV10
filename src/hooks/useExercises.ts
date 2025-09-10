@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { getAIResponse } from '../services/ai';
+import { getAIResponse } from '../services/ai/index.js';
 
 export interface Exercise {
   id: string;

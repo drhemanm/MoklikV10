@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { adminService } from '../services/firebase/admin';
+import { adminService } from '../services/firebase/admin.js';
 
 export function useAdmin(user: User | null) {
   const [isAdmin, setIsAdmin] = useState(false);

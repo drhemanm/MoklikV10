@@ -1,5 +1,7 @@
+// @ts-ignore
 import { Pool } from 'better-sqlite3';
 import { z } from 'zod';
+import { APP_CONFIG } from '../../config/constants.js';
 
 const poolConfigSchema = z.object({
   min: z.number().min(1).max(10).default(2),

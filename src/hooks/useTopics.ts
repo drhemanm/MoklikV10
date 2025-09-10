@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { topics } from '../data/topics';
-import type { Topic, TopicState } from '../types/topic';
+import { topics } from '../data/topics.js';
+import type { Topic, TopicState } from '../types/topic.js';
 
 export function useTopics() {
   const [state, setState] = useState<TopicState>({

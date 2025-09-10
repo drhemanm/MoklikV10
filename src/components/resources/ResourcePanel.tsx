@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Book, FileText, Video, ExternalLink, Download, Loader2 } from 'lucide-react';
-import { ExamPaperList } from './ExamPaperList';
-import { resourceService } from '../../services/firebase/resources';
-import type { Resource } from '../../types/resource';
+import { ExamPaperList } from './ExamPaperList.js';
+import { resourceService } from '../../services/firebase/resources.js';
+import type { Resource } from '../../types/resource.js';
 
 export function ResourcePanel() {
   const [resources, setResources] = useState<Resource[]>([]);

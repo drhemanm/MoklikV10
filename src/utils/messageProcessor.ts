@@ -1,4 +1,4 @@
-import { cleanMathExpression } from './mathUtils';
+import { cleanMathExpression } from './mathUtils.js';
 
 interface ProcessedContent {
   text: string[];

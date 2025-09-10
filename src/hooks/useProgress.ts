@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UserProgress, ProgressUpdate, TopicProgress } from '../types/progress';
-import { topics } from '../data/topics';
+import { UserProgress, ProgressUpdate, TopicProgress } from '../types/progress.js';
+import { topics } from '../data/topics.js';
 
 const STORAGE_KEY = 'moklik_progress';
 const XP_PER_LEVEL = 1000;

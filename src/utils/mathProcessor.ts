@@ -1,4 +1,4 @@
-import { cleanMathExpression } from './mathUtils';
+import { cleanMathExpression } from './mathUtils.js';
 
 interface MathSegment {
   type: 'text' | 'inline-math' | 'display-math' | 'plot';

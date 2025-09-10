@@ -1,7 +1,7 @@
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
 import Plot from 'react-plotly.js';
-import { cleanMathExpression } from '../../utils/mathUtils';
+import { cleanMathExpression } from '../../utils/mathUtils.js';
 import { generatePoints } from '../../utils/mathUtils';
 
 interface MathContentParserProps {

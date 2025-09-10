@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth';
-import { stripeService, SUBSCRIPTION_PLANS } from '../services/subscription/stripeService';
+import { useAuth } from './useAuth.js';
+import { stripeService, SUBSCRIPTION_PLANS } from '../services/subscription/stripeService.js';
 import toast from 'react-hot-toast';
 
 export function useSubscription() {

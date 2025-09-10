@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getAIResponse } from '../services/ai/chat';
-import { chatService } from '../services/firebase/chat';
-import { useAuth } from './useAuth';
-import { generateId } from '../utils/id';
-import { ERROR_MESSAGES } from '../config/constants';
+import { getAIResponse } from '../services/ai/chat.js';
+import { chatService } from '../services/firebase/chat.js';
+import { useAuth } from './useAuth.js';
+import { generateId } from '../utils/id.js';
+import { ERROR_MESSAGES } from '../config/constants.js';
 
 export interface Message {
   id: string;

@@ -1,5 +1,5 @@
-import { knowledgeBase } from '../db';
-import { ExamPaper, Question } from '../../types/knowledge';
+import { knowledgeBase } from '../db/index.js';
+import { ExamPaper, Question } from '../../types/knowledge.js';
 
 export class KnowledgeService {
   static async getRelevantExamQuestions(topic: string): Promise<Question[]> {

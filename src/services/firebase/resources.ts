@@ -8,8 +8,8 @@ import {
   addDoc,
   DocumentData
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import type { Resource } from '../../types/resource';
+import { db } from '../../config/firebase.js';
+import type { Resource } from '../../types/resource.js';
 
 export const resourceService = {
   async getResources(level?: 'o-level' | 'a-level'): Promise<Resource[]> {

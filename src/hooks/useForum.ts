@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { forumService } from '../services/firebase/forum';
-import type { ForumTopic, ForumPost, SortOption } from '../types/forum';
+import { forumService } from '../services/firebase/forum.js';
+import type { ForumTopic, ForumPost, SortOption } from '../types/forum.js';
 
 export function useForum() {
   const [state, setState] = useState<{

@@ -1,5 +1,5 @@
-import { openai } from '../../config/openai';
-import { SystemPrompts } from './prompts';
+import { openai } from '../../config/openai.js';
+import { SystemPrompts } from './prompts.js';
 
 export async function submitAssignment(file: File): Promise<string> {
   try {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileText, Download, Eye, Clock, FileType } from 'lucide-react';
-import type { Resource } from '../../types/resource';
+import type { Resource } from '../../types/resource.js';
 
 interface ResourceListProps {
   resources: Resource[];

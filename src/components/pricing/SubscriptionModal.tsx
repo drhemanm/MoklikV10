@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { X, CreditCard, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+// @ts-ignore
 import { loadStripe } from '@stripe/stripe-js';
+// @ts-ignore
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
 

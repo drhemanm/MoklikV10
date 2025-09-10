@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import OpenAI from 'openai';
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
-import { env } from '../config/env';
+import { env } from '../config/env.js';
 
 // Initialize OpenAI client
 const openai = new OpenAI({

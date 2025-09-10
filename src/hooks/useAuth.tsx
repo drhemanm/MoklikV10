@@ -12,7 +12,7 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db, auth, googleProvider } from '../config/firebase';
+import { db, auth, googleProvider } from '../config/firebase.js';
 import toast from 'react-hot-toast';
 
 interface User {

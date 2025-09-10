@@ -1,9 +1,9 @@
 import { openAIService } from './openai';
-import { SystemPrompts } from './prompts';
-import type { Message } from '../../hooks/useChat';
-import { AIMessage } from './types';
-import { handleAIError } from './error-handler';
-import { env } from '../../config/env';
+import { SystemPrompts } from './prompts.js';
+import type { Message } from '../../hooks/useChat.js';
+import { AIMessage } from './types.js';
+import { handleAIError } from './error-handler.js';
+import { env } from '../../config/env.js';
 
 export async function getAIResponse(
   question: string,

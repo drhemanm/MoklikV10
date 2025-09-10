@@ -7,8 +7,8 @@ import {
   getDoc,
   setDoc
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import type { GamificationState, Achievement, StudyGoal } from '../../types/gamification';
+import { db } from '../../config/firebase.js';
+import type { GamificationState, Achievement, StudyGoal } from '../../types/gamification.js';
 
 export const gamificationService = {
   async initializeUser(userId: string) {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FileText, Download, Search, Filter } from 'lucide-react';
-import { ExamPaperService } from '../../services/firebase/examPapers';
-import type { ExamPaper, ExamPaperFilter } from '../../types/examPaper';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { ExamPaperService } from '../../services/firebase/examPapers.js';
+import type { ExamPaper, ExamPaperFilter } from '../../types/examPaper.js';
+import { LoadingSpinner } from '../ui/LoadingSpinner.js';
 
 export function ExamPaperList() {
   const [papers, setPapers] = useState<ExamPaper[]>([]);

@@ -10,8 +10,8 @@ import {
   Timestamp,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import type { Message } from '../../types/chat';
+import { db } from '../../config/firebase.js';
+import type { Message } from '../../types/chat.js';
 
 const MESSAGES_PER_PAGE = 50;
 

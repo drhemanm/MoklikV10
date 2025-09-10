@@ -1,4 +1,4 @@
-import { RateLimiter } from '../rateLimit';
+import { RateLimiter } from '../rateLimit.js';
 
 interface BruteForceConfig {
   maxFailedAttempts: number;

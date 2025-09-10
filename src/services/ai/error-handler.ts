@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from '../../config/errors';
+import { ERROR_MESSAGES } from '../../config/errors.js';
 
 export class AIServiceError extends Error {
   constructor(

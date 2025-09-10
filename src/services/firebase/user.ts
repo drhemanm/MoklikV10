@@ -8,8 +8,8 @@ import {
 } from 'firebase/firestore';
 import { deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth, storage } from '../../config/firebase';
-import { ref, deleteObject, listAll } from 'firebase/storage';
-import type { UserProfile } from '../../types/user';
+import { db, auth, storage } from '../../config/firebase.js';
+import type { UserProfile } from '../../types/user.js';
 
 export const userService = {
   async createUserProfile(userId: string, email: string): Promise<void> {

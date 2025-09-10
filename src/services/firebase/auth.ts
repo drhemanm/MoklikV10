@@ -3,13 +3,14 @@ import {
   UserCredential
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { RateLimiter } from '../rateLimit';
-import { BruteForceProtection } from '../security/bruteForceProtection';
-import { PasswordPolicy } from '../security/passwordPolicy';
-import { SessionManager } from '../security/sessionManager';
-import { auth, googleProvider } from '../../config/firebase';
-import { db } from '../../config/firebase';
-import { userService } from './user';
+import { RateLimiter } from '../rateLimit.js';
+import { BruteForceProtection } from '../security/bruteForceProtection.js';
+import { PasswordPolicy } from '../security/passwordPolicy.js';
+import { SessionManager } from '../security/sessionManager.js';
+import { auth, googleProvider } from '../../config/firebase.js';
+import { db } from '../../config/firebase.js';
+import { userService } from './user.js';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const bruteForceProtection = new BruteForceProtection();
 const sessionManager = new SessionManager();

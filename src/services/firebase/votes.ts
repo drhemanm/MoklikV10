@@ -4,8 +4,8 @@ import {
   runTransaction,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { userService } from './user';
+import { db } from '../../config/firebase.js';
+import { userService } from './user.js';
 
 export const voteService = {
   async vote(

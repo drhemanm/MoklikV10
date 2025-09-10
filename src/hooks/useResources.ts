@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ref, getDownloadURL, listAll, getMetadata, StorageReference } from 'firebase/storage';
 import { collection, query, where, getDocs, updateDoc, increment } from 'firebase/firestore';
-import { storage, db } from '../config/firebase';
-import type { Resource } from '../types/resource';
+import { storage, db } from '../config/firebase.js';
+import type { Resource } from '../types/resource.js';
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);

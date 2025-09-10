@@ -1,4 +1,4 @@
-import { cleanMathExpression } from '../../../utils/mathUtils';
+import { cleanMathExpression } from '../../../utils/mathUtils.js';
 
 export function processMessageContent(content: string): string {
   // Process LaTeX expressions

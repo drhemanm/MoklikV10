@@ -15,8 +15,8 @@ import {
   updateDoc,
   orderBy 
 } from 'firebase/firestore';
-import { storage, db } from '../../config/firebase';
-import { examPaperSchema, type ExamPaper, type ExamPaperFilter } from '../../types/examPaper';
+import { storage, db } from '../../config/firebase.js';
+import { examPaperSchema, type ExamPaper, type ExamPaperFilter } from '../../types/examPaper.js';
 
 export class ExamPaperService {
   private static STORAGE_PATH = 'exam-papers';

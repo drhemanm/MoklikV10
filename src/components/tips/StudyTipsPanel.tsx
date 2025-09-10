@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Lightbulb, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { studyTips, type StudyTip } from '../../data/studyTips';
-import { MathRenderer } from '../math/MathRenderer';
+import { studyTips, type StudyTip } from '../../data/studyTips.js';
+import { MathRenderer } from '../math/MathRenderer.js';
 
 interface StudyTipsPanelProps {
   currentTopic?: string;

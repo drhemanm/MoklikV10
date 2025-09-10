@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
-import { ConnectionManager } from './connectionManager';
-import { schema } from './schema';
-import { ExamPaper, Question } from '../../types/knowledge';
+import { ConnectionManager } from './connectionManager.js';
+import { schema } from './schema.js';
+import { ExamPaper, Question } from '../../types/knowledge.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const connectionManager = ConnectionManager.getInstance({

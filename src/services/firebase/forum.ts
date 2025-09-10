@@ -15,8 +15,8 @@ import {
   Timestamp,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import type { ForumTopic, ForumPost, SortOption } from '../../types/forum';
+import { db } from '../../config/firebase.js';
+import type { ForumTopic, ForumPost, SortOption } from '../../types/forum.js';
 
 const TOPICS_PER_PAGE = 20;
 const POSTS_PER_PAGE = 50;

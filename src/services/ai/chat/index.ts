@@ -1,9 +1,9 @@
-import { openAIService } from '../openai';
-import { SystemPrompts } from '../prompts';
-import type { Message } from '../../../hooks/useChat';
-import { AIMessage } from '../types';
-import { handleAIError } from '../error-handler';
-import { processMessageContent } from './message-processor';
+import { openAIService } from '../openai.js';
+import { SystemPrompts } from '../prompts.js';
+import type { Message } from '../../../hooks/useChat.js';
+import { AIMessage } from '../types.js';
+import { handleAIError } from '../error-handler.js';
+import { processMessageContent } from './message-processor.js';
 
 export async function getAIResponse(
   question: string,

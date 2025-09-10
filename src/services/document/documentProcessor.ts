@@ -1,5 +1,5 @@
-import { openai } from '../../config/openai';
-import { ERROR_MESSAGES } from '../../config/errors';
+import { openai } from '../../config/openai.js';
+import { ERROR_MESSAGES } from '../../config/errors.js';
 
 const CHATPDF_API_KEY = 'sec_XXXXXXXXXXXX'; // Replace with actual key
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB

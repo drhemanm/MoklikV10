@@ -1,6 +1,6 @@
 import React from 'react';
 import { InlineMath } from 'react-katex';
-import { cleanMathExpression } from '../../utils/mathUtils';
+import { cleanMathExpression } from '../../utils/mathUtils.js';
 
 interface InlineMathDisplayProps {
   content: string;

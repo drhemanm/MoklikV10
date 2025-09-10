@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { generateId } from '../utils/id';
-import { submitAssignment } from '../services/ai';
+import { generateId } from '../utils/id.js';
+import { submitAssignment } from '../services/ai/index.js';
 
 interface PendingAssignment {
   id: string;

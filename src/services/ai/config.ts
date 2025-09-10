@@ -1,4 +1,4 @@
-import { API_CONFIG } from '../../config/api';
+import { API_CONFIG } from '../../config/api.js';
 import { z } from 'zod';
 
 const aiConfigSchema = z.object({
