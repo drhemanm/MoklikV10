@@ -208,8 +208,9 @@ export const userService = {
       throw error;
     }
   }
-};
+
   async updateReputation(_userId: string, _amount: number): Promise<void> {
     // Placeholder implementation
     console.log('Update reputation not implemented');
   }
+};
