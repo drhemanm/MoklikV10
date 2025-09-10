@@ -52,7 +52,6 @@ export function ResourceUpload() {
         size: file.size,
         downloads: 0,
         path: `resources/${Date.now()}_${file.name}`,
-        updatedAt: Date.now()
       });
 
       // Reset form

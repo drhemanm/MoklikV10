@@ -119,17 +119,17 @@ export function ChatMessage({ message, onRegenerate }: ChatMessageProps) {
                     return <p className="mb-4">{children}</p>;
                   },
                   code({className, children, ...props}) {
-                    const isInline = !className;
+                  code({className, children}) {
                     return !isInline && className ? (
                       <SyntaxHighlighter
                         style={vscDarkPlus as any}
                         language={className.replace('language-', '')}
-                        {...props}
                       >
                         {String(children).replace(/\n$/, '')}
                       </SyntaxHighlighter>
                     ) : (
                       <code className={className} {...props}>
+                      <code className={className}>
                         {children}
                       </code>
                     );
