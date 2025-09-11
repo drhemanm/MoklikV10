@@ -1,11 +1,11 @@
 // src/hooks/useSubscription.js
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
-import { SubscriptionService } from '../services/subscriptionService';
+import { SubscriptionService } from '../services/SubscriptionService';
 
 export const useSubscription = () => {
   const { user } = useAuth();
-  const [subscription, setSubscription] = useState(null);
+  const [subscriptionSummary, setSubscriptionSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,7 +13,7 @@ export const useSubscription = () => {
     if (user) {
       loadSubscription();
     } else {
-      setSubscription(null);
+      setSubscriptionSummary(null);
       setLoading(false);
     }
   }, [user]);
@@ -22,8 +22,8 @@ export const useSubscription = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await SubscriptionService.getUserSubscription(user.uid);
-      setSubscription(data);
+      const summary = await SubscriptionService.getSubscriptionSummary(user.uid);
+      setSubscriptionSummary(summary);
     } catch (err) {
       setError(err.message);
       console.error('Error loading subscription:', err);
@@ -39,16 +39,16 @@ export const useSubscription = () => {
   };
 
   return {
-    subscription,
+    subscription: subscriptionSummary,
     loading,
     error,
     refreshSubscription,
     // Convenience getters
-    canAccess: subscription?.canAccess || false,
-    isInTrial: subscription?.isInTrial || false,
-    hasActiveSubscription: subscription?.hasActiveSubscription || false,
-    daysRemaining: subscription?.daysRemaining || 0,
-    subscriptionPlan: subscription?.plan || null,
-    subscriptionStatus: subscription?.status || null
+    canAccess: subscriptionSummary?.hasAccess || false,
+    isInTrial: subscriptionSummary?.isTrialUser || false,
+    hasActiveSubscription: subscriptionSummary?.hasAccess && !subscriptionSummary?.isTrialUser || false,
+    daysRemaining: subscriptionSummary?.daysRemaining || 0,
+    subscriptionPlan: subscriptionSummary?.plan || null,
+    subscriptionStatus: subscriptionSummary?.status || null
   };
 };
