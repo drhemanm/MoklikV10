@@ -327,6 +327,9 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <PricingSection openAuth={openAuth} />
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
