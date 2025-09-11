@@ -25,6 +25,7 @@ export default function App() {
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           
           {/* Protected Routes */}
           <Route path="/onboarding" element={
