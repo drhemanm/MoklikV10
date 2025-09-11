@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
+import AccessDenied from '../AccessDenied.jsx';
 import { Loader2 } from 'lucide-react';
 
 interface AuthGuardProps {
@@ -8,27 +10,32 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const { canAccess, loading: subscriptionLoading, isInTrial, daysRemaining } = useSubscription();
   const navigate = useNavigate();
-  const location = useLocation();
+
+  const isLoading = authLoading || subscriptionLoading;
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      // Don't redirect immediately, let the user see the login option
+    if (!authLoading && !user) {
       console.log('User not authenticated, staying on current page');
     }
-  }, [user, isLoading, navigate, location]);
+  }, [user, authLoading, navigate]);
 
+  // Show loading spinner while checking auth and subscription
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
     );
   }
 
+  // Check authentication first
   if (!user) {
-    // Show a login prompt instead of redirecting
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
@@ -47,5 +54,16 @@ export function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
+  // Check subscription access
+  if (!canAccess) {
+    return (
+      <AccessDenied 
+        trialExpired={!isInTrial} 
+        daysRemaining={daysRemaining} 
+      />
+    );
+  }
+
+  // User is authenticated and has access
   return <>{children}</>;
 }
