@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Brain, 
   Menu, 
@@ -8,18 +8,46 @@ import {
   MessageSquare, 
   PenTool,
   LogOut,
-  Mail
+  Mail,
+  ChevronDown,
+  User,
+  Settings,
+  CreditCard,
+  BarChart3,
+  Bell,
+  HelpCircle,
+  Crown,
+  Calendar,
+  Download,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Header() {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsAccountDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await logout();
+      setIsAccountDropdownOpen(false);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -37,8 +65,73 @@ export function Header() {
     { path: '/contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> }
   ];
 
+  // Mock user data - replace with real data from your auth/subscription system
+  const userPlan = 'Pro Plan'; // This should come from your subscription system
+  const trialDaysLeft = 15; // This should come from your subscription system
+  const isOnTrial = true; // This should come from your subscription system
+
+  const accountMenuItems = [
+    {
+      section: 'Account',
+      items: [
+        { 
+          label: 'Profile Settings', 
+          icon: <User className="w-4 h-4" />, 
+          action: () => navigate('/settings/profile'),
+          description: 'Manage your personal information'
+        },
+        { 
+          label: 'Preferences', 
+          icon: <Settings className="w-4 h-4" />, 
+          action: () => navigate('/settings/preferences'),
+          description: 'Customize your experience'
+        },
+        { 
+          label: 'Notifications', 
+          icon: <Bell className="w-4 h-4" />, 
+          action: () => navigate('/settings/notifications'),
+          description: 'Control email and push notifications'
+        }
+      ]
+    },
+    {
+      section: 'Subscription',
+      items: [
+        { 
+          label: 'Billing & Usage', 
+          icon: <CreditCard className="w-4 h-4" />, 
+          action: () => navigate('/billing'),
+          description: 'Manage payment methods and invoices'
+        },
+        { 
+          label: 'Usage Analytics', 
+          icon: <BarChart3 className="w-4 h-4" />, 
+          action: () => navigate('/analytics'),
+          description: 'View your learning progress and stats'
+        }
+      ]
+    },
+    {
+      section: 'Support',
+      items: [
+        { 
+          label: 'Help Center', 
+          icon: <HelpCircle className="w-4 h-4" />, 
+          action: () => window.open('/help', '_blank'),
+          description: 'Documentation and tutorials'
+        },
+        { 
+          label: 'Export Data', 
+          icon: <Download className="w-4 h-4" />, 
+          action: () => navigate('/settings/export'),
+          description: 'Download your learning data'
+        }
+      ]
+    }
+  ];
+
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-40">
+    <header className="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -54,9 +147,9 @@ export function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center space-x-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`flex items-center space-x-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive(item.path)
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-white shadow-sm'
                     : 'text-gray-600 hover:text-primary hover:bg-gray-50'
                 }`}
               >
@@ -69,27 +162,126 @@ export function Header() {
           {/* User Menu */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <>
-                <div className="hidden md:flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-medium text-primary">
-                      {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-gray-700 max-w-[150px] truncate">
-                    {user.displayName || user.email}
-                  </span>
-                </div>
-                
+              <div className="relative" ref={dropdownRef}>
+                {/* Account Dropdown Trigger */}
                 <button
-                  onClick={handleLogout}
-                  className="hidden md:flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
-                  aria-label="Logout"
+                  onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
+                  className="hidden md:flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 border border-transparent hover:border-gray-200"
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm">Logout</span>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                      {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-medium text-gray-900 max-w-[120px] truncate">
+                        {user.displayName || user.email?.split('@')[0]}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {isOnTrial ? `${trialDaysLeft} days left` : userPlan}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                    isAccountDropdownOpen ? 'rotate-180' : ''
+                  }`} />
                 </button>
-              </>
+
+                {/* Account Dropdown Menu */}
+                <AnimatePresence>
+                  {isAccountDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50"
+                    >
+                      {/* User Info Header */}
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-medium">
+                            {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-gray-900 truncate">
+                              {user.displayName || 'User'}
+                            </div>
+                            <div className="text-sm text-gray-500 truncate">
+                              {user.email}
+                            </div>
+                            <div className="flex items-center space-x-1 mt-1">
+                              {isOnTrial ? (
+                                <>
+                                  <Calendar className="w-3 h-3 text-orange-500" />
+                                  <span className="text-xs text-orange-600 font-medium">
+                                    Trial: {trialDaysLeft} days left
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <Crown className="w-3 h-3 text-yellow-500" />
+                                  <span className="text-xs text-gray-600 font-medium">
+                                    {userPlan}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        {accountMenuItems.map((section, sectionIndex) => (
+                          <div key={section.section}>
+                            {sectionIndex > 0 && <div className="border-t border-gray-100 my-2" />}
+                            <div className="px-4 py-1">
+                              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                {section.section}
+                              </div>
+                            </div>
+                            {section.items.map((item) => (
+                              <button
+                                key={item.label}
+                                onClick={() => {
+                                  item.action();
+                                  setIsAccountDropdownOpen(false);
+                                }}
+                                className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center space-x-3 group"
+                              >
+                                <div className="text-gray-400 group-hover:text-gray-600">
+                                  {item.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-medium text-gray-900 group-hover:text-gray-900">
+                                    {item.label}
+                                  </div>
+                                  <div className="text-xs text-gray-500 truncate">
+                                    {item.description}
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Logout Section */}
+                      <div className="border-t border-gray-100 mt-2 pt-2">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full px-4 py-2 text-left hover:bg-red-50 transition-colors duration-150 flex items-center space-x-3 group"
+                        >
+                          <LogOut className="w-4 h-4 text-gray-400 group-hover:text-red-500" />
+                          <div className="text-sm font-medium text-gray-700 group-hover:text-red-600">
+                            Sign Out
+                          </div>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
               <Link
                 to="/login"
@@ -137,37 +329,57 @@ export function Header() {
             
             <div className="pt-4 pb-3 border-t border-gray-200">
               {user && (
-                <div className="flex items-center px-3 py-2">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary">
+                <>
+                  <div className="flex items-center px-3 py-2">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                         {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
-                      </span>
+                      </div>
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-base font-medium text-gray-800">
+                        {user.displayName || 'User'}
+                      </div>
+                      <div className="text-sm font-medium text-gray-500">
+                        {user.email}
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        {isOnTrial ? `Trial: ${trialDaysLeft} days left` : userPlan}
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-3">
-                    <div className="text-base font-medium text-gray-800">
-                      {user.displayName || 'User'}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {user.email}
-                    </div>
+                  
+                  {/* Mobile Account Options */}
+                  <div className="mt-3 space-y-1">
+                    <Link
+                      to="/settings/profile"
+                      className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span>Profile Settings</span>
+                    </Link>
+                    <Link
+                      to="/billing"
+                      className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      <span>Billing</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-red-600 w-full text-left"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Sign Out</span>
+                    </button>
                   </div>
-                </div>
+                </>
               )}
-              
-              <div className="mt-3 space-y-1">
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-red-600 w-full text-left"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>
