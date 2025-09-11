@@ -12,7 +12,7 @@ import {
   updateDoc,
   setDoc 
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db } from '../config/firebase';
 
 export interface Subscription {
   id: string;
