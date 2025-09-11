@@ -14,9 +14,49 @@ import {
   Instagram,
   Mail,
   Phone,
-  PenTool
+  PenTool,
+  Users
 } from 'lucide-react';
 import { AuthModal } from '../components/auth/AuthModal';
+import { useUserCount } from '../hooks/useUserCount';
+
+// Live User Counter Component
+function LiveUserCounter() {
+  const { userCount, loading, error } = useUserCount();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center space-x-2 mb-4">
+        <div className="w-4 h-4 bg-blue-600 rounded-full animate-pulse"></div>
+        <span className="text-gray-600">Loading...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center space-x-2 mb-4">
+        <Users className="w-5 h-5 text-gray-500" />
+        <span className="text-gray-600">1,200+ students learning with Moklik</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center space-x-2 mb-4">
+      <div className="relative">
+        <Users className="w-5 h-5 text-blue-600" />
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+      </div>
+      <span className="text-gray-700 font-medium">
+        <span className="text-blue-600 font-bold text-lg">
+          {userCount.toLocaleString()}
+        </span>
+        {' '}students already learning with Moklik
+      </span>
+    </div>
+  );
+}
 
 export function LandingPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -40,6 +80,7 @@ export function LandingPage() {
             
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
               <Link to="/contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contact</Link>
             </div>
 
@@ -70,12 +111,15 @@ export function LandingPage() {
               <span className="text-blue-600 block">O-Level Success</span>
             </h1>
             
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 mb-6 max-w-3xl mx-auto leading-relaxed">
               Get instant help on past papers, master problem-solving step-by-step, 
               and track your progress with Mauritius' most advanced AI mathematics tutor.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            {/* Live User Counter */}
+            <LiveUserCounter />
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 mt-8">
               <Link
                 to="/demo"
                 className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg flex items-center space-x-2"
@@ -85,7 +129,7 @@ export function LandingPage() {
               </Link>
               
               <button
-                onClick={() => openAuth('register' as any)}
+                onClick={() => openAuth('register')}
                 className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transition-all"
               >
                 Start Free Trial
@@ -342,6 +386,7 @@ export function LandingPage() {
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><Link to="/demo" className="hover:text-white transition-colors">Try Demo</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               </ul>
