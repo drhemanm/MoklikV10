@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export interface UserSubscription {
@@ -252,6 +252,27 @@ export class SubscriptionService {
     } catch (error) {
       console.error('Error transitioning existing user:', error);
       throw new Error('Failed to transition existing user');
+    }
+  }
+
+  /**
+   * Delete user account and all associated subscription data
+   */
+  static async deleteUserAccount(userId: string): Promise<void> {
+    try {
+      // Delete subscription data
+      await deleteDoc(doc(db, 'subscriptions', userId));
+      
+      // Note: You may also want to delete other user data collections
+      // Example: chat history, progress data, etc.
+      // await deleteDoc(doc(db, 'userProgress', userId));
+      // await deleteDoc(doc(db, 'chatHistory', userId));
+      // await deleteDoc(doc(db, 'userAchievements', userId));
+      
+      console.log('User subscription data deleted successfully');
+    } catch (error) {
+      console.error('Error deleting user subscription data:', error);
+      throw new Error('Failed to delete subscription data');
     }
   }
 }
