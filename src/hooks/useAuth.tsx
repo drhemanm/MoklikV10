@@ -181,8 +181,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error.code === 'auth/popup-closed-by-user') {
         toastLib.error('Sign in was cancelled');
       } else {
-        toastLib.error('Failed to sign out');
-      } else {
         toastLib.error('Failed to sign in with Google');
       }
       throw error;
