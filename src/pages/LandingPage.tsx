@@ -40,7 +40,6 @@ export function LandingPage() {
             
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors">Reviews</a>
               <Link to="/contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contact</Link>
             </div>
 
@@ -284,109 +283,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Students Are Saying
-            </h2>
-            <p className="text-xl text-gray-600">
-              Join thousands of students who've improved their grades with Moklik
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 italic">
-                "Moklik helped me understand calculus concepts I was struggling with for months. 
-                The step-by-step explanations are amazing!"
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                  A
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Anisha P.</p>
-                  <p className="text-sm text-gray-600">Form 5, Royal College</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 italic">
-                "I went from failing to getting A's in Additional Maths. The past paper practice 
-                with instant feedback made all the difference."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
-                  R
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Raj M.</p>
-                  <p className="text-sm text-gray-600">Form 5, QEC</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-8 rounded-2xl">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 italic">
-                "The mobile app is perfect for studying on the bus. I can scan problems from 
-                my textbook and get solutions instantly!"
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                  S
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Sarah L.</p>
-                  <p className="text-sm text-gray-600">Form 4, Loreto College</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center text-white">
-            <div>
-              <div className="text-4xl font-bold mb-2">5,000+</div>
-              <p className="text-blue-100">Active Students</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">50,000+</div>
-              <p className="text-blue-100">Problems Solved</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">95%</div>
-              <p className="text-blue-100">Grade Improvement</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <p className="text-blue-100">AI Support</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -394,7 +290,7 @@ export function LandingPage() {
             Ready to Transform Your Math Skills?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join thousands of students who've already improved their grades with Moklik's AI tutoring
+            Experience the power of AI tutoring and unlock your potential in mathematics
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -446,7 +342,6 @@ export function LandingPage() {
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
                 <li><Link to="/demo" className="hover:text-white transition-colors">Try Demo</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               </ul>
