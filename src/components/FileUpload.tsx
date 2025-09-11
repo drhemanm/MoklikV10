@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Upload, FileText, X } from 'lucide-react';
-import { DocumentProcessor } from '../services/document/documentProcessor.js';
-import { LoadingSpinner } from './ui/LoadingSpinner.js';
-import { ChatContainer } from './chat/ChatContainer.js';
+import { DocumentProcessor } from '../services/document/documentProcessor';
+import { LoadingSpinner } from './ui/LoadingSpinner';
+import { ChatContainer } from './chat/ChatContainer';
+import { SubscriptionGate } from './subscription/SubscriptionGate';
 
 const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID;
 
@@ -27,7 +28,7 @@ export function FileUpload() {
       try {
         // Handle image files with AI analysis
         if (file.type.startsWith('image/')) {
-          const { ImageAnalysisService } = await import('../services/ai/imageAnalysis.js');
+          const { ImageAnalysisService } = await import('../services/ai/imageAnalysis');
           
           // Validate file first
           const validation = ImageAnalysisService.validateImageFile(file);
@@ -98,81 +99,86 @@ export function FileUpload() {
   };
 
   return (
-    <div className="space-y-6">
-      <div
-        onClick={() => fileInputRef.current?.click()}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors relative
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="hidden"
-          accept=".pdf,.txt,.doc,.docx"
-          multiple
-          onChange={(e) => handleFileSelect(e.target.files)}
-        />
-        
-        {isProcessing && (
-          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center">
-            <div className="text-center">
-              <LoadingSpinner />
-              <div className="mt-2">
-                <p className="text-sm text-gray-600">Processing file...</p>
-                <div className="w-48 h-2 bg-gray-200 rounded-full mt-2">
-                  <div
-                    className="h-2 bg-blue-600 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
+    <SubscriptionGate 
+      feature="Document Upload & AI Analysis" 
+      fallbackMessage="Upload and analyze your math homework, PDFs, and images with AI-powered assistance. Subscribe to unlock unlimited document processing."
+    >
+      <div className="space-y-6">
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors relative
+            ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept=".pdf,.txt,.doc,.docx,image/*"
+            multiple
+            onChange={(e) => handleFileSelect(e.target.files)}
+          />
+          
+          {isProcessing && (
+            <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center">
+              <div className="text-center">
+                <LoadingSpinner />
+                <div className="mt-2">
+                  <p className="text-sm text-gray-600">Processing file...</p>
+                  <div className="w-48 h-2 bg-gray-200 rounded-full mt-2">
+                    <div
+                      className="h-2 bg-blue-600 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {Math.round(uploadProgress)}%
+                  </p>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  {Math.round(uploadProgress)}%
-                </p>
               </div>
             </div>
-          </div>
-        )}
-        
-        {error && (
-          <div className="absolute top-2 right-2 bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm flex items-center">
-            <span>{error}</span>
-            <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setError('')} />
-          </div>
-        )}
-        <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-        <p className="text-sm text-gray-600">
-          {isDragging
-            ? 'Drop your files here...'
-            : 'Drag & drop your documents here, or click to select files'}
-        </p>
-        <p className="text-xs text-gray-500 mt-1">
-          Supported formats: PDF, TXT, DOC, DOCX (max 10MB)
-        </p>
-      </div>
-
-      {currentDocument && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="w-5 h-5 text-blue-600" />
-              <h3 className="font-medium text-gray-900">{currentDocument.name}</h3>
-            </div>
-            <button
-              onClick={() => setCurrentDocument(null)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          )}
           
-          <div className="border-t border-gray-200 pt-4">
-            <ChatContainer topic="document-review" />
-          </div>
+          {error && (
+            <div className="absolute top-2 right-2 bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm flex items-center">
+              <span>{error}</span>
+              <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setError('')} />
+            </div>
+          )}
+          <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+          <p className="text-sm text-gray-600">
+            {isDragging
+              ? 'Drop your files here...'
+              : 'Drag & drop your documents here, or click to select files'}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Supported formats: PDF, TXT, DOC, DOCX, Images (max 10MB)
+          </p>
         </div>
-      )}
-    </div>
+
+        {currentDocument && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                <h3 className="font-medium text-gray-900">{currentDocument.name}</h3>
+              </div>
+              <button
+                onClick={() => setCurrentDocument(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="border-t border-gray-200 pt-4">
+              <ChatContainer topic="document-review" />
+            </div>
+          </div>
+        )}
+      </div>
+    </SubscriptionGate>
   );
 }
