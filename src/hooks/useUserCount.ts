@@ -1,42 +1,32 @@
+// src/hooks/useUserCount.ts
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { UserInitializationService } from '../services/userInitializationService';
 
 export function useUserCount() {
   const [userCount, setUserCount] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      // Listen to real-time changes in the users collection
-      const usersRef = collection(db, 'users');
-      
-      const unsubscribe = onSnapshot(
-        usersRef,
-        (snapshot) => {
-          const count = snapshot.size; // Total number of documents
-          setUserCount(count);
-          setLoading(false);
-          setError(null);
-        },
-        (err) => {
-          console.error('Error fetching user count:', err);
-          setError('Failed to load user count');
-          setLoading(false);
-          // Fallback to a reasonable number if Firebase fails
-          setUserCount(1247);
-        }
-      );
+    const fetchUserCount = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const count = await UserInitializationService.getUserCount();
+        setUserCount(count);
+        
+      } catch (err) {
+        console.error('Error in useUserCount:', err);
+        setError('Failed to load user count');
+        // Set a fallback count instead of leaving it at 0
+        setUserCount(1200); // Show a nice fallback number
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      return () => unsubscribe();
-    } catch (err) {
-      console.error('Error setting up user count listener:', err);
-      setError('Failed to connect to database');
-      setLoading(false);
-      // Fallback number
-      setUserCount(1247);
-    }
+    fetchUserCount();
   }, []);
 
   return { userCount, loading, error };
