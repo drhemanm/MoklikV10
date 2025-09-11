@@ -23,6 +23,7 @@ export default function App() {
           <Route path="/demo" element={<DemoMode />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           
           {/* Protected Routes */}
           <Route path="/onboarding" element={
