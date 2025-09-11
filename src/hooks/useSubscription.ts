@@ -1,126 +1,174 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth.js';
-import { stripeService, SUBSCRIPTION_PLANS } from '../services/subscription/stripeService.js';
-import { toast as toastLib } from 'react-hot-toast';
+import { SubscriptionService, UserSubscription } from '../services/subscriptionService';
+import { useAuth } from './useAuth';
+
+interface SubscriptionStatus {
+  subscription: UserSubscription | null;
+  hasAccess: boolean;
+  status: string;
+  plan: string;
+  daysRemaining: number;
+  isTrialUser: boolean;
+  loading: boolean;
+  error: string | null;
+}
 
 export function useSubscription() {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
-  const [subscriptionStatus, setSubscriptionStatus] = useState<{
-    active: boolean;
-    plan?: string;
-    trialEnd?: Date;
-    renewalDate?: Date;
-  }>({ active: false });
+  const [subscriptionData, setSubscriptionData] = useState<SubscriptionStatus>({
+    subscription: null,
+    hasAccess: false,
+    status: 'unknown',
+    plan: 'none',
+    daysRemaining: 0,
+    isTrialUser: false,
+    loading: true,
+    error: null
+  });
 
   useEffect(() => {
-    if (user) {
-      loadSubscriptionStatus();
-    } else {
-      setIsLoading(false);
-      setSubscriptionStatus({ active: false });
-    }
-  }, [user]);
-
-  const loadSubscriptionStatus = async () => {
-    if (!user) return;
-    
-    setIsLoading(true);
-    try {
-      const status = await stripeService.getSubscriptionStatus(user.uid);
-      setSubscriptionStatus(status);
-    } catch (error) {
-      console.error('Error loading subscription status:', error);
-      toastLib.error('Failed to load subscription information');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const startTrial = async () => {
     if (!user) {
-      toastLib.error('Please sign in to start a trial');
+      setSubscriptionData({
+        subscription: null,
+        hasAccess: false,
+        status: 'not_logged_in',
+        plan: 'none',
+        daysRemaining: 0,
+        isTrialUser: false,
+        loading: false,
+        error: null
+      });
       return;
     }
-    
-    setIsLoading(true);
+
+    loadSubscriptionData();
+  }, [user]);
+
+  const loadSubscriptionData = async () => {
+    if (!user) return;
+
     try {
-      const result = await stripeService.startTrial(user.uid);
-      setSubscriptionStatus({
-        active: true,
-        plan: 'trial',
-        trialEnd: result.trialEndDate
+      setSubscriptionData(prev => ({ ...prev, loading: true, error: null }));
+
+      // Get or create subscription for user
+      let subscription = await SubscriptionService.getUserSubscription(user.uid);
+      
+      // If no subscription exists, initialize trial for new/existing user
+      if (!subscription) {
+        subscription = await SubscriptionService.transitionExistingUser(user.uid);
+      }
+
+      // Get subscription summary
+      const summary = await SubscriptionService.getSubscriptionSummary(user.uid);
+
+      setSubscriptionData({
+        subscription,
+        hasAccess: summary.hasAccess,
+        status: summary.status,
+        plan: summary.plan,
+        daysRemaining: summary.daysRemaining,
+        isTrialUser: summary.isTrialUser,
+        loading: false,
+        error: null
       });
-      toastLib.success('Your 7-day free trial has started!');
-      return true;
     } catch (error) {
-      console.error('Error starting trial:', error);
-      toastLib.error('Failed to start trial. Please try again.');
-      return false;
-    } finally {
-      setIsLoading(false);
+      console.error('Error loading subscription data:', error);
+      setSubscriptionData(prev => ({
+        ...prev,
+        loading: false,
+        error: 'Failed to load subscription data'
+      }));
     }
   };
 
-  const createSubscription = async (_paymentMethodId: string, planId: string) => {
-    if (!user) {
-      toastLib.error('Please sign in to subscribe');
-      return false;
-    }
-    
-    setIsLoading(true);
+  const upgradeSubscription = async (plan: 'monthly' | 'yearly', paypalSubscriptionId: string) => {
+    if (!user) throw new Error('User not authenticated');
+
     try {
-      // In a real implementation, this would create a customer and subscription
-      // For demo purposes, we're simulating the response
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const renewalDate = new Date();
-      renewalDate.setDate(renewalDate.getDate() + 30);
-      
-      setSubscriptionStatus({
-        active: true,
-        plan: planId,
-        renewalDate
-      });
-      
-      toastLib.success('Subscription successful!');
-      return true;
+      await SubscriptionService.upgradeToSubscription(user.uid, plan, paypalSubscriptionId);
+      await loadSubscriptionData(); // Refresh data
     } catch (error) {
-      console.error('Error creating subscription:', error);
-      toastLib.error('Failed to process subscription. Please try again.');
-      return false;
-    } finally {
-      setIsLoading(false);
+      console.error('Error upgrading subscription:', error);
+      throw error;
     }
   };
 
   const cancelSubscription = async () => {
-    if (!user) return false;
-    
-    setIsLoading(true);
+    if (!user) throw new Error('User not authenticated');
+
     try {
-      // In a real implementation, this would cancel the subscription
-      // For demo purposes, we're simulating the response
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSubscriptionStatus({ active: false });
-      toastLib.success('Subscription canceled successfully');
-      return true;
+      await SubscriptionService.cancelSubscription(user.uid);
+      await loadSubscriptionData(); // Refresh data
     } catch (error) {
-      console.error('Error canceling subscription:', error);
-      toastLib.error('Failed to cancel subscription. Please try again.');
-      return false;
-    } finally {
-      setIsLoading(false);
+      console.error('Error cancelling subscription:', error);
+      throw error;
     }
   };
 
+  const refreshSubscription = () => {
+    loadSubscriptionData();
+  };
+
+  // Helper functions for UI
+  const getStatusMessage = (): string => {
+    if (subscriptionData.loading) return 'Loading...';
+    if (subscriptionData.error) return 'Error loading subscription';
+    
+    if (subscriptionData.isTrialUser) {
+      if (subscriptionData.hasAccess) {
+        return `${subscriptionData.daysRemaining} days left in free trial`;
+      } else {
+        return 'Free trial has expired';
+      }
+    }
+
+    if (subscriptionData.status === 'active') {
+      return `${subscriptionData.plan.charAt(0).toUpperCase() + subscriptionData.plan.slice(1)} plan - ${subscriptionData.daysRemaining} days remaining`;
+    }
+
+    if (subscriptionData.status === 'expired') {
+      return 'Subscription has expired';
+    }
+
+    if (subscriptionData.status === 'cancelled') {
+      return 'Subscription cancelled';
+    }
+
+    return 'No active subscription';
+  };
+
+  const getStatusColor = (): string => {
+    if (subscriptionData.hasAccess) {
+      if (subscriptionData.isTrialUser) {
+        return subscriptionData.daysRemaining <= 3 ? 'text-orange-600' : 'text-green-600';
+      }
+      return 'text-green-600';
+    }
+    return 'text-red-600';
+  };
+
+  const needsPayment = (): boolean => {
+    return !subscriptionData.hasAccess || 
+           (subscriptionData.isTrialUser && subscriptionData.daysRemaining <= 7);
+  };
+
+  const isExpiringSoon = (): boolean => {
+    return subscriptionData.hasAccess && subscriptionData.daysRemaining <= 7;
+  };
+
   return {
-    isLoading,
-    subscriptionStatus,
-    startTrial,
-    createSubscription,
+    // Data
+    ...subscriptionData,
+    
+    // Actions
+    upgradeSubscription,
     cancelSubscription,
-    plans: SUBSCRIPTION_PLANS
+    refreshSubscription,
+    
+    // Helpers
+    getStatusMessage,
+    getStatusColor,
+    needsPayment,
+    isExpiringSoon
   };
 }
