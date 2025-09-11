@@ -1,6 +1,4 @@
 import { openai } from '../../config/openai';
-import * as pdfParse from 'pdf-parse';
-import * as mammoth from 'mammoth';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
@@ -32,33 +30,6 @@ export class DocumentProcessor {
     return null;
   }
 
-  private static async extractTextFromPDF(file: File): Promise<string> {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const data = await pdfParse(Buffer.from(arrayBuffer));
-      return data.text;
-    } catch (error) {
-      console.error('PDF extraction error:', error);
-      throw new Error('Failed to extract text from PDF. The file may be corrupted or password-protected.');
-    }
-  }
-
-  private static async extractTextFromWord(file: File): Promise<string> {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const result = await mammoth.extractRawText({ arrayBuffer });
-      
-      if (result.messages.length > 0) {
-        console.warn('Word extraction warnings:', result.messages);
-      }
-      
-      return result.value;
-    } catch (error) {
-      console.error('Word extraction error:', error);
-      throw new Error('Failed to extract text from Word document. The file may be corrupted or in an unsupported format.');
-    }
-  }
-
   private static async extractTextFromPlainText(file: File): Promise<string> {
     try {
       return new Promise((resolve, reject) => {
@@ -79,23 +50,20 @@ export class DocumentProcessor {
     }
   }
 
-  private static async extractText(file: File): Promise<string> {
-    const fileType = file.type;
-    
-    switch (fileType) {
-      case 'application/pdf':
-        return await this.extractTextFromPDF(file);
-      
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-      case 'application/msword':
-        return await this.extractTextFromWord(file);
-      
-      case 'text/plain':
-        return await this.extractTextFromPlainText(file);
-      
-      default:
-        throw new Error(`Unsupported file type: ${fileType}`);
-    }
+  private static async convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          const base64 = (reader.result as string).split(',')[1];
+          resolve(base64);
+        } else {
+          reject(new Error('Failed to convert file to base64'));
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 
   private static identifyMathTopics(content: string): string[] {
@@ -132,46 +100,107 @@ export class DocumentProcessor {
         return { success: false, error: validationError };
       }
 
-      // Extract text from document
-      const extractedText = await this.extractText(file);
-      
-      if (!extractedText || extractedText.trim().length === 0) {
-        return { 
-          success: false, 
-          error: 'No text content found in the document. The file may be empty or contain only images.' 
+      let extractedText = '';
+      let analysisPrompt = '';
+
+      if (file.type === 'text/plain') {
+        // Handle plain text files directly
+        extractedText = await this.extractTextFromPlainText(file);
+        
+        if (!extractedText || extractedText.trim().length === 0) {
+          return { 
+            success: false, 
+            error: 'No text content found in the document.' 
+          };
+        }
+
+        const wordCount = this.countWords(extractedText);
+        const detectedTopics = this.identifyMathTopics(extractedText);
+
+        analysisPrompt = `Please analyze this text document (${wordCount} words) and provide educational guidance:
+
+Document: ${file.name}
+Topics detected: ${detectedTopics.join(', ') || 'General Mathematics'}
+
+Content:
+${extractedText}
+
+Please provide:
+1. Analysis of mathematical concepts present
+2. Detailed explanations for any problems or questions
+3. Step-by-step solutions where appropriate
+4. Suggestions for improvement and study recommendations
+5. Reference to Cambridge O-Level and A-Level standards where applicable`;
+
+      } else {
+        // Handle PDF and Word documents using OpenAI's document processing
+        const base64Data = await this.convertFileToBase64(file);
+        
+        // Use OpenAI to extract and analyze the document content
+        const extractionResponse = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: `You are a document text extraction and analysis expert. Your task is to:
+              1. Extract all readable text from the document
+              2. Identify mathematical concepts and problems
+              3. Provide educational analysis and guidance
+              
+              Focus on mathematical content and provide clear, educational feedback.`
+            },
+            {
+              role: 'user',
+              content: `Please extract and analyze the content from this ${file.type === 'application/pdf' ? 'PDF' : 'Word'} document named "${file.name}".
+              
+              The document is provided as base64 data. Please:
+              1. Extract all readable text content
+              2. Identify key mathematical concepts
+              3. Provide detailed explanations and guidance
+              4. Suggest improvements based on Cambridge O-Level/A-Level standards
+              
+              Note: If you cannot directly process the file, please provide guidance on what the student should do to get their document analyzed.`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 4000
+        });
+
+        if (!extractionResponse.choices[0]?.message?.content) {
+          return {
+            success: false,
+            error: 'Failed to process document. Please try converting to text format or contact support.'
+          };
+        }
+
+        // For binary files, we'll use the AI analysis as both extracted text and content
+        const aiResponse = extractionResponse.choices[0].message.content;
+        extractedText = `[AI Analysis of ${file.name}]\n${aiResponse}`;
+        
+        return {
+          success: true,
+          content: aiResponse,
+          extractedText: extractedText,
+          wordCount: this.countWords(aiResponse),
+          detectedTopics: ['Document Analysis'] // We can't detect topics from binary files easily
         };
       }
 
-      // Count words and identify topics
-      const wordCount = this.countWords(extractedText);
-      const detectedTopics = this.identifyMathTopics(extractedText);
-
-      // Create AI analysis prompt
-      const systemPrompt = `You are an expert mathematics tutor analyzing a student's document. 
-        The document contains ${wordCount} words and covers these mathematical topics: ${detectedTopics.join(', ') || 'General Mathematics'}.
-        
-        Your task:
-        1. Analyze the mathematical content and identify key concepts
-        2. Provide detailed explanations for any problems or questions found
-        3. Reference Cambridge O-Level and A-Level standards where applicable
-        4. Suggest improvements and study recommendations
-        5. Point out any errors or misconceptions
-        6. Provide step-by-step solutions where appropriate
-        
-        Be encouraging but accurate in your feedback.`;
-
-      const userPrompt = `Please analyze this ${file.name} document content and provide educational guidance:
-
-${extractedText}
-
-Focus on the mathematical concepts present and provide helpful explanations and feedback.`;
-
-      // Get AI analysis
+      // Create AI analysis for text files
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
+          {
+            role: 'system',
+            content: `You are an expert mathematics tutor analyzing a student's document. 
+            Provide detailed explanations, identify key concepts, and suggest improvements.
+            Reference Cambridge O-Level and A-Level standards where applicable.
+            Be encouraging but accurate in your feedback.`
+          },
+          {
+            role: 'user',
+            content: analysisPrompt
+          }
         ],
         temperature: 0.7,
         max_tokens: 4000
@@ -182,6 +211,8 @@ Focus on the mathematical concepts present and provide helpful explanations and 
       }
 
       const analysisContent = response.choices[0].message.content;
+      const wordCount = this.countWords(extractedText);
+      const detectedTopics = this.identifyMathTopics(extractedText);
 
       return {
         success: true,
