@@ -1,16 +1,19 @@
 import { ProgressDisplay } from './ProgressDisplay.js';
 import { useTopics } from '../hooks/useTopics.js';
 import { TopicProgress } from './TopicProgress.js';
+import { SubscriptionStatus } from '../components/SubscriptionStatus';
 
 export function StudentDashboard() {
   const { selectedTopic, topics } = useTopics();
-
   const currentTopic = selectedTopic 
     ? topics.find((t: any) => t.id === selectedTopic)
     : null;
 
   return (
     <div className="space-y-8">
+      {/* Subscription Status - Added at the top */}
+      <SubscriptionStatus />
+      
       <ProgressDisplay />
       
       {currentTopic && (
