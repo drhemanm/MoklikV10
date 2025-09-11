@@ -3,9 +3,9 @@ import { useSubscription } from '../../hooks/useSubscription.js';
 import { Link } from 'react-router-dom';
 
 export function SubscriptionStatus() {
-  const { isLoading, subscriptionStatus, cancelSubscription } = useSubscription();
+  const { subscription, loading, error, isActive, plan } = useSubscription();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
@@ -15,7 +15,7 @@ export function SubscriptionStatus() {
     );
   }
 
-  if (!subscriptionStatus.active) {
+  if (!isActive) {
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border">
         <div className="flex items-center space-x-3 mb-4">
@@ -35,10 +35,10 @@ export function SubscriptionStatus() {
     );
   }
 
-  if (subscriptionStatus.plan === 'trial') {
-    const daysLeft = subscriptionStatus.trialEnd 
-      ? Math.ceil((subscriptionStatus.trialEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-      : 0;
+  if (plan === 'free') {
+    const daysLeft = subscription?.trialEndDate 
+      ? Math.ceil((subscription.trialEndDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      : 30;
 
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border">
@@ -50,7 +50,7 @@ export function SubscriptionStatus() {
           You have <span className="font-semibold text-blue-600">{daysLeft} days</span> left in your free trial.
         </p>
         <p className="text-gray-600 mb-6">
-          Your trial will end on {subscriptionStatus.trialEnd?.toLocaleDateString()}.
+          Your trial will end on {subscription?.trialEndDate?.toLocaleDateString()}.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
@@ -59,12 +59,6 @@ export function SubscriptionStatus() {
           >
             Upgrade Now
           </Link>
-          <button
-            onClick={cancelSubscription}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Cancel Trial
-          </button>
         </div>
       </div>
     );
@@ -88,7 +82,7 @@ export function SubscriptionStatus() {
         <div className="flex items-center justify-between">
           <span className="text-gray-600">Next billing date</span>
           <span className="font-medium">
-            {subscriptionStatus.renewalDate?.toLocaleDateString() || 'N/A'}
+            {subscription?.updatedAt?.toLocaleDateString() || 'N/A'}
           </span>
         </div>
         <div className="flex items-center justify-between">
@@ -103,7 +97,6 @@ export function SubscriptionStatus() {
           Update Payment
         </button>
         <button
-          onClick={cancelSubscription}
           className="px-6 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors"
         >
           Cancel Subscription
