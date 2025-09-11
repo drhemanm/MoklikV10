@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Crown, AlertTriangle, CheckCircle, CreditCard } from 'lucide-react';
 import { useSubscription } from '../hooks/useSubscription';
+import { AccountDeletionButton } from './AccountDeletion';
 
 interface SubscriptionStatusProps {
   showDetails?: boolean;
@@ -172,6 +173,12 @@ export function SubscriptionStatus({ showDetails = true, compact = false }: Subs
               </p>
             </div>
           )}
+
+          {/* Account Management Section */}
+          <div className="pt-4 border-t border-gray-200">
+            <h4 className="font-medium text-gray-900 mb-3">Account Management</h4>
+            <AccountDeletionButton />
+          </div>
         </div>
       )}
     </div>
