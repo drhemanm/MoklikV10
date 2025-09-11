@@ -36,9 +36,52 @@ export function SubscriptionStatus() {
   }
 
   if (plan === 'free') {
-    const daysLeft = subscription?.trialEndDate 
-      ? Math.ceil((new Date(subscription.trialEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-      : 30;
+    // Helper function to safely convert Firestore timestamp or date
+    const getDateFromFirestore = (dateValue: any): Date | null => {
+      if (!dateValue) return null;
+      
+      try {
+        // Check if it's a Firestore timestamp with toDate method
+        if (dateValue.toDate && typeof dateValue.toDate === 'function') {
+          return dateValue.toDate();
+        }
+        
+        // Check if it's already a Date object
+        if (dateValue instanceof Date) {
+          return dateValue;
+        }
+        
+        // Try to create a Date from the value
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) {
+          return null;
+        }
+        
+        return date;
+      } catch (error) {
+        console.error('Error converting date:', error);
+        return null;
+      }
+    };
+
+    // Calculate days left with proper error handling
+    let daysLeft = 30; // Default fallback
+    let endDateText = 'Soon';
+    
+    const trialEndDate = getDateFromFirestore(subscription?.trialEndDate);
+    
+    if (trialEndDate) {
+      const now = new Date();
+      const timeDiff = trialEndDate.getTime() - now.getTime();
+      const calculatedDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      
+      // Ensure we have a valid number
+      if (!isNaN(calculatedDays)) {
+        daysLeft = Math.max(0, calculatedDays); // Don't show negative days
+      }
+      
+      endDateText = trialEndDate.toLocaleDateString();
+    }
 
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border">
@@ -50,7 +93,7 @@ export function SubscriptionStatus() {
           You have <span className="font-semibold text-blue-600">{daysLeft} days</span> left in your free trial.
         </p>
         <p className="text-gray-600 mb-6">
-          Your trial will end on {subscription?.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'Unknown date'}.
+          Your trial will end on {endDateText}.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
