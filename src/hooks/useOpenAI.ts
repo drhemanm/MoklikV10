@@ -10,7 +10,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true
 });
 
-const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID || 'asst_KpFlU9Rxd4LGJMbYY9KCXrmm';
+const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID || 'asst_gGOP7TnOmuzW6yrkDaE7jmWa';
 
 interface Message {
   id: string;
