@@ -5,10 +5,19 @@ import { auth } from '../config/firebase';
 import { UserInitializationService, SubscriptionData } from '../services/userInitializationService';
 
 export function useSubscription() {
-  const [user] = useAuthState(auth);
+  const [user, setUser] = useState<User | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Listen to auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchSubscription = async () => {
