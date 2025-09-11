@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { deleteUser } from 'firebase/auth';
 import { SubscriptionService, UserSubscription } from '../services/subscriptionService';
 import { useAuth } from './useAuth';
 
@@ -105,6 +106,30 @@ export function useSubscription() {
     }
   };
 
+  const deleteAccount = async () => {
+    if (!user) throw new Error('User not authenticated');
+
+    try {
+      // Delete subscription and user data from Firestore
+      await SubscriptionService.deleteUserAccount(user.uid);
+      
+      // Delete Firebase Auth account
+      // Note: This requires recent authentication for security
+      await deleteUser(user);
+      
+      console.log('Account deleted successfully');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      
+      // Handle specific Firebase Auth errors
+      if (error.code === 'auth/requires-recent-login') {
+        throw new Error('Please log out and log back in before deleting your account for security reasons.');
+      }
+      
+      throw new Error('Failed to delete account. Please try again or contact support.');
+    }
+  };
+
   const refreshSubscription = () => {
     loadSubscriptionData();
   };
@@ -163,6 +188,7 @@ export function useSubscription() {
     // Actions
     upgradeSubscription,
     cancelSubscription,
+    deleteAccount,
     refreshSubscription,
     
     // Helpers
