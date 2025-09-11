@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { AuthModal } from '../components/auth/AuthModal';
 import { useUserCount } from '../hooks/useUserCount';
+import { PricingSection } from '../components/PricingSection';
 
 // Live User Counter Component
 function LiveUserCounter() {
@@ -391,8 +392,7 @@ export function LandingPage() {
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><Link to="/demo" className="hover:text-white transition-colors">Try Demo</Link></li>
-                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               </ul>
             </div>
 
