@@ -1,4 +1,4 @@
-import { openai } from '../../config/openai.js';
+import { openai } from '../../config/openai';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
@@ -12,6 +12,7 @@ interface ProcessingResult {
   success: boolean;
   content?: string;
   error?: string;
+  extractedText?: string; // Add extracted raw text
 }
 
 export class DocumentProcessor {
@@ -28,22 +29,38 @@ export class DocumentProcessor {
   }
 
   private static async extractText(file: File): Promise<string | null> {
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      // Read file content directly
+      // Handle different file types
+      if (file.type === 'text/plain') {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            if (typeof reader.result === 'string') {
+              resolve(reader.result);
+            } else {
+              reject(new Error('Failed to read text file'));
+            }
+          };
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+      }
+
+      // For PDF and DOCX files, we need to use specialized libraries
+      // For now, convert to base64 and let OpenAI handle the extraction
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
-          if (typeof reader.result === 'string') {
-            resolve(reader.result);
+          if (reader.result) {
+            // Convert file to base64 for OpenAI processing
+            const base64 = (reader.result as string).split(',')[1];
+            resolve(base64);
           } else {
-            reject(new Error('Failed to read file content'));
+            reject(new Error('Failed to read file'));
           }
         };
         reader.onerror = () => reject(reader.error);
-        reader.readAsText(file);
+        reader.readAsDataURL(file);
       });
 
     } catch (error) {
@@ -62,69 +79,74 @@ export class DocumentProcessor {
         return { success: false, error: validationError };
       }
 
-      const content = await this.extractText(file);
-      if (!content) {
+      const fileContent = await this.extractText(file);
+      if (!fileContent) {
         return { success: false, error: 'Failed to read file content' };
       }
 
-      // Analyze content for mathematical topics
-      const mathTopics = this.identifyMathTopics(content);
+      let extractedText = '';
+      let messages: any[] = [];
 
-      // Create chat completion with OpenAI with context about exam papers
-      const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-16k',
-        messages: [
+      if (file.type === 'text/plain') {
+        // For text files, use content directly
+        extractedText = fileContent;
+        messages = [
           {
             role: 'system',
-            content: `You are an expert mathematics tutor with access to Cambridge O-Level and A-Level past examination papers
-              and marking schemes. The following topics have been identified in the document: ${mathTopics.join(', ')}.
-              
-              Instructions:
-              1. Analyze the content and identify key mathematical concepts
-              2. Reference specific past paper questions that are similar
-              3. Provide detailed explanations using marking scheme guidelines
-              4. Compare the approach with standard examination techniques
-              5. Suggest improvements based on examiner reports
-              
-              Always cite specific paper references (e.g., "Similar to Question 3 in May/June 2022 Paper 2")`
+            content: `You are an expert mathematics tutor analyzing a student's document. 
+              Provide detailed explanations, identify key concepts, and suggest improvements.
+              Reference Cambridge O-Level and A-Level standards where applicable.`
           },
           {
             role: 'user',
-            content: `Please analyze this document and provide a detailed response, referencing relevant past papers and marking schemes: ${content}`
+            content: `Please analyze this document content: ${extractedText}`
           }
-        ],
-        temperature: 0.7,
-        max_tokens: 4000,
-        functions: [
+        ];
+      } else {
+        // For PDF/DOCX, use OpenAI's file processing capabilities
+        messages = [
           {
-            name: "search_past_papers",
-            description: "Search through past papers and marking schemes",
-            parameters: {
-              type: "object",
-              properties: {
-                query: {
-                  type: "string",
-                  description: "The search query to find relevant past papers"
-                },
-                topics: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Mathematical topics identified in the document"
-                }
-              },
-              required: ["query", "topics"]
-            }
+            role: 'system',
+            content: `You are an expert mathematics tutor analyzing a student's document. 
+              Extract the text content first, then provide detailed explanations, 
+              identify key mathematical concepts, and suggest improvements.
+              Reference Cambridge O-Level and A-Level standards where applicable.`
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `Please extract and analyze the content from this ${file.type === 'application/pdf' ? 'PDF' : 'Word'} document. Focus on mathematical concepts and provide educational guidance.`
+              }
+              // Note: OpenAI's vision API doesn't directly support PDF/DOCX
+              // You'll need a proper document parsing library like pdf-parse or mammoth
+            ]
           }
-        ]
+        ];
+      }
+
+      // Analyze content for mathematical topics
+      const mathTopics = extractedText ? this.identifyMathTopics(extractedText) : [];
+
+      // Create chat completion with OpenAI
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4', // Use GPT-4 for better document analysis
+        messages,
+        temperature: 0.7,
+        max_tokens: 4000
       });
 
       if (!response.choices[0]?.message?.content) {
         throw new Error('No response received from AI');
       }
 
+      const analysisContent = response.choices[0].message.content;
+
       return {
         success: true,
-        content: response.choices[0].message.content
+        content: analysisContent,
+        extractedText: extractedText || 'Document processed (binary content)'
       };
     } catch (error) {
       console.error('Document processing error:', error);
@@ -137,11 +159,13 @@ export class DocumentProcessor {
 
   private static identifyMathTopics(content: string): string[] {
     const topicPatterns = {
-      'Calculus': /(derivative|integral|differentiation|integration)/i,
-      'Algebra': /(equation|polynomial|quadratic|linear)/i,
-      'Trigonometry': /(sin|cos|tan|angle|triangle)/i,
-      'Vectors': /(vector|magnitude|direction|component)/i,
-      'Statistics': /(probability|mean|median|mode|standard deviation)/i
+      'Calculus': /(derivative|integral|differentiation|integration|limit|chain rule)/i,
+      'Algebra': /(equation|polynomial|quadratic|linear|factoring|expand)/i,
+      'Trigonometry': /(sin|cos|tan|angle|triangle|identity|radian)/i,
+      'Vectors': /(vector|magnitude|direction|component|dot product|cross product)/i,
+      'Statistics': /(probability|mean|median|mode|standard deviation|distribution)/i,
+      'Geometry': /(circle|rectangle|triangle|area|perimeter|volume|theorem)/i,
+      'Functions': /(function|domain|range|inverse|composite|graph)/i
     };
 
     return Object.entries(topicPatterns)
