@@ -102,12 +102,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Create user profile in Firestore
+      // Calculate trial end date (30 days from now)
+      const trialEndDate = new Date();
+      trialEndDate.setDate(trialEndDate.getDate() + 30);
+      
+      // Create user profile in Firestore with trial
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         email,
         displayName: name || '',
         createdAt: serverTimestamp(),
         role: 'student',
+        // Subscription/Trial fields
+        subscriptionStatus: 'trial',
+        trialStartDate: serverTimestamp(),
+        trialEndDate: trialEndDate,
+        subscriptionPlan: null,
+        paypalSubscriptionId: null,
+        lastPaymentDate: null,
+        subscriptionEndDate: null,
+        // Existing gamification
         gamification: {
           level: 1,
           xp: 0,
@@ -126,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       });
       
-      toastLib.success('Account created successfully!');
+      toastLib.success('Account created successfully! 30-day free trial started!');
     } catch (error: any) {
       console.error('Sign up error:', error);
       if (error.code === 'auth/email-already-in-use') {
@@ -168,6 +181,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error.code === 'auth/popup-closed-by-user') {
         toastLib.error('Sign in was cancelled');
       } else {
+        toastLib.error('Failed to sign out');
+      } else {
         toastLib.error('Failed to sign in with Google');
       }
       throw error;
@@ -181,11 +196,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // Create profile if it doesn't exist
     if (!userDoc.exists()) {
+      // Calculate trial end date (30 days from now)
+      const trialEndDate = new Date();
+      trialEndDate.setDate(trialEndDate.getDate() + 30);
+      
       await setDoc(doc(db, 'users', firebaseUser.uid), {
         email: firebaseUser.email,
         displayName: firebaseUser.displayName,
         createdAt: serverTimestamp(),
         role: 'student',
+        // Subscription/Trial fields
+        subscriptionStatus: 'trial',
+        trialStartDate: serverTimestamp(),
+        trialEndDate: trialEndDate,
+        subscriptionPlan: null,
+        paypalSubscriptionId: null,
+        lastPaymentDate: null,
+        subscriptionEndDate: null,
+        // Existing gamification
         gamification: {
           level: 1,
           xp: 0,
@@ -205,6 +233,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     }
   };
+
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
