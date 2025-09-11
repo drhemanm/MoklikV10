@@ -27,9 +27,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-// @ts-ignore
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useOpenAI } from '../../hooks/useOpenAI';
 import { useGamification } from '../../hooks/useGamification';
@@ -80,7 +78,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
   useEffect(() => {
     setSessionStartTime(Date.now());
     incrementStreak(); // Update streak when starting a chat session
-  }, []);
+  }, [incrementStreak]);
 
   // Track study time when component unmounts or user leaves
   useEffect(() => {
@@ -154,15 +152,19 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       if (newMessageCount === 1) {
         await addXP(25, 'First question achievement');
         showXPGain(25, 'First question bonus!');
+        await unlockAchievement('first_question');
       } else if (newMessageCount === 5) {
         await addXP(50, 'Curious learner achievement');
         showXPGain(50, 'Curious learner bonus!');
+        await unlockAchievement('curious_learner');
       } else if (newMessageCount === 10) {
         await addXP(100, 'Active student achievement');
         showXPGain(100, 'Active student bonus!');
+        await unlockAchievement('active_student');
       } else if (newMessageCount === 25) {
         await addXP(200, 'Dedicated learner achievement');
         showXPGain(200, 'Dedicated learner bonus!');
+        await unlockAchievement('dedicated_learner');
       }
       
       console.log('Message sent successfully');
@@ -194,7 +196,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
   const handleImageUpload = async (file: File) => {
     try {
       // Dynamic import to avoid loading the service until needed
-      const { ImageAnalysisService } = await import('../../services/ai/imageAnalysis.js');
+      const { ImageAnalysisService } = await import('../../services/ai/imageAnalysis');
       
       // Validate file first
       const validation = ImageAnalysisService.validateImageFile(file);
@@ -283,11 +285,20 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     toast.success('Thank you for your feedback!');
   };
 
+  const handleThumbsDown = async () => {
+    const feedbackXP = 2;
+    await addXP(feedbackXP, 'Provided feedback');
+    showXPGain(feedbackXP, 'Feedback noted!');
+    toast.success('Thank you for your feedback! We\'ll improve.');
+  };
+
   const suggestions = [
     "Explain the quadratic formula",
     "How do I solve systems of linear equations?",
     "What's the difference between permutation and combination?",
-    "Help me understand trigonometric identities"
+    "Help me understand trigonometric identities",
+    "Show me how to differentiate polynomials",
+    "Explain integration by parts"
   ];
 
   // Calculate session stats
@@ -470,7 +481,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Error Display */}
-          {error && (
+          {error && !error.includes('API key') && (
             <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
@@ -611,6 +622,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                             <ThumbsUp className="w-4 h-4" />
                           </button>
                           <button
+                            onClick={handleThumbsDown}
                             className="text-gray-400 hover:text-red-600 transition-colors"
                             title="Not helpful"
                           >
@@ -687,6 +699,10 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                     ? "When solving equations, always perform the same operation on both sides to maintain equality."
                     : selectedTopic === 'Calculus'
                     ? "Remember that the derivative of a constant is zero, and the derivative of x^n is n*x^(n-1)."
+                    : selectedTopic === 'Geometry'
+                    ? "Always label your diagrams clearly and identify given information before starting proofs."
+                    : selectedTopic === 'Statistics'
+                    ? "Remember the difference between population and sample statistics when interpreting data."
                     : "Try explaining concepts in your own words to check your understanding."}
                 </p>
               </div>
@@ -876,6 +892,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
           padding: 0.5em 0;
         }
       `}</style>
-    </div>
+      </div>
+    </SubscriptionGate>
   );
 }
