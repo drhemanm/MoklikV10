@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
-import { useSubscription } from '../../hooks/useSubscription.js';
+import { useSubscription } from '../../hooks/useSubscription.jsx';
 import AccessDenied from '../AccessDenied.jsx';
 import { Loader2 } from 'lucide-react';
 
