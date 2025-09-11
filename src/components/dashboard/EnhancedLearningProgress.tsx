@@ -4,51 +4,53 @@ import {
   Flame, 
   Target, 
   Clock, 
+  TrendingUp, 
+  Award,
+  Zap,
+  Star,
   Calendar,
   BookOpen,
   ChevronRight,
   Crown,
   Medal,
-  Zap,
-  Award
+  CheckCircle
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useGamification } from '../../hooks/useGamification';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const EnhancedLearningProgress = () => {
-  const { stats } = useGamification();
+  const [currentXP, setCurrentXP] = useState(0);
+  const [targetXP] = useState(1000);
   const [animatedXP, setAnimatedXP] = useState(0);
-  const targetXP = 1000;
 
-  // Use real data from your gamification hook
+  // Sample data - replace with real data from your useGamification hook
   const playerData = {
-    level: stats.level || 1,
-    xp: stats.xp || 0,
-    nextLevelXP: targetXP,
-    streak: stats.streak || 0,
-    longestStreak: stats.longestStreak || 0,
-    accuracy: stats.accuracy || 85,
-    problemsSolved: stats.problemsSolved || 0,
-    studyTimeHours: Math.floor((stats.studyTime || 0) / 60),
-    studyTimeMinutes: (stats.studyTime || 0) % 60,
-    achievements: stats.achievements || [],
-    weeklyGoal: 5,
-    weeklyProgress: Math.floor((stats.studyTime || 0) / 60)
+    level: 1,
+    xp: 0,
+    nextLevelXP: 1000,
+    streak: 0,
+    longestStreak: 0,
+    accuracy: 85,
+    problemsSolved: 0,
+    studyTimeHours: 0,
+    studyTimeMinutes: 0,
+    achievements: [],
+    weeklyGoal: 5, // hours
+    weeklyProgress: 0
   };
 
   // Animate XP counter
   useEffect(() => {
     const timer = setInterval(() => {
       setAnimatedXP(prev => {
-        if (prev < playerData.xp) {
-          return Math.min(prev + 10, playerData.xp);
+        if (prev < currentXP) {
+          return Math.min(prev + 10, currentXP);
         }
         return prev;
       });
     }, 50);
 
     return () => clearInterval(timer);
-  }, [playerData.xp]);
+  }, [currentXP]);
 
   const progressPercentage = (animatedXP / targetXP) * 100;
   const weeklyProgressPercentage = (playerData.weeklyProgress / playerData.weeklyGoal) * 100;
