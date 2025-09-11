@@ -13,9 +13,10 @@ interface TopicCardProps {
 export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
   const { getTopicProgress } = useProgress();
   const { sendMessage } = useChat();
-  const { } = useGamification();
+  const { addXP, incrementStreak, trackStudyTime } = useGamification();
+  
   const progress = getTopicProgress(topic.id);
-
+  
   const difficultyColor = {
     beginner: 'text-green-600',
     intermediate: 'text-yellow-600',
@@ -23,12 +24,43 @@ export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
   }[topic.difficulty];
 
   const handleTopicSelect = async () => {
-    onSelect(topic.id);
-    await sendMessage(
-      `I want to learn about ${topic.title}. Can you list the key topics and concepts I should focus on?`,
-      topic.id
-    );
+    try {
+      // Award XP based on topic difficulty
+      const xpAmount = {
+        beginner: 8,
+        intermediate: 12,
+        advanced: 15
+      }[topic.difficulty];
+
+      // Award XP for selecting a topic
+      await addXP(xpAmount, `Started studying ${topic.title} (${topic.difficulty})`);
+      
+      // Update daily streak
+      await incrementStreak();
+      
+      // Track that study session started
+      await trackStudyTime(1); // Start with 1 minute, will track more later
+      
+      // Continue with original functionality
+      onSelect(topic.id);
+      await sendMessage(
+        `I want to learn about ${topic.title}. Can you list the key topics and concepts I should focus on?`,
+        topic.id
+      );
+
+      console.log(`✅ Awarded ${xpAmount} XP for studying ${topic.title}`);
+    } catch (error) {
+      console.error('Error tracking topic selection:', error);
+      
+      // Still allow topic selection even if gamification fails
+      onSelect(topic.id);
+      await sendMessage(
+        `I want to learn about ${topic.title}. Can you list the key topics and concepts I should focus on?`,
+        topic.id
+      );
+    }
   };
+
   const getMasteryBadge = () => {
     if (!progress) return null;
     if (progress.completionPercentage >= 100) return <Award className="w-5 h-5 text-yellow-500" />;
@@ -62,6 +94,12 @@ export function TopicCard({ topic, onSelect, isSelected }: TopicCardProps) {
           <Star className={`w-4 h-4 ${difficultyColor}`} />
           <span className={`text-sm font-medium capitalize ${difficultyColor}`}>
             {topic.difficulty}
+          </span>
+          <span className="text-xs text-gray-500">
+            (+{
+              topic.difficulty === 'beginner' ? '8' :
+              topic.difficulty === 'intermediate' ? '12' : '15'
+            } XP)
           </span>
         </div>
         <div className="flex items-center space-x-2">
