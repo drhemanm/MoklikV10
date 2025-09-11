@@ -4,11 +4,7 @@ import {
   BookOpen, 
   Upload,
   MessageSquare,
-  Target,
-  Clock,
   RotateCcw,
-  Zap,
-  Trophy,
   PenTool
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -23,7 +19,7 @@ import { LeaderboardCard } from '../components/gamification/LeaderboardCard';
 import { AchievementNotification } from '../components/gamification/AchievementNotification';
 import { useGamification } from '../hooks/useGamification';
 import { SubscriptionStatus } from '../components/account/SubscriptionStatus';
-
+import EnhancedLearningProgress from '../components/dashboard/EnhancedLearningProgress';
 
 export function StudentDashboard() {
   const { user } = useAuth();
@@ -37,7 +33,6 @@ export function StudentDashboard() {
     newAchievement, 
     dismissAchievementNotification 
   } = useGamification();
-
 
   const quickActions = [
     {
@@ -125,14 +120,6 @@ export function StudentDashboard() {
     return 'Good evening';
   };
 
-  const getXPForNextLevel = () => {
-    return stats.xpForNextLevel;
-  };
-
-  const getLevelProgress = () => {
-    return ((stats.xp % stats.xpForNextLevel) / stats.xpForNextLevel) * 100;
-  };
-
   if (showChat) {
     return (
       <EnhancedChatInterface
@@ -191,57 +178,9 @@ export function StudentDashboard() {
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-xl p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <Trophy className="w-8 h-8 text-yellow-500" />
-              <span className="text-2xl font-bold text-gray-900">Level {stats.level}</span>
-            </div>
-            <p className="text-sm text-gray-600">{getXPForNextLevel()} XP to next level</p>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div 
-                className="bg-yellow-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${getLevelProgress()}%` }}
-              />
-            </div>
-          </motion.div>
-
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-xl p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <Zap className="w-8 h-8 text-orange-500" />
-              <span className="text-2xl font-bold text-gray-900">{stats.streak}</span>
-            </div>
-            <p className="text-sm text-gray-600">Day streak</p>
-          </motion.div>
-
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-xl p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <Target className="w-8 h-8 text-green-500" />
-              <span className="text-2xl font-bold text-gray-900">{stats.accuracy}%</span>
-            </div>
-            <p className="text-sm text-gray-600">Accuracy</p>
-          </motion.div>
-
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-xl p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <Clock className="w-8 h-8 text-blue-500" />
-              <span className="text-2xl font-bold text-gray-900">{stats.studyTime}h</span>
-            </div>
-            <p className="text-sm text-gray-600">Study time</p>
-          </motion.div>
+        {/* Enhanced Learning Progress */}
+        <div className="mb-6">
+          <EnhancedLearningProgress />
         </div>
 
         {/* Quick Actions */}
