@@ -50,7 +50,7 @@ export function SubscriptionStatus() {
           You have <span className="font-semibold text-blue-600">{daysLeft} days</span> left in your free trial.
         </p>
         <p className="text-gray-600 mb-6">
-          Your trial will end on {subscription?.trialEndDate?.toLocaleDateString()}.
+          Your trial will end on {subscription?.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'Unknown date'}.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
