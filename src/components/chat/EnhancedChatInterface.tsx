@@ -18,6 +18,9 @@ import {
   Eraser,
   X,
   History,
+  Trophy,
+  Zap,
+  Clock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -29,6 +32,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useOpenAI } from '../../hooks/useOpenAI';
+import { useGamification } from '../../hooks/useGamification';
 import toast, { toast as toastLib } from 'react-hot-toast';
 import { ChatHistory } from './ChatHistory';
 
@@ -47,21 +51,60 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     loadConversation,
     error 
   } = useOpenAI();
+  
+  const { 
+    addXP, 
+    incrementStreak, 
+    trackStudyTime, 
+    stats, 
+    unlockAchievement 
+  } = useGamification();
+
   const [inputValue, setInputValue] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [showTip, setShowTip] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
+  const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
+  const [messageCount, setMessageCount] = useState(0);
+  const [showXPNotification, setShowXPNotification] = useState<{show: boolean, amount: number, reason: string}>({
+    show: false, 
+    amount: 0, 
+    reason: ''
+  });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Debug logging
+  // Initialize session tracking
   useEffect(() => {
-    console.log('EnhancedChatInterface mounted');
-    console.log('Messages:', messages);
-    console.log('IsLoading:', isLoading);
-    console.log('Error:', error);
-  }, [messages, isLoading, error]);
+    setSessionStartTime(Date.now());
+    incrementStreak(); // Update streak when starting a chat session
+  }, []);
+
+  // Track study time when component unmounts or user leaves
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const studyMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
+      if (studyMinutes > 0) {
+        trackStudyTime(studyMinutes);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      handleBeforeUnload(); // Track time when component unmounts
+    };
+  }, [sessionStartTime, trackStudyTime]);
+
+  // Show XP notification helper
+  const showXPGain = (amount: number, reason: string) => {
+    setShowXPNotification({ show: true, amount, reason });
+    setTimeout(() => {
+      setShowXPNotification({ show: false, amount: 0, reason: '' });
+    }, 3000);
+  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -86,8 +129,42 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     try {
       console.log('Sending message:', inputValue);
       setShowSuggestions(false);
+      
+      // Track message sending
+      const newMessageCount = messageCount + 1;
+      setMessageCount(newMessageCount);
+      
+      // Award XP for sending message
+      const xpAmount = 5;
+      await addXP(xpAmount, 'Asked a question');
+      showXPGain(xpAmount, 'Question asked!');
+      
+      // Send the message
       await sendMessage(inputValue);
       setInputValue('');
+      
+      // Award additional XP for receiving response
+      setTimeout(async () => {
+        const responseXP = 8;
+        await addXP(responseXP, 'Received AI response');
+        showXPGain(responseXP, 'Learning from AI!');
+      }, 2000);
+      
+      // Check for achievements based on message count
+      if (newMessageCount === 1) {
+        await addXP(25, 'First question achievement');
+        showXPGain(25, 'First question bonus!');
+      } else if (newMessageCount === 5) {
+        await addXP(50, 'Curious learner achievement');
+        showXPGain(50, 'Curious learner bonus!');
+      } else if (newMessageCount === 10) {
+        await addXP(100, 'Active student achievement');
+        showXPGain(100, 'Active student bonus!');
+      } else if (newMessageCount === 25) {
+        await addXP(200, 'Dedicated learner achievement');
+        showXPGain(200, 'Dedicated learner bonus!');
+      }
+      
       console.log('Message sent successfully');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -98,6 +175,11 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    
+    // Award XP for uploading files
+    const uploadXP = 15;
+    addXP(uploadXP, 'Uploaded study material');
+    showXPGain(uploadXP, 'File uploaded!');
     
     // Handle image files with AI analysis
     if (file.type.startsWith('image/')) {
@@ -151,9 +233,12 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
         return;
       }
       
-      // If math-related, send the analysis to chat
+      // If math-related, send the analysis to chat and award bonus XP
       if (result.content) {
         await sendMessage(`I've uploaded an image containing mathematical content: ${file.name}\n\n${result.content}`);
+        const bonusXP = 25;
+        await addXP(bonusXP, 'Successfully analyzed math image');
+        showXPGain(bonusXP, 'Math image analyzed!');
         toastLib.success('Image analyzed successfully!');
       }
     } catch (error) {
@@ -173,6 +258,9 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     toastLib.loading('Processing PDF...');
     try {
       await sendMessage(`I've uploaded a PDF file named "${file.name}". Please analyze its mathematical content and help me understand the problems or concepts shown.`);
+      const pdfXP = 30;
+      await addXP(pdfXP, 'Uploaded PDF for analysis');
+      showXPGain(pdfXP, 'PDF processed!');
       toastLib.dismiss();
       toastLib.success('PDF uploaded successfully!');
     } catch (error) {
@@ -188,12 +276,22 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     }
   };
 
+  const handleThumbsUp = async () => {
+    const feedbackXP = 3;
+    await addXP(feedbackXP, 'Provided positive feedback');
+    showXPGain(feedbackXP, 'Thanks for feedback!');
+    toast.success('Thank you for your feedback!');
+  };
+
   const suggestions = [
     "Explain the quadratic formula",
     "How do I solve systems of linear equations?",
     "What's the difference between permutation and combination?",
     "Help me understand trigonometric identities"
   ];
+
+  // Calculate session stats
+  const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
 
   // Enhanced math rendering for better equation display
   const renderMathContent = (content: string): string => {
@@ -221,6 +319,9 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
     
     try {
       await sendMessage(lastUserMessage.content, undefined, true);
+      const regenXP = 2;
+      await addXP(regenXP, 'Regenerated response');
+      showXPGain(regenXP, 'Response regenerated!');
     } catch (error) {
       console.error('Error regenerating response:', error);
       toastLib.error('Failed to regenerate response. Please try again.');
@@ -285,6 +386,22 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
+      {/* XP Notification */}
+      <AnimatePresence>
+        {showXPNotification.show && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.9 }}
+            className="fixed top-4 right-4 z-50 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2"
+          >
+            <Trophy className="w-5 h-5" />
+            <span className="font-medium">+{showXPNotification.amount} XP</span>
+            <span className="text-green-100">{showXPNotification.reason}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -310,6 +427,22 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
             </div>
             
             <div className="flex items-center space-x-4">
+              {/* Session Stats */}
+              <div className="hidden sm:flex items-center space-x-4 text-sm">
+                <div className="flex items-center space-x-1 text-gray-600">
+                  <Clock className="w-4 h-4" />
+                  <span>{sessionMinutes}m</span>
+                </div>
+                <div className="flex items-center space-x-1 text-gray-600">
+                  <Zap className="w-4 h-4" />
+                  <span>{messageCount} msgs</span>
+                </div>
+                <div className="flex items-center space-x-1 text-blue-600 font-medium">
+                  <Trophy className="w-4 h-4" />
+                  <span>{stats.xp} XP</span>
+                </div>
+              </div>
+              
               <button 
                 onClick={() => clearMessages()}
                 className="text-gray-500 hover:text-gray-700 transition-colors text-sm flex items-center"
@@ -471,6 +604,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                         </button>
                         <div className="flex items-center space-x-1">
                           <button
+                            onClick={handleThumbsUp}
                             className="text-gray-400 hover:text-green-600 transition-colors"
                             title="Helpful"
                           >
@@ -570,7 +704,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-                  title="Upload file"
+                  title="Upload file (+15 XP)"
                 >
                   <Upload className="w-5 h-5" />
                 </button>
@@ -592,6 +726,9 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                 >
                   <ImageIcon className="w-5 h-5" />
                 </button>
+                <div className="text-xs text-gray-500 ml-auto">
+                  +5 XP per question
+                </div>
               </div>
               
               <div className="flex items-end space-x-2">
