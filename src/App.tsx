@@ -12,6 +12,7 @@ import { Contact } from './pages/Contact.js';
 import { AuthGuard } from './components/auth/AuthGuard.js';
 import { Toaster } from 'react-hot-toast';
 import { PrivacyPolicy } from './pages/PrivacyPolicy.js';
+import { TermsOfService } from './pages/TermsOfService.js';
 
 export default function App() {
   return (
