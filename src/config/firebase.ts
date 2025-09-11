@@ -16,8 +16,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
-export const db = getFirestore(app);
+// Initialize Firestore - Connect to the DEFAULT database where your user data exists
+export const db = getFirestore(app); // This connects to (default) database, not the empty 'moklik' database
 
 // Initialize Auth
 export const auth = getAuth(app);
