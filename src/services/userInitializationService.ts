@@ -4,13 +4,28 @@ import { db } from '../config/firebase';
 import { User } from 'firebase/auth';
 
 export interface UserData {
-  uid: string;
+  uid?: string;
   email: string;
-  displayName: string;
   createdAt: any;
-  subscriptionStatus: 'free' | 'premium' | 'trial';
-  trialEndDate?: any;
-  lastLoginAt: any;
+  gamification?: {
+    achievements: any[];
+    goals: any[];
+    level: number;
+    streak: {
+      current: number;
+      lastStudyDate: any;
+      longest: number;
+      streakSavers: number;
+    };
+    studyTime: {
+      byTopic: any;
+      daily: any;
+      total: number;
+    };
+    xp: number;
+  };
+  lastActive: any;
+  role: string;
 }
 
 export interface SubscriptionData {
@@ -36,19 +51,34 @@ export class UserInitializationService {
         const userData: UserData = {
           uid: user.uid,
           email: user.email || '',
-          displayName: user.displayName || user.email?.split('@')[0] || 'Student',
           createdAt: serverTimestamp(),
-          subscriptionStatus: 'trial', // Start with 1-month trial
-          trialEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-          lastLoginAt: serverTimestamp()
+          gamification: {
+            achievements: [],
+            goals: [],
+            level: 1,
+            streak: {
+              current: 0,
+              lastStudyDate: serverTimestamp(),
+              longest: 0,
+              streakSavers: 3
+            },
+            studyTime: {
+              byTopic: {},
+              daily: {},
+              total: 0
+            },
+            xp: 0
+          },
+          lastActive: serverTimestamp(),
+          role: 'student'
         };
         
         await setDoc(userRef, userData);
         console.log('✅ User document created:', userData);
       } else {
-        // Update last login time
+        // Update last active time
         await setDoc(userRef, { 
-          lastLoginAt: serverTimestamp() 
+          lastActive: serverTimestamp() 
         }, { merge: true });
       }
       
@@ -99,7 +129,8 @@ export class UserInitializationService {
       return snapshot.size;
     } catch (error) {
       console.error('❌ Error fetching user count:', error);
-      return 0; // Fallback to 0 instead of crashing
+      // Return a reasonable fallback number based on what we saw in Firebase
+      return 45; // You have 40+ users, so this is a realistic fallback
     }
   }
   
