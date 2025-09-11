@@ -37,7 +37,7 @@ export function SubscriptionStatus() {
 
   if (plan === 'free') {
     const daysLeft = subscription?.trialEndDate 
-      ? Math.ceil((subscription.trialEndDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      ? Math.ceil((new Date(subscription.trialEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
       : 30;
 
     return (
