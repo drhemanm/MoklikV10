@@ -74,6 +74,7 @@ export function ModernDashboard() {
   const { subscriptionStatus, trialDaysLeft, isOnTrial, isTrialExpired } = useSubscription();
   const { stats } = useGamification();
   const navigate = useNavigate();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Mock data - replace with real data from your services
   const [dashboardStats] = useState<DashboardStats>({
@@ -266,7 +267,7 @@ export function ModernDashboard() {
                         <Typography.BodySmall className={`${isTrialExpired ? 'text-red-700' : 'text-orange-700'} mt-1 mb-3`}>
                           {isTrialExpired 
                             ? 'Subscribe to restore access to all features'
-                            : 'Upgrade to continue your learning journey'
+                            : 'Upgrade now to secure your learning journey'
                           }
                         </Typography.BodySmall>
                         <Button
@@ -275,7 +276,7 @@ export function ModernDashboard() {
                           fullWidth
                           onClick={() => navigate('/pricing')}
                         >
-                          Choose Plan
+                          {isTrialExpired ? 'Choose Plan' : 'Upgrade Now'}
                         </Button>
                       </div>
                     </div>
@@ -285,6 +286,40 @@ export function ModernDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Early Upgrade Promotion for Active Trial Users */}
+        {isOnTrial && !isTrialExpired && (
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <Typography.H3 className="text-gray-900">
+                        Free Trial Active - {trialDaysLeft} days remaining
+                      </Typography.H3>
+                      <Typography.Body className="text-gray-600">
+                        Upgrade anytime to secure your access and unlock premium features
+                      </Typography.Body>
+                    </div>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={() => navigate('/pricing')}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all"
+                  >
+                    <Crown className="w-5 h-5 mr-2" />
+                    Upgrade Now
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -378,6 +413,30 @@ export function ModernDashboard() {
 
             {/* Right Column - Activity & Tasks */}
             <div className="space-y-8">
+              {/* Trial Upgrade Reminder for Right Column */}
+              {isOnTrial && !isTrialExpired && (
+                <Card variant="outlined" padding="lg" className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+                  <div className="text-center">
+                    <Crown className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+                    <Typography.H4 className="text-purple-900 mb-2">
+                      Loving your learning progress?
+                    </Typography.H4>
+                    <Typography.BodySmall className="text-purple-700 mb-4">
+                      Lock in premium access and keep growing! {trialDaysLeft} days left in your trial.
+                    </Typography.BodySmall>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      onClick={() => navigate('/pricing')}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      Upgrade Today
+                    </Button>
+                  </div>
+                </Card>
+              )}
+
               {/* Recent Activity */}
               <div>
                 <div className="flex items-center justify-between mb-6">
