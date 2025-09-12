@@ -12,6 +12,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth, googleProvider } from '../config/firebase.js';
 import { toast as toastLib } from 'react-hot-toast';
+import { SubscriptionService } from '../services/SubscriptionService';
 
 interface User {
   uid: string;
