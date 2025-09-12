@@ -19,8 +19,8 @@ export function useUserCount() {
       } catch (err) {
         console.error('Error in useUserCount:', err);
         setError('Failed to load user count');
-        // Set a fallback count instead of leaving it at 0
-        setUserCount(1200); // Show a nice fallback number
+        // Don't set a fake fallback number - let the UI handle the error state
+        setUserCount(0);
       } finally {
         setLoading(false);
       }
