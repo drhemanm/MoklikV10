@@ -24,6 +24,7 @@
     "better-sqlite3": "^9.4.1",
     "chart.js": "^4.4.1",
     "firebase": "^10.8.0",
+    "firebase-admin": "^12.0.0",
     "framer-motion": "^11.18.2",
     "github-markdown-css": "^5.5.1",
     "katex": "^0.16.9",
