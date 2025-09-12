@@ -103,25 +103,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Calculate trial end date (30 days from now)
-      const trialEndDate = new Date();
-      trialEndDate.setDate(trialEndDate.getDate() + 30);
-      
-      // Create user profile in Firestore with trial
+      // Create basic user profile first
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         email,
         displayName: name || '',
         createdAt: serverTimestamp(),
         role: 'student',
-        // Subscription/Trial fields
-        subscriptionStatus: 'trial',
-        trialStartDate: serverTimestamp(),
-        trialEndDate: trialEndDate,
-        subscriptionPlan: null,
-        paypalSubscriptionId: null,
-        lastPaymentDate: null,
-        subscriptionEndDate: null,
-        // Existing gamification
         gamification: {
           level: 1,
           xp: 0,
@@ -139,6 +126,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           goals: []
         }
       });
+
+      // Initialize subscription using SubscriptionService
+      await SubscriptionService.initializeUserSubscription(userCredential.user.uid);
       
       toastLib.success('Account created successfully! 30-day free trial started!');
     } catch (error: any) {
@@ -195,24 +185,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // Create profile if it doesn't exist
     if (!userDoc.exists()) {
-      // Calculate trial end date (30 days from now)
-      const trialEndDate = new Date();
-      trialEndDate.setDate(trialEndDate.getDate() + 30);
-      
+      // Create basic user profile
       await setDoc(doc(db, 'users', firebaseUser.uid), {
         email: firebaseUser.email,
         displayName: firebaseUser.displayName,
         createdAt: serverTimestamp(),
         role: 'student',
-        // Subscription/Trial fields
-        subscriptionStatus: 'trial',
-        trialStartDate: serverTimestamp(),
-        trialEndDate: trialEndDate,
-        subscriptionPlan: null,
-        paypalSubscriptionId: null,
-        lastPaymentDate: null,
-        subscriptionEndDate: null,
-        // Existing gamification
         gamification: {
           level: 1,
           xp: 0,
@@ -230,6 +208,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           goals: []
         }
       });
+
+      // Initialize subscription using SubscriptionService
+      await SubscriptionService.initializeUserSubscription(firebaseUser.uid);
     }
   };
 
