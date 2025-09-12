@@ -22,7 +22,31 @@ export const useSubscription = () => {
     try {
       setLoading(true);
       setError(null);
-      const summary = await SubscriptionService.getSubscriptionSummary(user.uid);
+      
+      // Try to get existing subscription
+      let summary = await SubscriptionService.getSubscriptionSummary(user.uid);
+      
+      // If no subscription exists, initialize free trial for existing user
+      if (!summary || summary.status === 'No Subscription') {
+        console.log('🔄 No subscription found for existing user, initializing trial...');
+        
+        try {
+          await SubscriptionService.initializeUserSubscription(user.uid);
+          summary = await SubscriptionService.getSubscriptionSummary(user.uid);
+          console.log('✅ Trial initialized for existing user:', user.uid);
+        } catch (initError) {
+          console.error('❌ Failed to initialize trial for existing user:', initError);
+          // Fallback: provide basic access
+          summary = {
+            hasAccess: true,
+            status: 'legacy_user',
+            plan: 'free',
+            daysRemaining: 30,
+            isTrialUser: true
+          };
+        }
+      }
+      
       setSubscriptionSummary(summary);
     } catch (err) {
       setError(err.message);
