@@ -20,8 +20,16 @@ export class SubscriptionService {
    * Initialize subscription for new user (1-month free trial)
    */
   static async initializeUserSubscription(userId: string): Promise<UserSubscription> {
+    console.log('🔄 STARTING: Initializing subscription for user:', userId);
+    
     const now = new Date();
     const trialEndDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
+
+    console.log('📅 DATES:', { 
+      now: now.toISOString(), 
+      trialEndDate: trialEndDate.toISOString(),
+      daysFromNow: Math.ceil((trialEndDate.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+    });
 
     const subscription: UserSubscription = {
       userId,
@@ -33,7 +41,11 @@ export class SubscriptionService {
       updatedAt: now
     };
 
+    console.log('📝 SUBSCRIPTION OBJECT:', subscription);
+
     try {
+      console.log('💾 SAVING to Firebase...');
+      
       await setDoc(doc(db, 'subscriptions', userId), {
         ...subscription,
         trialStartDate: Timestamp.fromDate(subscription.trialStartDate),
@@ -42,9 +54,10 @@ export class SubscriptionService {
         updatedAt: Timestamp.fromDate(subscription.updatedAt)
       });
 
+      console.log('✅ SUCCESS: Subscription initialized successfully for user:', userId);
       return subscription;
     } catch (error) {
-      console.error('Error initializing user subscription:', error);
+      console.error('❌ ERROR: Failed to initialize subscription:', error);
       throw new Error('Failed to initialize subscription');
     }
   }
