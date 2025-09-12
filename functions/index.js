@@ -1,6 +1,5 @@
 // Updated for deployment
-// Updated for deployment
-
+// Updated for proper deployment
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
