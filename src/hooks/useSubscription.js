@@ -38,17 +38,29 @@ export const useSubscription = () => {
     }
   };
 
+  // Calculate derived values
+  const isInTrial = subscriptionSummary?.isTrialUser || false;
+  const daysRemaining = subscriptionSummary?.daysRemaining || 0;
+  const isTrialExpired = isInTrial && daysRemaining <= 0;
+  const isOnTrial = isInTrial && daysRemaining > 0; // Active trial (not expired)
+
   return {
     subscription: subscriptionSummary,
     loading,
     error,
     refreshSubscription,
-    // Convenience getters
+    
+    // Original convenience getters
     canAccess: subscriptionSummary?.hasAccess || false,
-    isInTrial: subscriptionSummary?.isTrialUser || false,
+    isInTrial,
     hasActiveSubscription: subscriptionSummary?.hasAccess && !subscriptionSummary?.isTrialUser || false,
-    daysRemaining: subscriptionSummary?.daysRemaining || 0,
+    daysRemaining,
     subscriptionPlan: subscriptionSummary?.plan || null,
-    subscriptionStatus: subscriptionSummary?.status || null
+    subscriptionStatus: subscriptionSummary?.status || null,
+    
+    // New getters for dashboard compatibility
+    isOnTrial, // Active trial (has days left)
+    isTrialExpired, // Trial but expired (0 days left)
+    trialDaysLeft: daysRemaining // Alias for daysRemaining
   };
 };
