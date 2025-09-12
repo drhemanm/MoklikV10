@@ -1,7 +1,7 @@
 // src/config/paypal.ts
 export const PAYPAL_CONFIG = {
-  // PayPal Client ID (you'll get this from PayPal Developer Dashboard)
-  clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID || 'test',
+  // PayPal Client ID (now using the real one from previous setup)
+  clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID || 'AVHVhJC69XD8uQy7PNQhESQnexKc1WjK0i689dwDmTObz7MXy0CJBpkOhAX_Crwtl4D6Jrtrjn-g0iZF',
   
   // Currency - PayPal works better with USD, we'll show MUR prices in UI
   currency: 'USD',
@@ -9,17 +9,17 @@ export const PAYPAL_CONFIG = {
   // MUR to USD conversion (approximate - you should use real-time rates in production)
   MUR_TO_USD_RATE: 0.022, // 1 MUR ≈ 0.022 USD (adjust based on current rates)
   
-  // Subscription Plans (you'll create these in PayPal Dashboard)
+  // Subscription Plans (using the real plan IDs we created before)
   plans: {
     monthly: {
-      id: process.env.REACT_APP_PAYPAL_MONTHLY_PLAN_ID || 'P-MONTHLY-PLAN-ID',
+      id: process.env.REACT_APP_PAYPAL_MONTHLY_PLAN_ID || 'P-05886238FS610105WNDBHCWQ',
       name: 'Moklik Monthly Subscription',
       priceUSD: '4.40', // 200 MUR converted to USD
       priceMUR: 200,
       interval: 'month'
     },
     yearly: {
-      id: process.env.REACT_APP_PAYPAL_YEARLY_PLAN_ID || 'P-YEARLY-PLAN-ID',
+      id: process.env.REACT_APP_PAYPAL_YEARLY_PLAN_ID || 'P-3CH8376604712611WNDBHDTA',
       name: 'Moklik Yearly Subscription',
       priceUSD: '44.00', // 2000 MUR converted to USD
       priceMUR: 2000,
