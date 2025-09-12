@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "source": "functions",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "runtime": "nodejs18"
+  }
+}
