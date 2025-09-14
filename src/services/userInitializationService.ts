@@ -35,6 +35,9 @@ export interface SubscriptionData {
   updatedAt: any;
   trialEndDate?: any;
   paymentStatus?: 'active' | 'past_due' | 'canceled';
+  paypalSubscriptionId?: string; // Added for cancellation support
+  canceledAt?: any; // Added for cancellation tracking
+  cancelReason?: string; // Added for cancellation feedback
 }
 
 export class UserInitializationService {
@@ -166,6 +169,149 @@ export class UserInitializationService {
         updatedAt: new Date(),
         paymentStatus: 'canceled'
       };
+    }
+  }
+
+  /**
+   * Update subscription status (for cancellations and payments)
+   */
+  static async updateSubscriptionStatus(
+    userId: string, 
+    status: 'active' | 'canceled', 
+    paymentStatus?: string,
+    cancelReason?: string
+  ): Promise<void> {
+    try {
+      const subscriptionRef = doc(db, 'subscriptions', userId);
+      const updateData: any = {
+        active: status === 'active',
+        updatedAt: serverTimestamp()
+      };
+      
+      if (paymentStatus) {
+        updateData.paymentStatus = paymentStatus;
+      }
+      
+      if (status === 'canceled') {
+        updateData.canceledAt = serverTimestamp();
+        if (cancelReason) {
+          updateData.cancelReason = cancelReason;
+        }
+      }
+      
+      await setDoc(subscriptionRef, updateData, { merge: true });
+      console.log('✅ Subscription status updated:', updateData);
+    } catch (error) {
+      console.error('❌ Error updating subscription status:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Save PayPal subscription ID after successful payment
+   */
+  static async savePayPalSubscriptionId(
+    userId: string, 
+    paypalSubscriptionId: string, 
+    plan: 'monthly' | 'yearly'
+  ): Promise<void> {
+    try {
+      const subscriptionRef = doc(db, 'subscriptions', userId);
+      await setDoc(subscriptionRef, {
+        paypalSubscriptionId: paypalSubscriptionId,
+        active: true,
+        plan: plan,
+        paymentStatus: 'active',
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      
+      console.log('✅ PayPal subscription ID saved:', paypalSubscriptionId);
+    } catch (error) {
+      console.error('❌ Error saving PayPal subscription ID:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user can cancel subscription
+   */
+  static async canUserCancel(userId: string): Promise<boolean> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      return !!(subscription?.active && 
+                subscription?.paymentStatus !== 'canceled' && 
+                subscription?.plan !== 'free');
+    } catch (error) {
+      console.error('❌ Error checking cancellation eligibility:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get subscription details for cancellation
+   */
+  static async getSubscriptionForCancellation(userId: string): Promise<{
+    subscriptionId: string;
+    plan: string;
+  } | null> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription || !subscription.paypalSubscriptionId) {
+        return null;
+      }
+
+      return {
+        subscriptionId: subscription.paypalSubscriptionId,
+        plan: subscription.plan
+      };
+    } catch (error) {
+      console.error('❌ Error getting subscription for cancellation:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if user's trial has expired
+   */
+  static async isTrialExpired(userId: string): Promise<boolean> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription || !subscription.trialEndDate) {
+        return false;
+      }
+
+      const now = new Date();
+      const trialEnd = new Date(subscription.trialEndDate);
+      
+      return now > trialEnd && subscription.plan === 'free';
+    } catch (error) {
+      console.error('❌ Error checking trial expiration:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get days remaining in trial
+   */
+  static async getTrialDaysRemaining(userId: string): Promise<number> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription || !subscription.trialEndDate || subscription.plan !== 'free') {
+        return 0;
+      }
+
+      const now = new Date();
+      const trialEnd = new Date(subscription.trialEndDate);
+      const diffTime = trialEnd.getTime() - now.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      return Math.max(0, diffDays);
+    } catch (error) {
+      console.error('❌ Error calculating trial days remaining:', error);
+      return 0;
     }
   }
 }
