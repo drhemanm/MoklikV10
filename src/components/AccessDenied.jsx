@@ -170,13 +170,15 @@ const AccessDenied = ({ trialExpired = false, daysRemaining = 0 }) => {
                 </p>
               </div>  
 
-          {/* Trust Indicators */}
-          <div className="text-center mt-6 text-gray-500 text-sm">
-            <p>Trusted by students across Mauritius</p>
-            <div className="flex items-center justify-center space-x-4 mt-2">
-              <span>🔒 Secure Payment</span>
-              <span>📱 Mobile Friendly</span>
-              <span>🎯 Exam Focused</span>
+              {/* Trust Indicators */}
+              <div className="text-center mt-6 text-gray-500 text-sm">
+                <p>Trusted by students across Mauritius</p>
+                <div className="flex items-center justify-center space-x-4 mt-2">
+                  <span>🔒 Secure Payment</span>
+                  <span>📱 Mobile Friendly</span>
+                  <span>🎯 Exam Focused</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
