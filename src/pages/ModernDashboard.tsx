@@ -409,6 +409,37 @@ export function ModernDashboard() {
                   ))}
                 </div>
               </div>
+
+              {/* Account Management */}
+              <div>
+                <Typography.H3 className="mb-6">Account Management</Typography.H3>
+                <div className="grid grid-cols-1 gap-6">
+                  <Card variant="elevated" padding="lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Settings className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <Typography.H4 className="text-gray-900">Account Settings</Typography.H4>
+                          <Typography.BodySmall className="text-gray-600">
+                            Manage your subscription and account preferences
+                          </Typography.BodySmall>
+                        </div>
+                      </div>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => navigate('/account')}
+                        icon={ChevronRight}
+                        iconPosition="right"
+                      >
+                        Manage
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
+              </div>
             </div>
 
             {/* Right Column - Activity & Tasks */}
