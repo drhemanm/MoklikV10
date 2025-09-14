@@ -168,19 +168,7 @@ const AccessDenied = ({ trialExpired = false, daysRemaining = 0 }) => {
                 <p className="text-sm text-gray-500 mt-4">
                   Secure payment • Cancel anytime • 30-day money-back guarantee
                 </p>
-              </div>
-
-              {/* Student Discount */}
-              <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="text-center">
-                  <div className="text-green-800 font-medium">🎓 Student Discount Available</div>
-                  <div className="text-sm text-green-600 mt-1">
-                    Contact support with your student ID for special pricing
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              </div>  
 
           {/* Trust Indicators */}
           <div className="text-center mt-6 text-gray-500 text-sm">
