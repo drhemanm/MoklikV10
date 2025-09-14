@@ -156,7 +156,7 @@ export class SubscriptionService {
   }
 
   /**
-   * Cancel user subscription
+   * Cancel user subscription (local Firebase only)
    */
   static async cancelSubscription(userId: string): Promise<void> {
     try {
@@ -169,6 +169,107 @@ export class SubscriptionService {
     } catch (error) {
       console.error('Error cancelling subscription:', error);
       throw new Error('Failed to cancel subscription');
+    }
+  }
+
+  /**
+   * Cancel PayPal subscription with API integration
+   */
+  static async cancelPayPalSubscription(userId: string, reason?: string): Promise<{success: boolean, message: string}> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription || !subscription.paypalSubscriptionId) {
+        return { success: false, message: 'No PayPal subscription found' };
+      }
+
+      // Get PayPal access token
+      const accessToken = await this.getPayPalAccessToken();
+      
+      if (!accessToken) {
+        return { success: false, message: 'Failed to authenticate with PayPal' };
+      }
+
+      // Cancel subscription via PayPal API
+      const response = await fetch(`https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${subscription.paypalSubscriptionId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'Accept': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          reason: reason || 'User requested cancellation'
+        })
+      });
+
+      if (response.status === 204) {
+        // Update local subscription status
+        await this.cancelSubscription(userId);
+        
+        return { 
+          success: true, 
+          message: 'Subscription cancelled successfully. Access will continue until your current billing period ends.' 
+        };
+      } else {
+        const error = await response.json();
+        console.error('PayPal cancellation failed:', error);
+        return { success: false, message: 'Failed to cancel subscription with PayPal' };
+      }
+
+    } catch (error) {
+      console.error('PayPal API error:', error);
+      return { success: false, message: 'An error occurred while cancelling your subscription' };
+    }
+  }
+
+  /**
+   * Get PayPal access token for API calls
+   */
+  private static async getPayPalAccessToken(): Promise<string | null> {
+    try {
+      const clientId = process.env.REACT_APP_PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.REACT_APP_PAYPAL_CLIENT_SECRET;
+
+      if (!clientId || !clientSecret) {
+        console.error('PayPal credentials missing');
+        return null;
+      }
+
+      const auth = btoa(`${clientId}:${clientSecret}`);
+      
+      const response = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'grant_type=client_credentials'
+      });
+
+      const data = await response.json();
+      return data.access_token;
+
+    } catch (error) {
+      console.error('Error getting PayPal access token:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if user can cancel subscription
+   */
+  static async canUserCancel(userId: string): Promise<boolean> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      return !!(subscription?.subscriptionStatus === 'active' && 
+                subscription?.paypalSubscriptionId &&
+                subscription?.subscriptionPlan !== 'free');
+    } catch (error) {
+      console.error('Error checking cancellation eligibility:', error);
+      return false;
     }
   }
 
