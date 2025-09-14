@@ -13,6 +13,7 @@ import { AuthGuard } from './components/auth/AuthGuard.js';
 import { Toaster } from 'react-hot-toast';
 import { PrivacyPolicy } from './pages/PrivacyPolicy.js';
 import { TermsOfService } from './pages/TermsOfService.js';
+import AccountSettings from './pages/AccountSettings';
 
 export default function App() {
   return (
@@ -58,6 +59,13 @@ export default function App() {
             <AuthGuard>
               <ErrorBoundary>
                 <WritingReview />
+              </ErrorBoundary>
+            </AuthGuard>
+          } />
+          <Route path="/account" element={
+            <AuthGuard>
+              <ErrorBoundary>
+                <AccountSettings />
               </ErrorBoundary>
             </AuthGuard>
           } />
