@@ -1,9 +1,19 @@
-import { CreditCard, Clock, AlertTriangle } from 'lucide-react';
+import { CreditCard, Clock, AlertTriangle, Crown } from 'lucide-react';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { Link } from 'react-router-dom';
 
 export function SubscriptionStatus() {
-  const { subscription, loading, error, isActive, plan } = useSubscription();
+  const { 
+    subscription, 
+    loading, 
+    error, 
+    canAccess,           // ✅ Fixed: was 'isActive' 
+    subscriptionPlan,    // ✅ Fixed: was 'plan'
+    subscriptionStatus,
+    isInTrial,
+    daysRemaining,
+    hasActiveSubscription
+  } = useSubscription();
 
   if (loading) {
     return (
@@ -15,7 +25,22 @@ export function SubscriptionStatus() {
     );
   }
 
-  if (!isActive) {
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl p-6 shadow-sm border">
+        <div className="flex items-center space-x-3 mb-4">
+          <AlertTriangle className="w-6 h-6 text-red-500" />
+          <h3 className="text-lg font-semibold text-gray-900">Subscription Error</h3>
+        </div>
+        <p className="text-gray-600 mb-6">
+          Unable to load subscription information. Please try again later.
+        </p>
+      </div>
+    );
+  }
+
+  // ✅ Fixed: No active subscription
+  if (!canAccess) {
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border">
         <div className="flex items-center space-x-3 mb-4">
@@ -35,54 +60,8 @@ export function SubscriptionStatus() {
     );
   }
 
-  if (plan === 'free') {
-    // Helper function to safely convert Firestore timestamp or date
-    const getDateFromFirestore = (dateValue: any): Date | null => {
-      if (!dateValue) return null;
-      
-      try {
-        // Check if it's a Firestore timestamp with toDate method
-        if (dateValue.toDate && typeof dateValue.toDate === 'function') {
-          return dateValue.toDate();
-        }
-        
-        // Check if it's already a Date object
-        if (dateValue instanceof Date) {
-          return dateValue;
-        }
-        
-        // Try to create a Date from the value
-        const date = new Date(dateValue);
-        if (isNaN(date.getTime())) {
-          return null;
-        }
-        
-        return date;
-      } catch (error) {
-        console.error('Error converting date:', error);
-        return null;
-      }
-    };
-
-    // Calculate days left with proper error handling
-    let daysLeft = 30; // Default fallback
-    let endDateText = 'Soon';
-    
-    const trialEndDate = getDateFromFirestore(subscription?.trialEndDate);
-    
-    if (trialEndDate) {
-      const now = new Date();
-      const timeDiff = trialEndDate.getTime() - now.getTime();
-      const calculatedDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-      
-      // Ensure we have a valid number
-      if (!isNaN(calculatedDays)) {
-        daysLeft = Math.max(0, calculatedDays); // Don't show negative days
-      }
-      
-      endDateText = trialEndDate.toLocaleDateString();
-    }
-
+  // ✅ Fixed: Free trial active
+  if (isInTrial && canAccess) {
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border">
         <div className="flex items-center space-x-3 mb-4">
@@ -90,10 +69,10 @@ export function SubscriptionStatus() {
           <h3 className="text-lg font-semibold text-gray-900">Free Trial Active</h3>
         </div>
         <p className="text-gray-600 mb-2">
-          You have <span className="font-semibold text-blue-600">{daysLeft} days</span> left in your free trial.
+          You have <span className="font-semibold text-blue-600">{daysRemaining} days</span> left in your free trial.
         </p>
         <p className="text-gray-600 mb-6">
-          Your trial will end on {endDateText}.
+          Upgrade now to continue enjoying unlimited access to all features.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
@@ -102,49 +81,104 @@ export function SubscriptionStatus() {
           >
             Upgrade Now
           </Link>
+          <Link
+            to="/account"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
+            Manage Trial
+          </Link>
         </div>
       </div>
     );
   }
 
+  // ✅ Fixed: Premium subscription active
+  if (hasActiveSubscription) {
+    const planDisplayName = subscriptionPlan === 'yearly' ? 'Yearly Premium' : 'Monthly Premium';
+    const planPrice = subscriptionPlan === 'yearly' ? '₹1200 / year' : '₹100 / month';
+    
+    // Calculate next billing date (rough estimate)
+    const nextBillingDate = new Date();
+    if (subscriptionPlan === 'yearly') {
+      nextBillingDate.setFullYear(nextBillingDate.getFullYear() + 1);
+    } else {
+      nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+    }
+
+    return (
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-green-200">
+        <div className="flex items-center space-x-3 mb-4">
+          <Crown className="w-6 h-6 text-green-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Premium Subscription Active</h3>
+        </div>
+        
+        {/* Success Badge */}
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-green-800 font-medium">All features unlocked!</span>
+          </div>
+        </div>
+
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-600">Plan</span>
+            <span className="font-medium text-green-700">{planDisplayName}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-600">Price</span>
+            <span className="font-medium">{planPrice}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-600">Status</span>
+            <span className="font-medium text-green-700 capitalize">{subscriptionStatus}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-600">Next billing date</span>
+            <span className="font-medium">
+              {nextBillingDate.toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-600">Payment method</span>
+            <span className="font-medium">PayPal •••• {subscription?.paypalSubscriptionId?.slice(-4) || '••••'}</span>
+          </div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            to="/account"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
+            Manage Subscription
+          </Link>
+          <Link
+            to="/billing"
+            className="px-6 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-center"
+          >
+            View Billing
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback case
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border">
       <div className="flex items-center space-x-3 mb-4">
-        <CreditCard className="w-6 h-6 text-green-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Premium Subscription Active</h3>
+        <AlertTriangle className="w-6 h-6 text-gray-500" />
+        <h3 className="text-lg font-semibold text-gray-900">Subscription Status Unknown</h3>
       </div>
-      <div className="space-y-4 mb-6">
-        <div className="flex items-center justify-between">
-          <span className="text-gray-600">Plan</span>
-          <span className="font-medium">Premium</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-600">Price</span>
-          <span className="font-medium">Rs 100 / month</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-600">Next billing date</span>
-          <span className="font-medium">
-            {subscription?.updatedAt?.toLocaleDateString() || 'N/A'}
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-600">Payment method</span>
-          <span className="font-medium">•••• 4242</span>
-        </div>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-4">
-        <button
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Update Payment
-        </button>
-        <button
-          className="px-6 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors"
-        >
-          Cancel Subscription
-        </button>
-      </div>
+      <p className="text-gray-600 mb-6">
+        Unable to determine your subscription status. Please contact support if this persists.
+      </p>
+      <Link
+        to="/contact"
+        className="inline-block px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      >
+        Contact Support
+      </Link>
     </div>
   );
 }
