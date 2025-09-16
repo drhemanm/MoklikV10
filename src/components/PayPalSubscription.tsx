@@ -17,9 +17,12 @@ const PayPalSubscription: React.FC<PayPalSubscriptionProps> = ({ isOpen, onClose
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // FIXED FUNCTION - NO MORE PAGE RELOAD!
   const handleSubscriptionSuccess = async (data: any, actions: any) => {
     try {
       setLoading(true);
+      
+      console.log('🔄 PayPal payment successful, updating subscription...');
       
       // Update user subscription in your database
       await SubscriptionService.upgradeToSubscription(
@@ -27,6 +30,27 @@ const PayPalSubscription: React.FC<PayPalSubscriptionProps> = ({ isOpen, onClose
         selectedPlan,
         data.subscriptionID
       );
+      
+      console.log('✅ Database updated, waiting for propagation...');
+      
+      // Wait a moment for Firebase to propagate the changes
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      console.log('🔄 Refreshing subscription data...');
+      
+      // Force refresh subscription data instead of page reload
+      if (window.refreshSubscription) {
+        await window.refreshSubscription();
+      }
+      
+      // Dispatch custom event that useSubscription hook can listen to
+      window.dispatchEvent(new CustomEvent('subscription-updated', { 
+        detail: { 
+          subscriptionId: data.subscriptionID,
+          planId: selectedPlan,
+          status: 'active' 
+        } 
+      }));
       
       if (onSuccess) {
         onSuccess({
@@ -36,11 +60,13 @@ const PayPalSubscription: React.FC<PayPalSubscriptionProps> = ({ isOpen, onClose
         });
       }
       
-      // Refresh the page to update subscription status
-      window.location.reload();
+      // Close the modal instead of reloading
+      onClose();
+      
+      console.log('✅ Subscription update complete!');
       
     } catch (error) {
-      console.error('Subscription update failed:', error);
+      console.error('❌ Subscription update failed:', error);
       setError('Failed to activate subscription. Please contact support.');
     } finally {
       setLoading(false);
