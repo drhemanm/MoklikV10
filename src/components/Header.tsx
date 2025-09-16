@@ -22,6 +22,7 @@ import {
   Shield
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useSubscription } from '../hooks/useSubscription';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function Header() {
@@ -31,6 +32,20 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Real subscription data
+  const { 
+    isInTrial,
+    daysRemaining,
+    subscriptionPlan,
+    hasActiveSubscription 
+  } = useSubscription();
+
+  const userPlan = hasActiveSubscription ? 
+    `${subscriptionPlan?.charAt(0).toUpperCase() + subscriptionPlan?.slice(1)} Plan` : 
+    'Free Trial';
+  const trialDaysLeft = daysRemaining;
+  // isOnTrial comes from useSubscription
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -65,11 +80,6 @@ export function Header() {
     { path: '/contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> }
   ];
 
-  // Mock user data - replace with real data from your auth/subscription system
-  const userPlan = 'Pro Plan'; // This should come from your subscription system
-  const trialDaysLeft = 15; // This should come from your subscription system
-  const isOnTrial = true; // This should come from your subscription system
-
   const accountMenuItems = [
     {
       section: 'Account',
@@ -77,7 +87,7 @@ export function Header() {
         { 
           label: 'Profile Settings', 
           icon: <User className="w-4 h-4" />, 
-          action: () => navigate('/settings/profile'),
+          action: () => navigate('/account'),
           description: 'Manage your personal information'
         },
         { 
@@ -100,7 +110,7 @@ export function Header() {
         { 
           label: 'Billing & Usage', 
           icon: <CreditCard className="w-4 h-4" />, 
-          action: () => navigate('/billing'),
+          action: () => navigate('/account'),
           description: 'Manage payment methods and invoices'
         },
         { 
@@ -177,7 +187,7 @@ export function Header() {
                         {user.displayName || user.email?.split('@')[0]}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {isOnTrial ? `${trialDaysLeft} days left` : userPlan}
+                        {isInTrial ? `${trialDaysLeft} days left` : userPlan}
                       </div>
                     </div>
                   </div>
@@ -210,7 +220,7 @@ export function Header() {
                               {user.email}
                             </div>
                             <div className="flex items-center space-x-1 mt-1">
-                              {isOnTrial ? (
+                              {isInTrial ? (
                                 <>
                                   <Calendar className="w-3 h-3 text-orange-500" />
                                   <span className="text-xs text-orange-600 font-medium">
@@ -344,7 +354,7 @@ export function Header() {
                         {user.email}
                       </div>
                       <div className="text-xs text-gray-400 mt-1">
-                        {isOnTrial ? `Trial: ${trialDaysLeft} days left` : userPlan}
+                        {isInTrial ? `Trial: ${trialDaysLeft} days left` : userPlan}
                       </div>
                     </div>
                   </div>
@@ -352,15 +362,15 @@ export function Header() {
                   {/* Mobile Account Options */}
                   <div className="mt-3 space-y-1">
                     <Link
-                      to="/settings/profile"
+                      to="/account"
                       className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <User className="w-5 h-5" />
-                      <span>Profile Settings</span>
+                      <span>Account Settings</span>
                     </Link>
                     <Link
-                      to="/billing"
+                      to="/account"
                       className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50"
                       onClick={() => setIsMenuOpen(false)}
                     >
