@@ -14,7 +14,6 @@ import { Toaster } from 'react-hot-toast';
 import { PrivacyPolicy } from './pages/PrivacyPolicy.js';
 import { TermsOfService } from './pages/TermsOfService.js';
 import AccountSettings from './pages/AccountSettings';
-import { TestSecureLogin } from './components/TestSecureLogin';
 
 export default function App() {
   return (
@@ -28,9 +27,6 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
-          
-          {/* Test Route - REMOVE AFTER TESTING */}
-          <Route path="/test-admin" element={<TestSecureLogin />} />
           
           {/* Protected Routes */}
           <Route path="/onboarding" element={
