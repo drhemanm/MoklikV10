@@ -7,7 +7,7 @@ import { StudentDashboard } from './pages/StudentDashboard.js';
 import { ChatPage } from './pages/ChatPage.js';
 import { WritingReview } from './pages/WritingReview.js';
 import { ForumPage } from './pages/ForumPage.js';
-import { PricingPage } from './pages/PricingPage.js';
+import PricingPage from './pages/PricingPage.js';
 import { Contact } from './pages/Contact.js';
 import { AuthGuard } from './components/auth/AuthGuard.js';
 import { Toaster } from 'react-hot-toast';
