@@ -16,7 +16,7 @@ export function SubscriptionGate({
   fallbackMessage 
 }: SubscriptionGateProps) {
   const { 
-    hasAccess, 
+    canAccess,        // ✅ FIXED: Changed from hasAccess to canAccess
     isTrialExpired, 
     loading, 
     daysRemaining, 
@@ -33,7 +33,7 @@ export function SubscriptionGate({
   }
 
   // If user has access, render children normally
-  if (hasAccess) {
+  if (canAccess) {  // ✅ FIXED: Changed from hasAccess to canAccess
     return <>{children}</>;
   }
 
