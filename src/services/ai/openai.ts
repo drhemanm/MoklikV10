@@ -33,11 +33,22 @@ export class OpenAIService {
     try {
       console.log('Sending request to OpenAI with', messages.length, 'messages');
       
+      // Check if any message contains images
+      const hasImages = messages.some(msg => 
+        Array.isArray(msg.content) && 
+        msg.content.some(part => part.type === 'image_url')
+      );
+      
+      // Use vision model if images are present, otherwise use configured model
+      const modelToUse = hasImages ? 'gpt-4o' : this.config.model;
+      
+      console.log('Using model:', modelToUse, hasImages ? '(vision enabled)' : '(text only)');
+      
       const response = await this.client.chat.completions.create({
-        model: this.config.model,
+        model: modelToUse,
         messages,
         temperature: this.config.temperature,
-        max_tokens: this.config.maxTokens,
+        max_tokens: hasImages ? 1500 : this.config.maxTokens,
         presence_penalty: this.config.presencePenalty,
         frequency_penalty: this.config.frequencyPenalty
       });
