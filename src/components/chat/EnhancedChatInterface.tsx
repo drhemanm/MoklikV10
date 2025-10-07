@@ -224,12 +224,16 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
         return;
       }
       
+      // ✅ FIXED: Now send the ACTUAL IMAGE to the AI, not just extracted text
       if (result.content) {
-        await sendMessage(`I've uploaded an image containing mathematical content: ${file.name}\n\n${result.content}`);
+        await sendMessage(
+          `I've uploaded an image containing mathematical content: ${file.name}\n\nPlease analyze this image and help me solve or understand the problems shown.`,
+          base64  // ← Pass the actual image base64 data!
+        );
         const bonusXP = 25;
         await addXP(bonusXP, 'Successfully analyzed math image');
         showXPGain(bonusXP, 'Math image analyzed!');
-        toastLib.success('Image analyzed successfully!');
+        toastLib.success('Image uploaded successfully! AI is analyzing...', { duration: 3000 });
       }
     } catch (error) {
       toastLib.dismiss();
@@ -698,6 +702,7 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                     onClick={() => fileInputRef.current?.click()}
                     className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
                     title="Upload file (+15 XP)"
+                    disabled={isLoading}
                   >
                     <Upload className="w-5 h-5" />
                   </button>
