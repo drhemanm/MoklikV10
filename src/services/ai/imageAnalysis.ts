@@ -19,7 +19,7 @@ export class ImageAnalysisService {
     try {
       // First, check if the image contains math content
       const mathValidationResponse = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "gpt-4o",
         messages: [
           {
             role: "system",
@@ -93,7 +93,7 @@ export class ImageAnalysisService {
 
       // If math-related, proceed with detailed analysis
       const analysisResponse = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "gpt-4o",
         messages: [
           {
             role: "system",
