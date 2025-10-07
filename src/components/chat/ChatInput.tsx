@@ -55,13 +55,15 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
         }
         
         // Show processing message
-        toastLib.loading('Analyzing your image...');
+        toastLib.loading('Analyzing your image...', { id: 'image-upload' });
         
-        // Process the image
+        // Convert image to base64
         const base64 = await ImageAnalysisService.fileToBase64(file);
+        
+        // Quick validation check (optional - we can remove the full analysis since AI will see the image)
         const result = await ImageAnalysisService.analyzeImage(base64, file.name);
         
-        toastLib.dismiss();
+        toastLib.dismiss('image-upload');
         
         if (!result.success) {
           toastLib.error(result.error || 'Failed to analyze image');
@@ -76,7 +78,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             setTimeout(() => {
               result.suggestions?.forEach((suggestion: any, index: number) => {
                 setTimeout(() => {
-                  toastLib(suggestion);
+                  toastLib(suggestion, { duration: 4000 });
                 }, index * 1000);
               });
             }, 1000);
@@ -84,20 +86,22 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           return;
         }
         
-        // If math-related, send the analysis to chat
-        if (result.content) {
-          await onSend(`I've uploaded an image containing mathematical content: ${file.name}\n\n${result.content}`);
-          toastLib.success('Image analyzed successfully!');
-        }
+        // ✅ NEW: Send the ACTUAL IMAGE to the AI along with a message
+        // The AI will now see the image directly, not just extracted text
+        await onSend(
+          `I've uploaded an image containing mathematical content: ${file.name}\n\nPlease analyze this image and help me solve or understand the problems shown.`,
+          base64  // ← Pass the actual image!
+        );
+        
+        toastLib.success('Image uploaded successfully! AI is analyzing...', { duration: 3000 });
+        
       } catch (error) {
-        toastLib.dismiss();
+        toastLib.dismiss('image-upload');
         console.error('Error analyzing image:', error);
         toastLib.error('Failed to analyze image. Please try again.');
       }
     });
   };
-
-
 
   return (
     <div>
@@ -106,6 +110,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           onClick={() => fileInputRef.current?.click()}
           className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
           title="Upload file"
+          disabled={isLoading}
         >
           <Upload className="w-5 h-5" />
         </button>
