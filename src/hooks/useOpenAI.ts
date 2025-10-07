@@ -4,19 +4,19 @@ import { nanoid } from 'nanoid';
 import { toast as toastLib } from 'react-hot-toast';
 import { env } from '../config/env.js';
 
-// Initialize OpenAI client
+const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID;
+
 const openai = new OpenAI({
   apiKey: env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true
 });
 
-const ASSISTANT_ID = import.meta.env.VITE_OPENAI_AGENT_ID || 'asst_gGOP7TnOmuzW6yrkDaE7jmWa';
-
-interface Message {
+export interface Message {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  isSystemMessage?: boolean;
 }
 
 export function useOpenAI() {
@@ -25,34 +25,33 @@ export function useOpenAI() {
   const [error, setError] = useState<string | null>(null);
   const [threadId, setThreadId] = useState<string | null>(null);
 
-  // Save conversation to localStorage for history
-  const saveConversation = (messages: Message[]) => {
-    if (messages.length === 0) return;
-    
+  // Save conversation to localStorage
+  const saveConversation = useCallback((messages: Message[]) => {
     try {
       const conversations = JSON.parse(localStorage.getItem('moklik_conversations') || '[]');
-      const conversationId = Date.now().toString();
-      const title = messages.find(m => m.role === 'user')?.content.slice(0, 50) + '...' || 'New Conversation';
-      
-      const conversation = {
+      const conversationId = nanoid();
+      const newConversation = {
         id: conversationId,
-        title,
-        messages,
         timestamp: new Date().toISOString(),
-        messageCount: messages.length
+        messages: messages.map(msg => ({
+          ...msg,
+          timestamp: msg.timestamp.toISOString()
+        })),
+        preview: messages[0]?.content.substring(0, 100) || 'New conversation'
       };
       
-      conversations.unshift(conversation);
-      // Keep only last 50 conversations
+      conversations.unshift(newConversation);
+      
+      // Keep only the last 50 conversations
       if (conversations.length > 50) {
         conversations.splice(50);
       }
       
       localStorage.setItem('moklik_conversations', JSON.stringify(conversations));
     } catch (error) {
-      toastLib.error('Failed to save conversation.');
+      console.error('Error saving conversation:', error);
     }
-  };
+  }, []);
 
   // Load conversation history
   const loadConversationHistory = useCallback(() => {
@@ -101,7 +100,7 @@ export function useOpenAI() {
   // Send a message and get a response
   const sendMessage = useCallback(async (
     content: string, 
-    analysisContent?: string,
+    imageBase64?: string,  // ← Changed from analysisContent to imageBase64
     regenerate: boolean = false
   ) => {
     if (!content.trim()) {
@@ -109,7 +108,7 @@ export function useOpenAI() {
       return;
     }
 
-    console.log('useOpenAI: Starting sendMessage', { content, regenerate });
+    console.log('useOpenAI: Starting sendMessage', { content, hasImage: !!imageBase64, regenerate });
 
     setIsLoading(true);
     setError(null);
@@ -137,17 +136,82 @@ export function useOpenAI() {
         console.log('useOpenAI: User message added to state');
       }
       
+      // ✅ NEW: If image is provided, use Chat Completions API with vision
+      if (imageBase64) {
+        console.log('useOpenAI: Using vision model for image analysis');
+        
+        // Prepare conversation history for vision API
+        const visionMessages: any[] = messages.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }));
+        
+        // Add the new user message with image
+        visionMessages.push({
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: content
+            },
+            {
+              type: 'image_url',
+              image_url: {
+                url: imageBase64
+              }
+            }
+          ]
+        });
+        
+        // Call vision-enabled API
+        const response = await openai.chat.completions.create({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are Moklik, an expert mathematics tutor. Analyze images containing mathematical content and provide clear, step-by-step explanations. Help students understand concepts, solve problems, and learn effectively. Be encouraging and educational in your responses.'
+            },
+            ...visionMessages
+          ],
+          max_tokens: 1500,
+          temperature: 0.7
+        });
+        
+        const assistantContent = response.choices[0]?.message?.content;
+        
+        if (!assistantContent) {
+          throw new Error('No response received from the assistant');
+        }
+        
+        // Add assistant message to state
+        const assistantMessage: Message = {
+          id: nanoid(),
+          role: 'assistant',
+          content: assistantContent,
+          timestamp: new Date()
+        };
+        
+        setMessages(prev => {
+          const updated = [...prev, assistantMessage];
+          saveConversation(updated);
+          return updated;
+        });
+        
+        console.log('useOpenAI: Vision response processed successfully');
+        setIsLoading(false);
+        return;
+      }
+      
+      // ✅ Continue with existing Assistants API logic for text-only messages
       // Ensure we have a thread
       const currentThreadId = await ensureThread();
       console.log('useOpenAI: Thread ID obtained:', currentThreadId);
       
-      // Add message to thread (include analysis content if provided)
-      const messageContent = analysisContent ? `${content}\n\nImage Analysis:\n${analysisContent}` : content;
-      
+      // Add message to thread
       try {
         await openai.beta.threads.messages.create(currentThreadId, {
           role: 'user',
-          content: messageContent
+          content: content
         });
         console.log('useOpenAI: Message added to thread');
       } catch (error: any) {
@@ -264,7 +328,7 @@ export function useOpenAI() {
       setIsLoading(false);
       console.log('useOpenAI: sendMessage completed');
     }
-  }, [ensureThread, threadId]);
+  }, [ensureThread, threadId, messages, saveConversation]);
 
   // Clear all messages
   const clearMessages = useCallback(async () => {
