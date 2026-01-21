@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, UserPlus, AlertCircle, Loader2, Check, X } from 'lucide-react';
-import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../../config/firebase';
 import { PasswordPolicy } from '../../services/security/passwordPolicy';
@@ -80,11 +80,13 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     try {
       if (isSignUp) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
+
+        // Create user profile in Firestore
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           email,
           createdAt: serverTimestamp(),
           role: 'student',
+          emailVerified: false,
           gamification: {
             level: 1,
             xp: 0,
@@ -96,6 +98,16 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
             badges: []
           }
         });
+
+        // Send email verification
+        try {
+          await sendEmailVerification(userCredential.user);
+          toast.success('Account created! Please check your email to verify your account.');
+        } catch (verificationError) {
+          console.error('Failed to send verification email:', verificationError);
+          // Don't block signup if verification email fails
+          toast.success('Account created! You can verify your email later in settings.');
+        }
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
