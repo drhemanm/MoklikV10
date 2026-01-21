@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { LogIn, UserPlus, AlertCircle, Loader2 } from 'lucide-react';
+import { LogIn, UserPlus, AlertCircle, Loader2, Check, X } from 'lucide-react';
 import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../../config/firebase';
+import { PasswordPolicy } from '../../services/security/passwordPolicy';
 import toast from 'react-hot-toast';
 
 interface AuthFormProps {
@@ -18,6 +19,17 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
+  // Password requirements check for UI display
+  const passwordRequirements = {
+    minLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasLowercase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecial: /[^A-Za-z0-9]/.test(password),
+  };
+
+  const isPasswordStrong = Object.values(passwordRequirements).every(Boolean);
+
   const validateForm = () => {
     if (!email || !password) {
       setError('Please fill in all fields');
@@ -29,9 +41,25 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
       return false;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return false;
+    // Use strong password validation for sign up
+    if (isSignUp) {
+      const passwordValidation = PasswordPolicy.validatePassword(password);
+      if (!passwordValidation.valid) {
+        setError(passwordValidation.error || 'Password does not meet requirements');
+        return false;
+      }
+
+      // Check for common passwords
+      if (PasswordPolicy.isCommonPassword(password)) {
+        setError('This password is too common. Please choose a stronger password.');
+        return false;
+      }
+    } else {
+      // For login, just check minimum length (Firebase handles the rest)
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long');
+        return false;
+      }
     }
 
     if (isSignUp && password !== confirmPassword) {
@@ -237,6 +265,39 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 placeholder="••••••••"
                 required
               />
+              {/* Password strength indicator - only show during sign up */}
+              {isSignUp && password.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <div className={`h-1 flex-1 rounded ${passwordRequirements.minLength && passwordRequirements.hasUppercase && passwordRequirements.hasLowercase ? 'bg-yellow-500' : 'bg-gray-200'}`} />
+                    <div className={`h-1 flex-1 rounded ${passwordRequirements.hasNumber ? 'bg-yellow-500' : 'bg-gray-200'}`} />
+                    <div className={`h-1 flex-1 rounded ${passwordRequirements.hasSpecial ? 'bg-green-500' : 'bg-gray-200'}`} />
+                    <div className={`h-1 flex-1 rounded ${isPasswordStrong ? 'bg-green-500' : 'bg-gray-200'}`} />
+                  </div>
+                  <div className="text-xs space-y-0.5">
+                    <p className={`flex items-center ${passwordRequirements.minLength ? 'text-green-600' : 'text-gray-500'}`}>
+                      {passwordRequirements.minLength ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
+                      At least 8 characters
+                    </p>
+                    <p className={`flex items-center ${passwordRequirements.hasUppercase ? 'text-green-600' : 'text-gray-500'}`}>
+                      {passwordRequirements.hasUppercase ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
+                      One uppercase letter
+                    </p>
+                    <p className={`flex items-center ${passwordRequirements.hasLowercase ? 'text-green-600' : 'text-gray-500'}`}>
+                      {passwordRequirements.hasLowercase ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
+                      One lowercase letter
+                    </p>
+                    <p className={`flex items-center ${passwordRequirements.hasNumber ? 'text-green-600' : 'text-gray-500'}`}>
+                      {passwordRequirements.hasNumber ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
+                      One number
+                    </p>
+                    <p className={`flex items-center ${passwordRequirements.hasSpecial ? 'text-green-600' : 'text-gray-500'}`}>
+                      {passwordRequirements.hasSpecial ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
+                      One special character (!@#$%^&*)
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
