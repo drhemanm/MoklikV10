@@ -200,7 +200,7 @@ export function FeatureCard({ title, description, icon: Icon, gradient = 'from-b
   );
 }
 
-// Progress Card
+// Progress Card (simple version for use inside other cards)
 interface ProgressCardProps {
   title: string;
   current: number;
@@ -211,26 +211,28 @@ interface ProgressCardProps {
 
 export function ProgressCard({ title, current, total, color = 'bg-blue-600', icon }: ProgressCardProps) {
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
+  const isComplete = current >= total;
 
   return (
-    <Card className="p-5">
-      <div className="flex items-center justify-between mb-3">
+    <div className="p-3 bg-gray-50 rounded-xl">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          {icon && <span className="text-gray-400">{icon}</span>}
-          <span className="font-medium text-gray-900">{title}</span>
+          {icon && <span className="text-gray-500">{icon}</span>}
+          <span className="font-medium text-gray-900 text-sm">{title}</span>
         </div>
-        <span className="text-sm font-semibold text-gray-600">{percentage}%</span>
+        <span className={`text-xs font-semibold ${isComplete ? 'text-green-600' : 'text-gray-600'}`}>
+          {isComplete ? 'Done!' : `${current}/${total}`}
+        </span>
       </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className={`h-full ${color} rounded-full`}
+          className={`h-full ${isComplete ? 'bg-green-500' : color} rounded-full`}
         />
       </div>
-      <p className="text-xs text-gray-500 mt-2">{current} of {total} completed</p>
-    </Card>
+    </div>
   );
 }
 

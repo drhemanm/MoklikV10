@@ -19,14 +19,14 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
-import { Card, CardHeader, CardBody, StatCard, QuickActionCard, ProgressCard } from '../components/ui/Card';
+import { Card, CardHeader, CardBody, StatCard, ProgressCard } from '../components/ui/Card';
 import { useGamification } from '../hooks/useGamification';
 import { useSubscription } from '../hooks/useSubscription.jsx';
 
 export function NewDashboard() {
   const navigate = useNavigate();
-  const { stats, badges } = useGamification();
-  const { isInTrial, daysRemaining, hasActiveSubscription } = useSubscription();
+  const { stats, badges, isLoading } = useGamification();
+  const { isInTrial, daysRemaining } = useSubscription();
 
   // Quick actions
   const quickActions = [
@@ -49,7 +49,7 @@ export function NewDashboard() {
       description: 'Practice with past papers',
       icon: <FileText className="w-6 h-6" />,
       color: 'bg-green-600',
-      onClick: () => navigate('/exam-papers')
+      onClick: () => navigate('/forum')
     },
     {
       title: 'Community',
@@ -71,15 +71,28 @@ export function NewDashboard() {
     { name: 'English', progress: 80, color: 'bg-orange-600' }
   ];
 
+  if (isLoading) {
+    return (
+      <DashboardLayout title="Dashboard">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your dashboard...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout title="Dashboard">
       {/* Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Study Streak"
-          value={`${stats?.streak?.current || 0} days`}
-          change={stats?.streak?.current > 0 ? '+1 today' : 'Start today!'}
-          changeType={stats?.streak?.current > 0 ? 'positive' : 'neutral'}
+          value={`${stats?.streak || 0} days`}
+          change={stats?.streak > 0 ? '+1 today' : 'Start today!'}
+          changeType={stats?.streak > 0 ? 'positive' : 'neutral'}
           icon={<Flame className="w-5 h-5" />}
           iconColor="text-orange-600"
           iconBgColor="bg-orange-50"
@@ -95,7 +108,7 @@ export function NewDashboard() {
         />
         <StatCard
           title="Study Time"
-          value={`${Math.round((stats?.studyTime?.total || 0) / 60)}h`}
+          value={`${stats?.studyTime || 0}h`}
           change="This week"
           changeType="neutral"
           icon={<Clock className="w-5 h-5" />}
@@ -104,7 +117,7 @@ export function NewDashboard() {
         />
         <StatCard
           title="Badges Earned"
-          value={badges?.length || 0}
+          value={stats?.badgesEarned || 0}
           change="Keep going!"
           changeType="positive"
           icon={<Trophy className="w-5 h-5" />}
@@ -153,10 +166,10 @@ export function NewDashboard() {
               icon={<Target className="w-5 h-5" />}
               action={
                 <button
-                  onClick={() => navigate('/progress')}
+                  onClick={() => navigate('/chat')}
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
                 >
-                  View all <ChevronRight className="w-4 h-4" />
+                  Continue <ChevronRight className="w-4 h-4" />
                 </button>
               }
             />
@@ -226,7 +239,7 @@ export function NewDashboard() {
                       {daysRemaining} days remaining in your trial
                     </p>
                     <button
-                      onClick={() => navigate('/upgrade')}
+                      onClick={() => navigate('/pricing')}
                       className="mt-3 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all w-full"
                     >
                       Upgrade to Premium
@@ -245,10 +258,10 @@ export function NewDashboard() {
               icon={<Award className="w-5 h-5" />}
               action={
                 <button
-                  onClick={() => navigate('/achievements')}
+                  onClick={() => navigate('/chat')}
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  View all
+                  Earn more
                 </button>
               }
             />
@@ -273,6 +286,12 @@ export function NewDashboard() {
                     <Trophy className="w-6 h-6 text-gray-400" />
                   </div>
                   <p className="text-sm text-gray-500">Start learning to earn badges!</p>
+                  <button
+                    onClick={() => navigate('/chat')}
+                    className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Start a lesson
+                  </button>
                 </div>
               )}
             </CardBody>
@@ -289,7 +308,7 @@ export function NewDashboard() {
               <div className="space-y-4">
                 <ProgressCard
                   title="Study 30 minutes"
-                  current={Math.min(stats?.studyTime?.daily || 0, 30)}
+                  current={Math.min(stats?.studyTime || 0, 30)}
                   total={30}
                   color="bg-blue-600"
                   icon={<Clock className="w-4 h-4" />}
