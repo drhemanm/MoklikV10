@@ -1,5 +1,5 @@
 import { CreditCard, Clock, AlertTriangle, Crown } from 'lucide-react';
-import { useSubscription } from '../../hooks/useSubscription.js';
+import { useSubscription } from '../../hooks/useSubscription.jsx';
 import { Link } from 'react-router-dom';
 
 export function SubscriptionStatus() {

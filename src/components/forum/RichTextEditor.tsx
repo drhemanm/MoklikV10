@@ -1,7 +1,18 @@
 import React from 'react';
 import { Bold, Italic, List } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { AttachmentUpload } from './AttachmentUpload.js';
 import { containsProfanity, moderateContent } from '../../services/moderation/profanityFilter.js';
+
+// Configure DOMPurify to only allow safe HTML tags
+const DOMPURIFY_CONFIG = {
+  ALLOWED_TAGS: ['b', 'i', 'u', 'strong', 'em', 'ul', 'ol', 'li', 'p', 'br', 'a', 'img'],
+  ALLOWED_ATTR: ['href', 'src', 'class', 'className', 'target', 'rel'],
+  ALLOW_DATA_ATTR: false,
+  ADD_ATTR: ['target'],
+  FORBID_TAGS: ['script', 'style', 'iframe', 'form', 'input', 'object', 'embed'],
+  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover']
+};
 
 interface RichTextEditorProps {
   value: string;
@@ -16,32 +27,46 @@ export function RichTextEditor({ value, onChange, placeholder, userId }: RichTex
   const handleCommand = (command: string) => {
     document.execCommand(command, false);
     if (editorRef.current) {
-      const content = editorRef.current.innerHTML;
-      if (containsProfanity(content)) {
-        const moderatedContent = moderateContent(content);
-        editorRef.current.innerHTML = moderatedContent;
-        onChange(moderatedContent);
+      // Sanitize content to prevent XSS attacks
+      const rawContent = editorRef.current.innerHTML;
+      const sanitizedContent = DOMPurify.sanitize(rawContent, DOMPURIFY_CONFIG);
+
+      if (containsProfanity(sanitizedContent)) {
+        const moderatedContent = moderateContent(sanitizedContent);
+        const finalContent = DOMPurify.sanitize(moderatedContent, DOMPURIFY_CONFIG);
+        editorRef.current.innerHTML = finalContent;
+        onChange(finalContent);
       } else {
-        onChange(content);
+        // Only update if sanitization changed the content
+        if (rawContent !== sanitizedContent) {
+          editorRef.current.innerHTML = sanitizedContent;
+        }
+        onChange(sanitizedContent);
       }
     }
   };
 
   const handleAttachmentUpload = (url: string) => {
     if (editorRef.current) {
-      if (url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      // Sanitize URL to prevent javascript: protocol attacks
+      const sanitizedUrl = DOMPurify.sanitize(url);
+
+      if (sanitizedUrl.match(/\.(jpg|jpeg|png|gif)$/i)) {
         const img = document.createElement('img');
-        img.src = url;
+        img.src = sanitizedUrl;
         img.className = 'max-w-full h-auto';
         editorRef.current.appendChild(img);
       } else {
         const link = document.createElement('a');
-        link.href = url;
+        link.href = sanitizedUrl;
         link.textContent = 'View Attachment';
         link.className = 'text-blue-600 hover:underline';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         editorRef.current.appendChild(link);
       }
-      onChange(editorRef.current.innerHTML);
+      const sanitizedContent = DOMPurify.sanitize(editorRef.current.innerHTML, DOMPURIFY_CONFIG);
+      onChange(sanitizedContent);
     }
   };
 
@@ -80,13 +105,14 @@ export function RichTextEditor({ value, onChange, placeholder, userId }: RichTex
         contentEditable
         className="p-4 min-h-[200px] focus:outline-none"
         onInput={(e) => {
-          const content = e.currentTarget.innerText;
-          onChange(content);
+          // Sanitize content on input to prevent XSS
+          const rawContent = e.currentTarget.innerHTML;
+          const sanitizedContent = DOMPurify.sanitize(rawContent, DOMPURIFY_CONFIG);
+          onChange(sanitizedContent);
         }}
         data-placeholder={placeholder}
-      >
-        {value}
-      </div>
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value, DOMPURIFY_CONFIG) }}
+      />
     </div>
   );
 }

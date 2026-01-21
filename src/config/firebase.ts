@@ -3,15 +3,25 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
+// Firebase configuration from environment variables
+// This prevents API keys from being exposed in source code
 const firebaseConfig = {
-  apiKey: "AIzaSyDqLS_T5vVXB-9Xmst7ja8zji-1YRZc7Qo",
-  authDomain: "moklik-46048.firebaseapp.com",
-  projectId: "moklik-46048",
-  storageBucket: "moklik-46048.firebasestorage.app",
-  messagingSenderId: "1087303206769",
-  appId: "1:1087303206769:web:50bec1d9a64e04038798d0",
-  measurementId: "G-70NNTKKEV8"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+// Validate required Firebase config at startup
+const requiredFields = ['apiKey', 'authDomain', 'projectId'] as const;
+for (const field of requiredFields) {
+  if (!firebaseConfig[field]) {
+    console.error(`Missing required Firebase config: ${field}. Check your environment variables.`);
+  }
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

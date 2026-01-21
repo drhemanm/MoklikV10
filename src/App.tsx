@@ -3,7 +3,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { LandingPage } from './pages/LandingPage.js';
 import { DemoMode } from './pages/DemoMode.js';
 import { OnboardingFlow } from './pages/OnboardingFlow.js';
-import { StudentDashboard } from './pages/StudentDashboard.js';
+import { NewDashboard } from './pages/NewDashboard.js';
 import { ChatPage } from './pages/ChatPage.js';
 import { WritingReview } from './pages/WritingReview.js';
 import { ForumPage } from './pages/ForumPage.js';
@@ -44,7 +44,7 @@ export default function App() {
           <Route path="/dashboard" element={
             <AuthGuard>
               <ErrorBoundary>
-                <StudentDashboard />
+                <NewDashboard />
               </ErrorBoundary>
             </AuthGuard>
           } />

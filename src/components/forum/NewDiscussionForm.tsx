@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Tag, PlusCircle, Send, AlertTriangle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface NewDiscussionFormProps {
   onSubmit: (title: string, content: string, tags: string[]) => void;
@@ -42,7 +43,7 @@ export function NewDiscussionForm({
     }
     
     if (tags.length >= 5) {
-      alert('You can only add up to 5 tags');
+      toast.error('You can only add up to 5 tags');
       return;
     }
     

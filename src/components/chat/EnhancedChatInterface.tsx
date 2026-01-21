@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  ArrowLeft, 
-  Send, 
-  Camera, 
-  Upload, 
-  Mic, 
-  Brain, 
-  User, 
-  Lightbulb, 
-  Loader2, 
+import {
+  ArrowLeft,
+  Send,
+  Camera,
+  Upload,
+  Mic,
+  Brain,
+  User,
+  Lightbulb,
+  Loader2,
   Image as ImageIcon,
   RefreshCw,
   Copy,
@@ -26,6 +26,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import DOMPurify from 'dompurify';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -34,6 +35,15 @@ import { useGamification } from '../../hooks/useGamification';
 import toast, { toast as toastLib } from 'react-hot-toast';
 import { ChatHistory } from './ChatHistory';
 import { SubscriptionGate } from '../subscription/SubscriptionGate';
+
+// DOMPurify config for math content - allows KaTeX-generated HTML
+const MATH_PURIFY_CONFIG = {
+  ALLOWED_TAGS: ['span', 'div', 'p', 'br', 'math', 'mrow', 'mi', 'mo', 'mn', 'msup', 'msub', 'mfrac', 'msqrt', 'mroot', 'mtext', 'annotation'],
+  ALLOWED_ATTR: ['class', 'style', 'aria-hidden', 'xmlns'],
+  ALLOW_DATA_ATTR: false,
+  FORBID_TAGS: ['script', 'style', 'iframe', 'form', 'input', 'object', 'embed'],
+  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover']
+};
 
 interface EnhancedChatInterfaceProps {
   onBack: () => void;
@@ -550,11 +560,13 @@ export function EnhancedChatInterface({ onBack, selectedTopic }: EnhancedChatInt
                             components={{
                               p: ({children}: any) => {
                                 const content = String(children);
-                               if (content.includes('$') || content.includes('\\(') || content.includes('\\[')) {
-                                 const processedContent = renderMathContent(content);
-                                 return <div className="mb-4" dangerouslySetInnerHTML={{ __html: processedContent }} />;
-                               }
-                               return <p className="mb-4">{children}</p>;
+                                if (content.includes('$') || content.includes('\\(') || content.includes('\\[')) {
+                                  const processedContent = renderMathContent(content);
+                                  // Sanitize the processed content to prevent XSS attacks
+                                  const sanitizedContent = DOMPurify.sanitize(processedContent, MATH_PURIFY_CONFIG);
+                                  return <div className="mb-4" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />;
+                                }
+                                return <p className="mb-4">{children}</p>;
                               },
                               code({node, inline, className, children, ...props}: any) {
                                 return !inline && className ? (
