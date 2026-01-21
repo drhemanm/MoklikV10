@@ -18,7 +18,7 @@ import AccountSettings from './pages/AccountSettings';
 export default function App() {
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
@@ -27,7 +27,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
-          
+
           {/* Protected Routes */}
           <Route path="/onboarding" element={
             <AuthGuard>
@@ -70,8 +70,8 @@ export default function App() {
             </AuthGuard>
           } />
         </Routes>
-        
-        <Toaster 
+
+        <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,
@@ -82,7 +82,7 @@ export default function App() {
             },
           }}
         />
-      </div>
+      </>
     </ErrorBoundary>
   );
 }
