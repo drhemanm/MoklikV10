@@ -1,96 +1,87 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, Upload, MessageSquare } from 'lucide-react';
+import { Brain, Upload, MessageSquare } from 'lucide-react';
 import { EnhancedChatInterface } from '../components/chat/EnhancedChatInterface';
 import { FileUpload } from '../components/FileUpload';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { DashboardLayout } from '../components/layout/DashboardLayout';
 
 export function ChatPage() {
   const [activeMode, setActiveMode] = useState<'chat' | 'upload'>('chat');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link 
-              to="/dashboard" 
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Dashboard</span>
-            </Link>
-            
-            <div className="flex items-center space-x-2">
+    <DashboardLayout>
+      <div className="max-w-5xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="p-2 bg-blue-100 rounded-lg">
               <Brain className="w-6 h-6 text-blue-600" />
-              <span className="font-semibold text-gray-900">Moklik AI Tutor</span>
             </div>
-            
-            <div className="flex items-center space-x-2 text-green-600">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm">AI Ready</span>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">AI Tutor Chat</h1>
+              <p className="text-sm text-gray-500">Get personalized help with your math questions</p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Mode Selection */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex space-x-4">
+        {/* Mode Selection Tabs */}
+        <div className="bg-white rounded-xl shadow-sm p-2 mb-6">
+          <div className="flex space-x-2">
             <button
               onClick={() => setActiveMode('chat')}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors ${
+              className={`flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-all ${
                 activeMode === 'chat'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               <MessageSquare className="w-5 h-5" />
-              <span>Chat with AI</span>
+              <span className="font-medium">Chat with AI</span>
             </button>
-            
+
             <button
               onClick={() => setActiveMode('upload')}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors ${
+              className={`flex-1 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-all ${
                 activeMode === 'upload'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               <Upload className="w-5 h-5" />
-              <span>Upload Work for Review</span>
+              <span className="font-medium">Upload Work for Review</span>
             </button>
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content Area */}
         <ErrorBoundary>
           {activeMode === 'chat' ? (
-            <div className="bg-white rounded-xl shadow-sm">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <EnhancedChatInterface
-                onBack={() => {}} // Empty function since we handle navigation differently
+                onBack={() => {}}
                 selectedTopic={null}
               />
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+                <div className="p-4 bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <Upload className="w-8 h-8 text-blue-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">
                   Upload Your Work for AI Review
                 </h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Upload your math homework, assignments, or any written work to get detailed 
+                <p className="text-gray-600 max-w-xl mx-auto">
+                  Upload your math homework, assignments, or any written work to get detailed
                   feedback and suggestions from Moklik AI.
                 </p>
               </div>
-              
+
               <FileUpload />
             </div>
           )}
         </ErrorBoundary>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

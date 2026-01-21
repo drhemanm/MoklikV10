@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { storage } from '../../config/firebase.js';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { resourceService } from '../../services/firebase/resources.js';
@@ -62,7 +63,7 @@ export function ResourceUpload() {
         level: 'both'
       });
 
-      alert('Resource uploaded successfully!');
+      toast.success('Resource uploaded successfully!');
     } catch (error) {
       console.error('Upload error:', error);
       setError('Failed to upload resource. Please try again.');

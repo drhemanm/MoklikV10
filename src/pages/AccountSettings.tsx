@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { SubscriptionService } from '../services/SubscriptionService';
-import { 
-  Typography, 
-  Card, 
-  Button, 
-  Badge 
+import {
+  Typography,
+  Card,
+  Button,
+  Badge
 } from '../components/ui/ComponentLibrary';
-import { EnhancedLayout } from '../components/layout/EnhancedLayout';
+import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { Crown, Settings, AlertTriangle, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface SubscriptionDetails {
   plan: string;
@@ -64,16 +65,16 @@ const AccountSettings: React.FC = () => {
       const result = await SubscriptionService.cancelPayPalSubscription(user.uid, cancelReason);
 
       if (result.success) {
-        alert(result.message);
+        toast.success(result.message);
         setShowCancelConfirm(false);
         await loadSubscriptionDetails(); // Refresh the data
       } else {
-        alert(result.message);
+        toast.error(result.message);
       }
 
     } catch (error) {
       console.error('Error cancelling subscription:', error);
-      alert('An error occurred. Please try again or contact support.');
+      toast.error('An error occurred. Please try again or contact support.');
     } finally {
       setCancelling(false);
     }
@@ -85,16 +86,16 @@ const AccountSettings: React.FC = () => {
 
   if (loading) {
     return (
-      <EnhancedLayout>
+      <DashboardLayout>
         <div className="max-w-4xl mx-auto p-6">
           <div className="animate-pulse">Loading account settings...</div>
         </div>
-      </EnhancedLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <EnhancedLayout>
+    <DashboardLayout>
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -271,7 +272,10 @@ const AccountSettings: React.FC = () => {
             <Button
               onClick={() => {
                 if (window.confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-                  alert('Account deletion functionality will be implemented here.');
+                  toast('Account deletion will be available soon. Please contact support.', {
+                    icon: '🔒',
+                    duration: 5000
+                  });
                 }
               }}
               variant="secondary"
@@ -282,7 +286,7 @@ const AccountSettings: React.FC = () => {
           </div>
         </Card>
       </div>
-    </EnhancedLayout>
+    </DashboardLayout>
   );
 };
 

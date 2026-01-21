@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Save, X, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { resourceService } from '../../services/firebase/resources.js';
 import type { Resource } from '../../types/resource.js';
 
@@ -17,7 +18,7 @@ export function AdminResourcePanel() {
 
   const handleAddResource = async () => {
     if (!newResource.title || !newResource.url) {
-      alert('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -35,7 +36,7 @@ export function AdminResourcePanel() {
       });
     } catch (error) {
       console.error('Error adding resource:', error);
-      alert('Failed to add resource');
+      toast.error('Failed to add resource');
     } finally {
       setIsLoading(false);
     }
